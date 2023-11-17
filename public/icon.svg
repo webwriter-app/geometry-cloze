@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img"
+  preserveAspectRatio="xMidYMid meet" width="32" height="32" viewBox="0 0 100 100">
+  <style>
+    :root {
+      color: black;
+    }
+
+    @media (prefers-color-scheme: dark) {
+
+      :root {
+        color: white;
+      }
+    }
+  </style>
+  <path d="M22,90,L78,90,M90,78,L90,22,M78,10,L22,10M10,22L10,78" stroke="currentColor" fill="none" stroke-width="5" />
+  <circle cx="10" cy="90" r="7" stroke-width="5" stroke="currentColor" fill="none" />
+  <circle cx="90" cy="90" r="7" stroke-width="5" stroke="currentColor" fill="none" />
+  <circle cx="90" cy="10" r="7" stroke-width="5" stroke="currentColor" fill="none" />
+  <circle cx="10" cy="10" r="7" stroke-width="5" stroke="currentColor" fill="none" />
+  <path d="M22,22,L78,78" stroke-dasharray="7.2" stroke="currentColor" fill="none" stroke-width="5" />
+</svg>
