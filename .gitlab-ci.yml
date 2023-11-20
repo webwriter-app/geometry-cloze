@@ -56,7 +56,7 @@ deploy-webpage:
   script:
     - yarn
     - yarn build
-    - npx netlify-cli deploy --dir=build --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
+    - npx netlify-cli deploy --dir=dist --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
   cache:
     policy: pull
     untracked: false
