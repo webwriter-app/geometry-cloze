@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import { viteStaticCopy as copy } from "vite-plugin-static-copy";
+import { defineConfig } from 'vite';
+import { viteStaticCopy as copy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,16 +7,16 @@ export default defineConfig({
     copy({
       targets: [
         {
-          src: "../node_modules/@shoelace-style/shoelace/dist/assets",
-          dest: "shoelace",
-        },
-      ],
-    }),
+          src: '../node_modules/@shoelace-style/shoelace/dist/assets',
+          dest: 'shoelace'
+        }
+      ]
+    })
   ],
-  root: "src",
-  publicDir: "../public",
+  root: 'src',
+  publicDir: '../public',
   build: {
-    outDir: "../dist",
-    emptyOutDir: true,
-  },
+    outDir: '../dist',
+    emptyOutDir: true
+  }
 });
