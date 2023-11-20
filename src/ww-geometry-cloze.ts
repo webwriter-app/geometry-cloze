@@ -9,7 +9,7 @@ import './misc/shoelaceSetup';
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElement {
   render() {
-    return html` <h1>Geometry close goes here</h1> `;
+    return html` <h1>Geometry cloze goes here</h1> `;
   }
 
   static styles = css``;
