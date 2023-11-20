@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host --open",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check-prettier": "npx prettier --check .",
+    "run-prettier": "npx prettier --write ."
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.11.2",

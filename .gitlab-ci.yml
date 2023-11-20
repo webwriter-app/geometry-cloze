@@ -1,0 +1,66 @@
+stages:
+  - install
+  - test
+  - build
+
+cache:
+  paths:
+    - node_modules/
+
+npm-install:
+  stage: install
+  image: node:18
+  script:
+    - yarn install
+  cache:
+    policy: pull-push
+    untracked: false
+    when: on_success
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+prettier-check-styling:
+  stage: test
+  image: node:18
+  script:
+    - yarn install
+    - yarn check-prettier
+  cache:
+    policy: pull
+    untracked: false
+    when: on_success
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+typescript:
+  stage: build
+  image: node:18
+  script:
+    - yarn install
+    - yarn build
+  cache:
+    policy: pull
+    untracked: false
+    when: on_success
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+deploy-webpage:
+  stage: build
+  image: node:18
+  only:
+    - main
+  script:
+    - yarn
+    - yarn build
+    - npx netlify-cli deploy --dir=build --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
+  cache:
+    policy: pull
+    untracked: false
+    when: on_success
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
