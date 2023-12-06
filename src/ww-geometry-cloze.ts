@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import './components/canvas/ww-geom-canvas';
 // init shoelace
 import './misc/shoelaceSetup';
 
@@ -9,7 +10,9 @@ import './misc/shoelaceSetup';
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElement {
   render() {
-    return html` <h1>Geometry cloze goes here</h1> `;
+    return html`<div>
+      <ww-geom-canvas></ww-geom-canvas>
+    </div>`;
   }
 
   static styles = css``;
