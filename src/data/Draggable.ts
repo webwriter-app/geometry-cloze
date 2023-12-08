@@ -9,6 +9,8 @@ export interface DraggableData {
 export default abstract class Draggable extends Stylable {
   private _selected: boolean;
   protected clickTargetSize = 0;
+  protected abstract _x: number;
+  protected abstract _y: number;
 
   constructor(
     canvas: CanvasManager,
@@ -18,15 +20,20 @@ export default abstract class Draggable extends Stylable {
     super(canvas, data);
     this._selected = data.selected ?? false;
 
-    this.addEventListener('select', this.onSelect.bind(this));
-    this.addEventListener('unselect', this.onBlur.bind(this));
+    this.addEventListener('select', this.select.bind(this));
+    this.addEventListener('unselect', this.blur.bind(this));
   }
 
   public abstract isHit(point: MathPoint): boolean;
+  public abstract move(coords: {
+    x?: number;
+    y?: number;
+    relative: boolean;
+  }): void;
 
   private overwrittenStyle: Partial<StylableData> = {};
 
-  onSelect() {
+  select() {
     this._selected = true;
     this.overwrittenStyle = {
       fill: this.fill,
@@ -36,7 +43,7 @@ export default abstract class Draggable extends Stylable {
     this.setFill('blue');
   }
 
-  onBlur() {
+  blur() {
     this._selected = false;
     this.setShadow(this.overwrittenStyle.shadow ?? null);
     this.setFill(this.overwrittenStyle.fill ?? null);
@@ -45,12 +52,19 @@ export default abstract class Draggable extends Stylable {
   delete() {
     super.delete();
     this._selected = false;
-    this.removeEventListener('select', this.onSelect.bind(this));
-    this.removeEventListener('unselect', this.onBlur.bind(this));
+    this.removeEventListener('select', this.select.bind(this));
+    this.removeEventListener('unselect', this.blur.bind(this));
     // TODO: implement
   }
 
   get selected() {
     return this._selected;
+  }
+
+  get x() {
+    return this._x;
+  }
+  get y() {
+    return this._y;
   }
 }

@@ -8,13 +8,13 @@ export interface PointData {
 }
 
 export default class Point extends Draggable {
-  public readonly x: number;
-  public readonly y: number;
+  protected _x: number;
+  protected _y: number;
 
   constructor(canvas: CanvasManager, data: PointData, active = true) {
     super(canvas, {}, active);
-    this.x = data.x;
-    this.y = data.y;
+    this._x = data.x;
+    this._y = data.y;
   }
 
   draw() {
@@ -26,7 +26,19 @@ export default class Point extends Draggable {
     this.ctx.stroke();
   }
 
-  public isHit(point: Point): boolean {
+  move(coords: { x?: number; y?: number; relative: boolean }) {
+    if (coords.relative) {
+      this._x += coords.x ?? 0;
+      this._y += coords.y ?? 0;
+    } else {
+      this._x = coords.x ?? this.x;
+      this._y = coords.y ?? this.y;
+    }
+    this.fireEvent('move', this);
+    this.requestRedraw();
+  }
+
+  isHit(point: Point): boolean {
     return (
       Calc.distance(this, point) - this.clickTargetSize <
       this.size + this.lineWidth / 2

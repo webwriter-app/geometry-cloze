@@ -12,7 +12,10 @@ export class WwGeomCanvas extends LitElement {
   @query('canvas') canvas!: HTMLCanvasElement;
 
   render() {
-    return html`<canvas width="2000" height="1000"></canvas> `;
+    return html`<div class="wrapper">
+      <canvas width="2000" height="1000"></canvas>
+      <div class="click-target"></div>
+    </div>`;
   }
 
   firstUpdated() {
@@ -37,11 +40,21 @@ export class WwGeomCanvas extends LitElement {
   }
 
   static styles = css`
+    .wrapper {
+      position: relative;
+      margin: 2rem;
+    }
+    .click-target {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
     canvas {
       aspect-ratio: 2 / 1;
-      width: calc(100% - 2px - 4rem);
+      width: calc(100% - 2px);
       border: solid 1px black;
-      margin: 2rem;
       box-sizing: border-box;
     }
   `;
