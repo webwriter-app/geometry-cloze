@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import Point from '/data/Point';
 import Line from '/data/Line';
+import CanvasManager from '/data/CanvasManager';
 
 /**
  *
@@ -15,19 +16,23 @@ export class WwGeomCanvas extends LitElement {
   }
 
   firstUpdated() {
-    const ctx = this.canvas?.getContext('2d');
-    if (ctx) {
+    if (this.canvas) {
+      const manager = new CanvasManager(this.canvas);
+
       const point = new Point(this.canvas, { x: 100, y: 100 });
-      point.draw();
 
       const point2 = new Point(this.canvas, { x: 200, y: 100 });
-      point2.draw();
 
       const line = new Line(this.canvas, point, point2);
-      line.draw();
+
+      manager.addShape(point);
+      manager.addShape(point2);
+      manager.addShape(line);
 
       //@ts-ignore
-      window.line = line;
+      window.manager = manager;
+      //@ts-ignore
+      window.point = point;
     } else console.warn('No canvas context');
   }
 

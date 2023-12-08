@@ -14,6 +14,7 @@ export default class Line extends Selectable {
   draw() {
     super.draw();
     this.ctx.beginPath();
+    // TODO: account for point size
     this.ctx.moveTo(this._start.x, this._start.y);
     this.ctx.lineTo(this._end.x, this._end.y);
     this.ctx.stroke();

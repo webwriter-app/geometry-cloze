@@ -2,10 +2,8 @@ export default class Element {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
-  protected listeners: Map<
-    string,
-    ((ele: typeof this, ...args: any[]) => void)[]
-  > = new Map();
+  protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
+    new Map();
 
   constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
@@ -24,17 +22,34 @@ export default class Element {
 
   delete() {}
 
+  draw() {}
+
   addEventListener(
     event: string,
-    callback: (ele: typeof this, ...args: any[]) => void
+    callback: (ele: Element, ...args: any[]) => void
   ) {
     const callbacks = this.listeners.get(event);
     if (callbacks) callbacks.push(callback);
     else this.listeners.set(event, [callback]);
   }
 
+  removeEventListener(
+    event: string,
+    callback: (ele: Element, ...args: any[]) => void
+  ) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      const index = callbacks.indexOf(callback);
+      if (index !== -1) callbacks.splice(index, 1);
+    }
+  }
+
   protected fireEvent(event: string, ...args: any[]) {
     const callbacks = this.listeners.get(event);
     if (callbacks) callbacks.forEach((callback) => callback(this, ...args));
+  }
+
+  protected requestRedraw() {
+    this.fireEvent('request-redraw');
   }
 }

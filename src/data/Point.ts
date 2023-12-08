@@ -16,8 +16,9 @@ export default class Point extends Selectable {
   }
 
   draw() {
+    super.draw();
     this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI);
+    this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     this.ctx.fill();
     this.ctx.stroke();
   }
