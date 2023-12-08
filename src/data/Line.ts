@@ -1,11 +1,13 @@
 import Point from './Point';
-import Selectable from './Selectable';
+import Draggable from './Draggable';
+import Calc from './Calc';
+import CanvasManager from './CanvasManager';
 
-export default class Line extends Selectable {
+export default class Line extends Draggable {
   private _start: Point;
   private _end: Point;
 
-  constructor(canvas: HTMLCanvasElement, start: Point, end: Point) {
+  constructor(canvas: CanvasManager, start: Point, end: Point) {
     super(canvas);
     this._start = start;
     this._end = end;
@@ -26,5 +28,9 @@ export default class Line extends Selectable {
 
   get end() {
     return this._end;
+  }
+
+  public isHit(point: Point): boolean {
+    return Calc.distance(this, point) <= this.lineWidth + this.clickTargetSize;
   }
 }

@@ -19,11 +19,11 @@ export class WwGeomCanvas extends LitElement {
     if (this.canvas) {
       const manager = new CanvasManager(this.canvas);
 
-      const point = new Point(this.canvas, { x: 100, y: 100 });
+      const point = new Point(manager, { x: 200, y: 200 });
 
-      const point2 = new Point(this.canvas, { x: 200, y: 100 });
+      const point2 = new Point(manager, { x: 500, y: 200 });
 
-      const line = new Line(this.canvas, point, point2);
+      const line = new Line(manager, point, point2);
 
       manager.addShape(point);
       manager.addShape(point2);

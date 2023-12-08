@@ -1,23 +1,13 @@
-export default class Element {
-  private _canvas: HTMLCanvasElement;
-  private _ctx: CanvasRenderingContext2D;
+import CanvasManager from './CanvasManager';
 
+export default class Element {
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
 
-  constructor(canvas: HTMLCanvasElement) {
-    this._canvas = canvas;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('No canvas context');
-    this._ctx = ctx;
-  }
+  constructor(protected manager: CanvasManager) {}
 
   get ctx() {
-    return this._ctx;
-  }
-
-  get canvas() {
-    return this._canvas;
+    return this.manager.ctx;
   }
 
   delete() {}
@@ -35,16 +25,19 @@ export default class Element {
 
   removeEventListener(
     event: string,
-    callback: (ele: Element, ...args: any[]) => void
+    callback?: (ele: Element, ...args: any[]) => void
   ) {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
-      const index = callbacks.indexOf(callback);
-      if (index !== -1) callbacks.splice(index, 1);
+      if (callback === undefined) this.listeners.delete(event);
+      else {
+        const index = callbacks.indexOf(callback);
+        if (index !== -1) callbacks.splice(index, 1);
+      }
     }
   }
 
-  protected fireEvent(event: string, ...args: any[]) {
+  public fireEvent(event: string, ...args: any[]) {
     const callbacks = this.listeners.get(event);
     if (callbacks) callbacks.forEach((callback) => callback(this, ...args));
   }
