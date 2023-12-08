@@ -13,6 +13,7 @@ export default class Line extends Draggable {
     super(canvas);
     this._start = start;
     this._end = end;
+    this.children.push(start, end);
     this._x = start.x;
     this._y = start.y;
 
@@ -30,6 +31,8 @@ export default class Line extends Draggable {
   }
 
   draw() {
+    this._start.draw();
+    this._end.draw();
     super.draw();
     this.ctx.beginPath();
     // TODO: account for point size
@@ -46,22 +49,11 @@ export default class Line extends Draggable {
     return this._end;
   }
 
-  move(coords: { x?: number; y?: number; relative: boolean }) {
-    const change = coords.relative
-      ? coords
-      : {
-          x: coords.x ? coords.x - this.start.x : 0,
-          y: coords.y ? coords.y - this.start.y : 0,
-          relative: true
-        };
-
-    this._start.move(change);
-    this._end.move(change);
-    this.fireEvent('move', this);
-    this.requestRedraw();
-  }
-
-  isHit(point: Point): boolean {
-    return Calc.distance(this, point) <= this.lineWidth + this.clickTargetSize;
+  getHit(point: Point): Draggable | null {
+    const pointHit = super.getHit(point);
+    if (pointHit) return pointHit;
+    if (Calc.distance(this, point) <= this.lineWidth + this.clickTargetSize)
+      return this;
+    return null;
   }
 }

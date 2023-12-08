@@ -24,12 +24,35 @@ export default abstract class Draggable extends Stylable {
     this.addEventListener('unselect', this.blur.bind(this));
   }
 
-  public abstract isHit(point: MathPoint): boolean;
-  public abstract move(coords: {
-    x?: number;
-    y?: number;
-    relative: boolean;
-  }): void;
+  public getHit(point: MathPoint): Draggable | null {
+    return this.children.reduce(
+      (cur, child) => {
+        if (cur) return cur;
+        if (child instanceof Draggable) return child.getHit(point);
+        return null;
+      },
+      null as Draggable | null
+    );
+  }
+  public move(coords: { x?: number; y?: number; relative: boolean }): void {
+    const change = coords.relative
+      ? coords
+      : {
+          x: coords.x ? coords.x - this.x : 0,
+          y: coords.y ? coords.y - this.y : 0,
+          relative: true
+        };
+
+    this._x += change.x ?? 0;
+    this._y += change.y ?? 0;
+
+    this.children.forEach((child) => {
+      if (child instanceof Draggable) child.move(change);
+    });
+
+    this.fireEvent('move', this);
+    this.requestRedraw();
+  }
 
   private overwrittenStyle: Partial<StylableData> = {};
 

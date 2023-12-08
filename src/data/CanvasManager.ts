@@ -19,7 +19,7 @@ export default class CanvasManager {
    * Element that is currently being dragged \
    * Is reset to null when mouse is released
    */
-  private dragTarget: MountedElement<Draggable> | null = null;
+  private dragTarget: Draggable | null = null;
   /**
    * Information about the first click/mouse down when dragging an element
    */
@@ -48,22 +48,27 @@ export default class CanvasManager {
       this.onMouseDown.bind(this)
     );
     this.clickTargetEle.addEventListener('mouseup', this.onMouseUp.bind(this));
-    this.clickTargetEle.addEventListener('mousemove', this.onMove.bind(this), {
-      passive: true,
-      capture: false
-    });
+    this.clickTargetEle.addEventListener(
+      'mousemove',
+      this.onMouseMove.bind(this),
+      {
+        passive: true,
+        capture: false
+      }
+    );
   }
 
-  private findHitElement(point: {
-    x: number;
-    y: number;
-  }): MountedElement<Draggable> | null {
-    const hit = this.shapes.find((shape) => {
-      if (!shape.selectable) return false;
-      if (shape.element instanceof Draggable) return shape.element.isHit(point);
-      return false;
-    });
-    return (hit as MountedElement<Draggable> | undefined) ?? null;
+  private findHitElement(point: { x: number; y: number }): Draggable | null {
+    const hit = this.shapes.reduce(
+      (cur, shape) => {
+        if (cur || !shape.selectable) return cur;
+        if (shape.element instanceof Draggable)
+          return shape.element.getHit(point);
+        return null;
+      },
+      null as Draggable | null
+    );
+    return hit;
   }
 
   private getRelativeCoordinates(event: MouseEvent) {
@@ -81,7 +86,7 @@ export default class CanvasManager {
     const coords = this.getRelativeCoordinates(event);
 
     const hit = this.findHitElement(coords);
-    if (hit) this.select(hit.element);
+    if (hit) this.select(hit);
     else this.blur();
   }
 
@@ -97,40 +102,35 @@ export default class CanvasManager {
     this.dragTarget = hit;
     this.dragStart = {
       ...coords,
-      elementOffsetX: coords.x - hit.element.x,
-      elementOffsetY: coords.y - hit.element.y
+      elementOffsetX: coords.x - hit.x,
+      elementOffsetY: coords.y - hit.y
     };
 
-    this.select(hit.element);
+    this.select(hit);
   }
 
   private onMouseUp() {
     this.dragTarget = null;
   }
 
-  private onMove(event: MouseEvent) {
+  private onMouseMove(event: MouseEvent) {
+    // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
+    if (event.buttons !== 1) this.dragTarget = null;
+
     const coords = this.getRelativeCoordinates(event);
     if (this.dragTarget) {
       // drag currently selected element
       coords.x -= this.dragStart!.elementOffsetX;
       coords.y -= this.dragStart!.elementOffsetY;
-      console.log(
-        coords,
-        this.dragStart!.elementOffsetX,
-        this.dragStart!.elementOffsetY
-      );
-      this.dragTarget.element.move({ ...coords, relative: false });
+      this.dragTarget.move({ ...coords, relative: false });
 
-      if (!this.dragTarget.element.selected)
-        this.select(this.dragTarget.element, true);
+      if (!this.dragTarget.selected) this.select(this.dragTarget, true);
 
       this.requestRedraw();
     } else {
       // check if we're hovering over a draggable element and change cursor accordingly
       const hit = this.findHitElement(coords);
-
-      const canClick = hit && hit.selectable;
-      this.clickTargetEle.style.cursor = canClick ? 'pointer' : 'default';
+      this.clickTargetEle.style.cursor = hit ? 'pointer' : 'default';
     }
   }
 
@@ -146,7 +146,7 @@ export default class CanvasManager {
     );
     this.clickTargetEle.removeEventListener(
       'mousemove',
-      this.onMove.bind(this)
+      this.onMouseMove.bind(this)
     );
   }
 

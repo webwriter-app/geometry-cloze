@@ -28,8 +28,6 @@ export class WwGeomCanvas extends LitElement {
 
       const line = new Line(manager, point, point2);
 
-      manager.addShape(point);
-      manager.addShape(point2);
       manager.addShape(line);
 
       //@ts-ignore

@@ -1,6 +1,8 @@
 import CanvasManager from './CanvasManager';
 
 export default class Element {
+  protected children: Element[] = [];
+
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
 
