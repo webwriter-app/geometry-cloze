@@ -94,6 +94,7 @@ export default class CanvasManager {
     const coords = this.getRelativeCoordinates(event);
 
     const hit = this.findHitElement(coords);
+    console.log({ hit });
     if (!hit) {
       this.blur();
       return;
@@ -211,12 +212,12 @@ export default class CanvasManager {
     this.shapes.push(...ele);
   }
 
-  select(shape: Draggable, force?: boolean) {
+  select(shape: Draggable, force: boolean = false) {
     const isSame = shape === this._selected;
 
     if (isSame && !force) shape.blur();
 
-    if (!isSame || force) {
+    if (!isSame) {
       this._selected?.blur();
       this._selected = shape;
       shape.select();

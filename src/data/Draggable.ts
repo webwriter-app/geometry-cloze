@@ -57,6 +57,7 @@ export default abstract class Draggable extends Stylable {
   private overwrittenStyle: Partial<StylableData> = {};
 
   select() {
+    if (!this.onSelect()) return;
     this._selected = true;
     this.overwrittenStyle = {
       fill: this.fill,
@@ -66,10 +67,28 @@ export default abstract class Draggable extends Stylable {
     this.setFill('blue');
   }
 
+  /**
+   * Gets called when the element is selected
+   * @returns Whether the element should be selected
+   */
+  onSelect(): boolean {
+    return true;
+  }
+
   blur() {
+    if (!this.onBlur()) return;
     this._selected = false;
     this.setShadow(this.overwrittenStyle.shadow ?? null);
     this.setFill(this.overwrittenStyle.fill ?? null);
+    this.overwrittenStyle = {};
+  }
+
+  /**
+   * Gets called when the element is unselected
+   * @returns Whether the element should be unselected
+   */
+  onBlur(): boolean {
+    return true;
   }
 
   delete() {

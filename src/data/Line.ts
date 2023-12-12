@@ -13,7 +13,7 @@ export default class Line extends Draggable {
     super(canvas);
     this._start = start;
     this._end = end;
-    this.children.push(start, end);
+    this.addChild(start, end);
     this._x = start.x;
     this._y = start.y;
 

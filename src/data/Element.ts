@@ -1,12 +1,27 @@
 import CanvasManager from './CanvasManager';
 
 export default class Element {
-  protected children: Element[] = [];
+  constructor(protected manager: CanvasManager) {}
+
+  private _children: Element[] = [];
+  protected get children(): readonly Element[] {
+    return this._children;
+  }
+  protected addChild(...children: Element[]) {
+    this._children.push(...children);
+    children.forEach((child) =>
+      child.addEventListener('request-redraw', this.requestRedraw.bind(this))
+    );
+  }
+  protected removeChild(child: Element) {
+    const index = this._children.indexOf(child);
+    if (index === -1) return;
+    this._children.splice(index, 1);
+    child.removeEventListener('request-redraw', this.requestRedraw.bind(this));
+  }
 
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
-
-  constructor(protected manager: CanvasManager) {}
 
   get ctx() {
     return this.manager.ctx;
