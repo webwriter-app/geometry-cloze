@@ -1,8 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import Point from '/data/Point';
-import Line from '/data/Line';
 import CanvasManager from '/data/CanvasManager';
+import Polygon from '/data/Polygon';
+import Line from '/data/Line';
 
 /**
  *
@@ -23,17 +24,20 @@ export class WwGeomCanvas extends LitElement {
       const manager = new CanvasManager(this.canvas);
 
       const point = new Point(manager, { x: 200, y: 200 });
-
       const point2 = new Point(manager, { x: 500, y: 200 });
+      const point3 = new Point(manager, { x: 500, y: 500 });
+      const point4 = new Point(manager, { x: 200, y: 500 });
+      const polygon = new Polygon(manager, [point, point4, point3, point2]);
 
-      const line = new Line(manager, point, point2);
+      const point5 = new Point(manager, { x: 800, y: 100 });
+      const point6 = new Point(manager, { x: 300, y: 900 });
+      const line = new Line(manager, point5, point6);
 
+      manager.addShape(polygon);
       manager.addShape(line);
 
       //@ts-ignore
       window.manager = manager;
-      //@ts-ignore
-      window.point = point;
     } else console.warn('No canvas context');
   }
 

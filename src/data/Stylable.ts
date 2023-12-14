@@ -28,6 +28,7 @@ export default class Stylable extends Element {
   }
 
   draw() {
+    super.draw();
     this.ctx.lineWidth = this.lineWidth;
     this.ctx.strokeStyle = this.stroke;
     this.ctx.fillStyle = this.fill;

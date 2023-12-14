@@ -31,8 +31,6 @@ export default class Line extends Draggable {
   }
 
   draw() {
-    this._start.draw();
-    this._end.draw();
     super.draw();
     this.ctx.beginPath();
     // TODO: account for point size

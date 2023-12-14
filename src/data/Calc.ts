@@ -1,18 +1,33 @@
-import Line from './Line';
 import Point from './Point';
 
 export type MathPoint = Pick<Point, 'x' | 'y'>;
+export type MathLine = {
+  start: MathPoint;
+  end: MathPoint;
+};
+
+export enum IsAbove {
+  Above = 1,
+  On = 0,
+  Below = -1
+}
 
 export default class Calc {
-  static distance(line: Line, point: MathPoint): number;
+  /**
+   * Calculate the distance between a line and a point
+   */
+  static distance(line: MathLine, point: MathPoint): number;
+  /**
+   * Calculate the distance between two points
+   */
   static distance(point1: MathPoint, point2: MathPoint): number;
 
-  static distance(obj1: MathPoint | Line, obj2: MathPoint) {
-    if (obj1 instanceof Line) return this.distanceLinePoint(obj1, obj2);
+  static distance(obj1: MathPoint | MathLine, obj2: MathPoint) {
+    if ('start' in obj1) return this.distanceLinePoint(obj1, obj2);
     else return this.distancePointPoint(obj1, obj2);
   }
 
-  private static distanceLinePoint(line: Line, point: MathPoint) {
+  private static distanceLinePoint(line: MathLine, point: MathPoint) {
     const { x: x1, y: y1 } = line.start;
     const { x: x2, y: y2 } = line.end;
     const { x: x3, y: y3 } = point;
@@ -39,5 +54,49 @@ export default class Calc {
     return Math.sqrt(
       Math.abs((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2)
     );
+  }
+
+  /**
+   * Get the point with the extreme value of a given axis
+   */
+  static getExtremePoint(
+    points: Point[],
+    extreme: 'max' | 'min',
+    axis: 'x' | 'y'
+  ): Point | null {
+    const compare = extreme === 'max' ? Math.max : Math.min;
+    return (
+      points.reduce((extremePoint, point) =>
+        compare(extremePoint[axis], point[axis]) === extremePoint[axis]
+          ? extremePoint
+          : point
+      ) ?? null
+    );
+  }
+
+  /**
+   * Calculate if a point is above a line
+   */
+  static isPointAboveLine(line: MathLine, point: MathPoint): IsAbove {
+    const { x: x1, y: y1 } = line.start;
+    const { x: x2, y: y2 } = line.end;
+    const { x: x3, y: y3 } = point;
+
+    const d = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
+    if (d > 0) return IsAbove.Above;
+    if (d < 0) return IsAbove.Below;
+    return IsAbove.On;
+  }
+
+  /**
+   * Calculate if two lines intersect
+   */
+  static doLinesIntersect(
+    line1: MathLine,
+    line2: MathLine,
+    ignoreEndpoint = false
+  ): boolean {
+    // https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
+    return false;
   }
 }

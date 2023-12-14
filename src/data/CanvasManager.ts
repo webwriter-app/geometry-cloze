@@ -13,7 +13,7 @@ export default class CanvasManager {
   private clickTargetEle: HTMLDivElement;
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
-  private shapes: MountedElement[] = [];
+  private children: MountedElement[] = [];
 
   /**
    * Element that is currently being dragged \
@@ -42,12 +42,16 @@ export default class CanvasManager {
 
     this.clickTargetEle = canvas.parentElement?.querySelector('.click-target')!;
 
-    // this.clickTarget.addEventListener('click', this.onClick.bind(this));
     this.clickTargetEle.addEventListener(
       'mousedown',
       this.onMouseDown.bind(this)
     );
+    this.clickTargetEle.addEventListener(
+      'touchstart',
+      this.onMouseDown.bind(this)
+    );
     this.clickTargetEle.addEventListener('mouseup', this.onMouseUp.bind(this));
+    this.clickTargetEle.addEventListener('touchend', this.onMouseUp.bind(this));
     this.clickTargetEle.addEventListener(
       'mousemove',
       this.onMouseMove.bind(this),
@@ -56,10 +60,22 @@ export default class CanvasManager {
         capture: false
       }
     );
+    this.clickTargetEle.addEventListener(
+      'touchmove',
+      this.onMouseMove.bind(this),
+      {
+        passive: true,
+        capture: false
+      }
+    );
+    this.clickTargetEle.addEventListener('touchmove', this.preventTouchScroll, {
+      passive: false,
+      capture: false
+    });
   }
 
   private findHitElement(point: { x: number; y: number }): Draggable | null {
-    const hit = this.shapes.reduce(
+    const hit = this.children.reduce(
       (cur, shape) => {
         if (cur || !shape.selectable) return cur;
         if (shape.element instanceof Draggable)
@@ -71,10 +87,18 @@ export default class CanvasManager {
     return hit;
   }
 
-  private getRelativeCoordinates(event: MouseEvent) {
+  private preventTouchScroll(event: TouchEvent) {
+    event.preventDefault();
+  }
+
+  private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
     const rect = this._canvas.getBoundingClientRect();
-    const absX = event.clientX - rect.left;
-    const absY = event.clientY - rect.top;
+    const absX =
+      ('clientX' in event ? event.clientX : event.touches[0].clientX) -
+      rect.left;
+    const absY =
+      ('clientX' in event ? event.clientY : event.touches[0].clientY) -
+      rect.top;
 
     const x = (absX / rect.width) * this._canvas.width;
     const y = (absY / rect.height) * this._canvas.height;
@@ -82,19 +106,10 @@ export default class CanvasManager {
     return { x, y };
   }
 
-  private onClick(event: MouseEvent) {
+  private onMouseDown(event: MouseEvent | TouchEvent) {
     const coords = this.getRelativeCoordinates(event);
 
     const hit = this.findHitElement(coords);
-    if (hit) this.select(hit);
-    else this.blur();
-  }
-
-  private onMouseDown(event: MouseEvent) {
-    const coords = this.getRelativeCoordinates(event);
-
-    const hit = this.findHitElement(coords);
-    console.log({ hit });
     if (!hit) {
       this.blur();
       return;
@@ -114,9 +129,9 @@ export default class CanvasManager {
     this.dragTarget = null;
   }
 
-  private onMouseMove(event: MouseEvent) {
+  private onMouseMove(event: MouseEvent | TouchEvent) {
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
-    if (event.buttons !== 1) this.dragTarget = null;
+    if ('buttons' in event && event.buttons !== 1) this.dragTarget = null;
 
     const coords = this.getRelativeCoordinates(event);
     if (this.dragTarget) {
@@ -136,9 +151,12 @@ export default class CanvasManager {
   }
 
   unmount() {
-    this.clickTargetEle.removeEventListener('click', this.onClick.bind(this));
     this.clickTargetEle.removeEventListener(
       'mousedown',
+      this.onMouseDown.bind(this)
+    );
+    this.clickTargetEle.removeEventListener(
+      'touchstart',
       this.onMouseDown.bind(this)
     );
     this.clickTargetEle.removeEventListener(
@@ -146,13 +164,21 @@ export default class CanvasManager {
       this.onMouseUp.bind(this)
     );
     this.clickTargetEle.removeEventListener(
+      'touchend',
+      this.onMouseUp.bind(this)
+    );
+    this.clickTargetEle.removeEventListener(
       'mousemove',
+      this.onMouseMove.bind(this)
+    );
+    this.clickTargetEle.removeEventListener(
+      'touchmove',
       this.onMouseMove.bind(this)
     );
   }
 
   addShape(shape: Element) {
-    this.shapes.push({
+    this.children.push({
       draggable: shape instanceof Draggable,
       selectable: shape instanceof Draggable,
       element: shape
@@ -167,7 +193,7 @@ export default class CanvasManager {
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
     // reverse order so that the first shape is on top
-    for (const shape of this.shapes.map((s) => s).reverse()) {
+    for (const shape of this.children.map((s) => s).reverse()) {
       shape.element.draw();
     }
   }
@@ -206,10 +232,10 @@ export default class CanvasManager {
   }
 
   moveToTop(shape: Element) {
-    const index = this.shapes.findIndex((ele) => ele.element === shape);
+    const index = this.children.findIndex((ele) => ele.element === shape);
     if (index < 0) return;
-    const ele = this.shapes.splice(index, 1);
-    this.shapes.push(...ele);
+    const ele = this.children.splice(index, 1);
+    this.children.push(...ele);
   }
 
   select(shape: Draggable, force: boolean = false) {

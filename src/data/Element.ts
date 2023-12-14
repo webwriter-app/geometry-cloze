@@ -3,6 +3,7 @@ import CanvasManager from './CanvasManager';
 export default class Element {
   constructor(protected manager: CanvasManager) {}
 
+  // TODO: keep track of parent to bubble up events
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
@@ -29,7 +30,9 @@ export default class Element {
 
   delete() {}
 
-  draw() {}
+  draw() {
+    this._children.forEach((child) => child.draw());
+  }
 
   addEventListener(
     event: string,
