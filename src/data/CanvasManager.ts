@@ -1,4 +1,4 @@
-import Calc from './Calc';
+import Calc, { MathPoint } from './Calc';
 import Draggable from './Draggable';
 import Element from './Element';
 
@@ -119,7 +119,7 @@ export default class CanvasManager {
     if (hit) {
       const wasSelected = this._selected.includes(hit);
 
-      if (this.mouseDownTarget?.element !== hit)
+      if (!wasSelected)
         this.select(hit, { keepSelection: this.canSelectMultiple(event) });
 
       this.mouseDownTarget = {
@@ -184,11 +184,21 @@ export default class CanvasManager {
     }
   }
 
-  private onMouseMove(event: MouseEvent | TouchEvent) {
-    // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
-    if ('buttons' in event && event.buttons !== 1) return;
+  private upadateCursor(coords: MathPoint) {
+    // check if we're hovering over a draggable element and change cursor accordingly
+    const hit = this.findHitElement(coords);
+    this.clickTargetEle.style.cursor = hit ? 'pointer' : 'default';
+  }
 
+  private onMouseMove(event: MouseEvent | TouchEvent) {
     const coords = this.getRelativeCoordinates(event);
+
+    // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
+    if ('buttons' in event && event.buttons !== 1) {
+      this.upadateCursor(coords);
+      return;
+    }
+
     // set moved to true if we moved more than threshold
     if (!this.moved && Calc.distance(coords, this.dragStart!) > 5)
       this.moved = true;
@@ -207,9 +217,7 @@ export default class CanvasManager {
 
       this.requestRedraw();
     } else {
-      // check if we're hovering over a draggable element and change cursor accordingly
-      const hit = this.findHitElement(coords);
-      this.clickTargetEle.style.cursor = hit ? 'pointer' : 'default';
+      this.upadateCursor(coords);
     }
   }
 
