@@ -1,6 +1,6 @@
-import Calc, { MathPoint } from './Calc';
-import Draggable from './Draggable';
-import Element from './Element';
+import Calc, { MathPoint } from './helper/Calc';
+import Draggable from './elements/base/Draggable';
+import Element from './elements/base/Element';
 
 interface MountedElement<El extends Element = Element> {
   element: El;
@@ -72,6 +72,11 @@ export default class CanvasManager {
       passive: false,
       capture: false
     });
+
+    this.clickTargetEle.addEventListener(
+      'contextmenu',
+      this.handleContextMenu.bind(this)
+    );
   }
 
   private findHitElement(point: { x: number; y: number }): Draggable | null {
@@ -92,7 +97,7 @@ export default class CanvasManager {
   }
 
   private canSelectMultiple(event: MouseEvent | TouchEvent) {
-    return event.ctrlKey || event.shiftKey;
+    return event.ctrlKey;
   }
 
   private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
@@ -244,6 +249,16 @@ export default class CanvasManager {
     }
   }
 
+  handleContextMenu(event: MouseEvent) {
+    const coords = this.getRelativeCoordinates(event);
+    const hit = this.findHitElement(coords);
+    if (hit) {
+      event.preventDefault();
+      const menu = hit.getContextMenu();
+      if (menu) menu.open(event.clientX, event.clientY);
+    }
+  }
+
   unmount() {
     this.clickTargetEle.removeEventListener(
       'mousedown',
@@ -268,6 +283,14 @@ export default class CanvasManager {
     this.clickTargetEle.removeEventListener(
       'touchmove',
       this.onMouseMove.bind(this)
+    );
+    this.clickTargetEle.removeEventListener(
+      'touchmove',
+      this.preventTouchScroll
+    );
+    this.clickTargetEle.removeEventListener(
+      'contextmenu',
+      this.handleContextMenu.bind(this)
     );
   }
 

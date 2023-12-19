@@ -1,4 +1,4 @@
-import CanvasManager from './CanvasManager';
+import CanvasManager from '../../CanvasManager';
 import Element from './Element';
 
 export interface StylableData {

@@ -1,5 +1,5 @@
-import { MathPoint } from './Calc';
-import CanvasManager from './CanvasManager';
+import { MathPoint } from '../../helper/Calc';
+import CanvasManager from '../../CanvasManager';
 import Stylable, { StylableData } from './Stylable';
 
 export interface DraggableData {

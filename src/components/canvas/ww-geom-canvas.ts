@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
-import Point from '/data/Point';
+import Point from '../../data/elements/Point';
 import CanvasManager from '/data/CanvasManager';
-import Polygon from '/data/Polygon';
-import Line from '/data/Line';
+import Polygon from '../../data/elements/Polygon';
+import Line from '../../data/elements/Line';
 
 /**
  *

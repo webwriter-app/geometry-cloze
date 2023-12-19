@@ -1,6 +1,6 @@
-import Calc from './Calc';
-import CanvasManager from './CanvasManager';
-import Draggable from './Draggable';
+import Calc from '../helper/Calc';
+import CanvasManager from '../CanvasManager';
+import Draggable from './base/Draggable';
 
 export interface PointData {
   x: number;

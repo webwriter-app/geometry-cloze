@@ -1,6 +1,6 @@
-import Calc, { IsAbove } from './Calc';
-import CanvasManager from './CanvasManager';
-import Draggable from './Draggable';
+import Calc, { IsAbove } from '../helper/Calc';
+import CanvasManager from '../CanvasManager';
+import Draggable from './base/Draggable';
 import Line from './Line';
 import Point from './Point';
 

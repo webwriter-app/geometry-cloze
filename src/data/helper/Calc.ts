@@ -1,4 +1,4 @@
-import Point from './Point';
+import Point from '../elements/Point';
 
 export type MathPoint = Pick<Point, 'x' | 'y'>;
 export type MathLine = {

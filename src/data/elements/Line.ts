@@ -1,7 +1,7 @@
 import Point from './Point';
-import Draggable from './Draggable';
-import Calc from './Calc';
-import CanvasManager from './CanvasManager';
+import Draggable from './base/Draggable';
+import Calc from '../helper/Calc';
+import CanvasManager from '../CanvasManager';
 
 export default class Line extends Draggable {
   private _start: Point;

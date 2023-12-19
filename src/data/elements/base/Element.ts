@@ -1,4 +1,6 @@
-import CanvasManager from './CanvasManager';
+import CanvasManager from '../../CanvasManager';
+import ContextMenu from '/data/components/ContextMenu';
+import { ContextMenuItem } from '/types/ContextMenu';
 
 export default class Element {
   public name = '[unset]';
@@ -71,5 +73,19 @@ export default class Element {
 
   protected requestRedraw() {
     this.fireEvent('request-redraw');
+  }
+
+  protected _contextMenuItems: ContextMenuItem[] = [
+    {
+      type: 'button',
+      label: 'Delete',
+      action: () => {
+        this.delete();
+      }
+    }
+  ];
+  getContextMenu(): ContextMenu | null {
+    if (this._contextMenuItems.length === 0) return null;
+    return new ContextMenu(this._contextMenuItems);
   }
 }
