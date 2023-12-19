@@ -87,16 +87,4 @@ export default class Calc {
     if (d < 0) return IsAbove.Below;
     return IsAbove.On;
   }
-
-  /**
-   * Calculate if two lines intersect
-   */
-  static doLinesIntersect(
-    line1: MathLine,
-    line2: MathLine,
-    ignoreEndpoint = false
-  ): boolean {
-    // https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
-    return false;
-  }
 }

@@ -1,6 +1,5 @@
 import Calc, { IsAbove } from './Calc';
 import CanvasManager from './CanvasManager';
-import Debouncer from './Debouncer';
 import Draggable from './Draggable';
 import Line from './Line';
 import Point from './Point';
@@ -19,11 +18,6 @@ export default class Polygon extends Draggable {
     this._x = Calc.getExtremePoint(points, 'min', 'x')?.x ?? 0;
     this._y = Calc.getExtremePoint(points, 'min', 'y')?.y ?? 0;
     this.recreateLines();
-  }
-
-  private debouncer = new Debouncer(this.recreateLines.bind(this), 100, 400);
-  private onMove() {
-    this.debouncer.call();
   }
 
   move(coords: { x?: number; y?: number; relative: boolean }): void {
@@ -55,11 +49,28 @@ export default class Polygon extends Draggable {
   }
 
   addPoint(...points: Point[]) {
-    this._points.push(...points);
-    this.addChild(...points);
-    points.forEach((point) =>
-      point.addEventListener('move', this.onMove.bind(this))
-    );
+    for (const point of points) {
+      const nearest = this._points.reduce(
+        (nearest, curr, index) => {
+          const dist = Calc.distance(curr, point);
+          if (dist >= nearest.dist) return nearest;
+          return { dist, point: curr, index };
+        },
+        { dist: Infinity, index: -1, point: null } as {
+          dist: number;
+          index: number;
+          point: Point | null;
+        }
+      );
+
+      if (nearest.index === -1) {
+        this._points.push(point);
+        this.addChild(point);
+      } else {
+        this._points.splice(nearest.index, 0, point);
+        this.addChildAt(point, nearest.index);
+      }
+    }
     this.recreateLines();
     this.requestRedraw();
   }
@@ -67,23 +78,35 @@ export default class Polygon extends Draggable {
   removePoint(point: Point) {
     this._points = this._points.filter((p) => p !== point);
     this.removeChild(point);
-    point.removeEventListener('move', this.onMove.bind(this));
     this.recreateLines();
     this.requestRedraw();
   }
 
   private recreateLines() {
-    // check if lines intersect -> if they don't, we're done
-    // if they do, remove all lines and recreate
-    const intersectingLines = this._lines.filter((line) =>
-      this._lines.some(
-        (otherLine) =>
-          line !== otherLine && Calc.doLinesIntersect(line, otherLine, true)
-      )
-    );
-    // if (intersectingLines.length === 0) return;
-    // TODO: potential improvement -> only remove lines that intersect
+    this._lines.forEach((line) => {
+      line.delete();
+      this.removeChild(line);
+    });
+    this._lines = [];
 
+    const lines = [];
+
+    for (let i = 0; i < this._points.length - 1; i++) {
+      const line = new Line(this.manager, this._points[i], this._points[i + 1]);
+      lines.push(line);
+    }
+    if (this._points.length > 2)
+      lines.push(
+        new Line(this.manager, this._points[0], this._points.slice(-1)[0])
+      );
+
+    this._lines = lines;
+    this.addChild(...lines);
+
+    return lines;
+  }
+
+  public recreateAsValidShape() {
     this._lines.forEach((line) => {
       line.delete();
       this.removeChild(line);

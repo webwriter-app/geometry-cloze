@@ -8,6 +8,12 @@ export default class Element {
   protected get children(): readonly Element[] {
     return this._children;
   }
+
+  protected addChildAt(child: Element, index: number) {
+    this._children.splice(index, 0, child);
+    child.addEventListener('request-redraw', this.requestRedraw.bind(this));
+  }
+
   protected addChild(...children: Element[]) {
     this._children.push(...children);
     children.forEach((child) =>
