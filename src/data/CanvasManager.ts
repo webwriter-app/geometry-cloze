@@ -1,3 +1,4 @@
+import Calc from './Calc';
 import Draggable from './Draggable';
 import Element from './Element';
 
@@ -14,12 +15,6 @@ export default class CanvasManager {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
   private children: MountedElement[] = [];
-
-  /**
-   * Element that is currently being dragged \
-   * Is reset to null when mouse is released
-   */
-  private dragTarget: Draggable | null = null;
   /**
    * Information about the first click/mouse down when dragging an element
    */
@@ -27,14 +22,19 @@ export default class CanvasManager {
     // position of the first click/mouse down
     x: number;
     y: number;
-    // store how much the first click/mouse down is offset from the origin of the selected element
-    elementOffsetX: number;
-    elementOffsetY: number;
+    // positions of selected elements at the time of the first click/mouse down
+    startPositions: { x: number; y: number }[];
   } | null = null;
+  /**
+   * Wether for the current mouse down event the mouse has been moved beyond the threshold
+   */
+  private moved: boolean = false;
+  private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
+    null;
   /**
    * Currently selected element
    */
-  private _selected: Draggable | null = null;
+  private _selected: Draggable[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
@@ -91,6 +91,10 @@ export default class CanvasManager {
     event.preventDefault();
   }
 
+  private canSelectMultiple(event: MouseEvent | TouchEvent) {
+    return event.ctrlKey || event.shiftKey;
+  }
+
   private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
     const rect = this._canvas.getBoundingClientRect();
     const absX =
@@ -107,46 +111,128 @@ export default class CanvasManager {
   }
 
   private onMouseDown(event: MouseEvent | TouchEvent) {
+    this.moved = false;
     const coords = this.getRelativeCoordinates(event);
 
     const hit = this.findHitElement(coords);
-    if (!hit) {
-      this.blur();
-      return;
+
+    if (hit) {
+      const wasSelected = this._selected.includes(hit);
+
+      if (this.mouseDownTarget?.element !== hit)
+        this.select(hit, { keepSelection: this.canSelectMultiple(event) });
+
+      this.mouseDownTarget = {
+        element: hit,
+        wasSelected
+      };
     }
 
-    this.dragTarget = hit;
     this.dragStart = {
       ...coords,
-      elementOffsetX: coords.x - hit.x,
-      elementOffsetY: coords.y - hit.y
+      startPositions: this._selected.map((shape) => ({
+        x: shape.x,
+        y: shape.y
+      }))
     };
-
-    this.select(hit);
   }
 
-  private onMouseUp() {
-    this.dragTarget = null;
+  private onMouseUp(event: MouseEvent | TouchEvent) {
+    // when the user dragged the mouse, we don't want to select anything
+    if (this.moved) return;
+    const hit = this.findHitElement(this.dragStart!);
+    // needs to be more complicated since selected state is set in mouseDown listener
+    const alreadySelected = (() => {
+      if (!hit) return false;
+      if (this.mouseDownTarget) {
+        if (this.mouseDownTarget.wasSelected) return true;
+        else return false;
+      }
+      return this.selected.includes(hit);
+    })();
+    const canSelectMultiple = this.canSelectMultiple(event);
+
+    if (hit) {
+      if (alreadySelected) {
+        if (canSelectMultiple) {
+          // when clicking on a selected element while holding ctrl, we want to deselect it
+          this.blur(hit);
+        } else {
+          if (this.selected.length > 1) {
+            // when clicking on a selected element while many elements are selected, we want to select only that element
+            this.select(hit, { keepSelection: false });
+          } else {
+            // when clicking on a selected element while only one element is selected, we want to deselect it
+            this.blur();
+          }
+        }
+      } else {
+        if (canSelectMultiple) {
+          // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
+          this.select(hit, { keepSelection: true });
+        } else {
+          // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
+          this.select(hit, { keepSelection: false });
+        }
+      }
+    } else {
+      if (!canSelectMultiple) {
+        // when clicking on nothing while not holding ctrl, we want to deselect all elements
+        this.blur();
+      }
+      // click clicking nothing while holding ctrl, we want to keep the current selection
+    }
   }
 
   private onMouseMove(event: MouseEvent | TouchEvent) {
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
-    if ('buttons' in event && event.buttons !== 1) this.dragTarget = null;
+    if ('buttons' in event && event.buttons !== 1) return;
 
     const coords = this.getRelativeCoordinates(event);
-    if (this.dragTarget) {
-      // drag currently selected element
-      coords.x -= this.dragStart!.elementOffsetX;
-      coords.y -= this.dragStart!.elementOffsetY;
-      this.dragTarget.move({ ...coords, relative: false });
+    // set moved to true if we moved more than threshold
+    if (!this.moved && Calc.distance(coords, this.dragStart!) > 5)
+      this.moved = true;
 
-      if (!this.dragTarget.selected) this.select(this.dragTarget, true);
+    if (this._selected.length > 0) {
+      // drag currently selected element
+      coords.x -= this.dragStart!.x;
+      coords.y -= this.dragStart!.y;
+
+      this._selected.forEach((shape, index) => {
+        const startCoords = this.dragStart!.startPositions[index];
+        const x = startCoords.x + coords.x;
+        const y = startCoords.y + coords.y;
+        shape.move({ x, y, relative: false });
+      });
 
       this.requestRedraw();
     } else {
       // check if we're hovering over a draggable element and change cursor accordingly
       const hit = this.findHitElement(coords);
       this.clickTargetEle.style.cursor = hit ? 'pointer' : 'default';
+    }
+  }
+
+  select(shape: Draggable, options: { keepSelection?: boolean } = {}) {
+    const { keepSelection = false } = options;
+
+    if (!keepSelection) this.blur();
+
+    if (!this._selected.includes(shape)) {
+      this._selected.push(shape);
+      shape.select();
+    }
+  }
+
+  blur(element?: Draggable) {
+    if (element) {
+      const index = this._selected.indexOf(element);
+      if (index < 0) return;
+      this._selected.splice(index, 1);
+      element.blur();
+    } else {
+      this._selected.forEach((shape) => shape.blur());
+      this._selected = [];
     }
   }
 
@@ -236,23 +322,6 @@ export default class CanvasManager {
     if (index < 0) return;
     const ele = this.children.splice(index, 1);
     this.children.push(...ele);
-  }
-
-  select(shape: Draggable, force: boolean = false) {
-    const isSame = shape === this._selected;
-
-    if (isSame && !force) shape.blur();
-
-    if (!isSame) {
-      this._selected?.blur();
-      this._selected = shape;
-      shape.select();
-    }
-  }
-
-  blur() {
-    this._selected?.blur();
-    this._selected = null;
   }
 
   get ctx() {

@@ -1,6 +1,7 @@
 import CanvasManager from './CanvasManager';
 
 export default class Element {
+  public name = '[unset]';
   constructor(protected manager: CanvasManager) {}
 
   // TODO: keep track of parent to bubble up events

@@ -24,10 +24,15 @@ export class WwGeomCanvas extends LitElement {
       const manager = new CanvasManager(this.canvas);
 
       const point = new Point(manager, { x: 200, y: 200 });
+      point.name = 'top left';
       const point2 = new Point(manager, { x: 500, y: 200 });
+      point2.name = 'top right';
       const point3 = new Point(manager, { x: 500, y: 500 });
+      point3.name = 'bottom right';
       const point4 = new Point(manager, { x: 200, y: 500 });
+      point4.name = 'bottom left';
       const point41 = new Point(manager, { x: 600, y: 300 });
+      point41.name = 'middle right';
       const polygon = new Polygon(manager, [point, point4, point3, point2]);
       polygon.addPoint(point41);
 
