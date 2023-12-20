@@ -13,7 +13,7 @@ export default class Polygon extends Draggable {
 
   constructor(canvas: CanvasManager, points: Point[], active = true) {
     super(canvas, {}, active);
-    this._points = points;
+    this._points = [];
     this.addPoint(...points);
     this._x = Calc.getExtremePoint(points, 'min', 'x')?.x ?? 0;
     this._y = Calc.getExtremePoint(points, 'min', 'y')?.y ?? 0;
@@ -50,25 +50,26 @@ export default class Polygon extends Draggable {
 
   addPoint(...points: Point[]) {
     for (const point of points) {
-      const nearest = this._points.reduce(
-        (nearest, curr, index) => {
+      const nearestLine = this._lines.reduce(
+        (nearest, curr) => {
           const dist = Calc.distance(curr, point);
           if (dist >= nearest.dist) return nearest;
-          return { dist, point: curr, index };
+          return { dist, line: curr };
         },
-        { dist: Infinity, index: -1, point: null } as {
+        { dist: Infinity, line: null } as {
           dist: number;
-          index: number;
-          point: Point | null;
+          line: Line | null;
         }
       );
 
-      if (nearest.index === -1) {
+      if (!nearestLine.line) {
         this._points.push(point);
         this.addChild(point);
       } else {
-        this._points.splice(nearest.index, 0, point);
-        this.addChildAt(point, nearest.index);
+        const index = this._points.indexOf(nearestLine.line.end);
+        if (index === -1) throw new Error('Line end not found in polygon');
+        this._points.splice(index, 0, point);
+        this.addChildAt(point, index);
       }
     }
     this.recreateLines();
