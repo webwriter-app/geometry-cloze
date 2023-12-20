@@ -8,6 +8,7 @@ export default class Line extends Draggable {
   private _end: Point;
   protected _x: number;
   protected _y: number;
+  protected clickTargetSize = 2;
 
   constructor(canvas: CanvasManager, start: Point, end: Point) {
     super(canvas);
@@ -47,11 +48,25 @@ export default class Line extends Draggable {
     return this._end;
   }
 
-  getHit(point: Point): Draggable | null {
-    const pointHit = super.getHit(point);
-    if (pointHit) return pointHit;
-    if (Calc.distance(this, point) <= this.lineWidth + this.clickTargetSize)
-      return this;
-    return null;
+  getHit(point: Point, point2?: Point): Draggable[] {
+    if (point2) {
+      const rect = {
+        x1: point.x,
+        y1: point.y,
+        x2: point2.x,
+        y2: point2.y
+      };
+      const hits = [];
+      if (Calc.isInRect(rect, this)) hits.push(this);
+      if (Calc.isInRect(rect, this._start)) hits.push(this._start);
+      if (Calc.isInRect(rect, this._end)) hits.push(this._end);
+      return hits;
+    } else {
+      const pointHit = super.getHit(point);
+      if (pointHit.length) return pointHit;
+      if (Calc.distance(this, point) <= this.lineWidth + this.clickTargetSize)
+        return [this];
+      return [];
+    }
   }
 }

@@ -1,6 +1,7 @@
 import Calc, { MathPoint } from './helper/Calc';
 import Draggable from './elements/base/Draggable';
 import Element from './elements/base/Element';
+import SelectionRect from './components/SelectionRect';
 
 interface MountedElement<El extends Element = Element> {
   element: El;
@@ -25,6 +26,7 @@ export default class CanvasManager {
     // positions of selected elements at the time of the first click/mouse down
     startPositions: { x: number; y: number }[];
   } | null = null;
+  private selectionRect: SelectionRect | null = null;
   /**
    * Wether for the current mouse down event the mouse has been moved beyond the threshold
    */
@@ -84,7 +86,7 @@ export default class CanvasManager {
       (cur, shape) => {
         if (cur || !shape.selectable) return cur;
         if (shape.element instanceof Draggable)
-          return shape.element.getHit(point);
+          return shape.element.getHit(point)[0] ?? null;
         return null;
       },
       null as Draggable | null
@@ -131,6 +133,8 @@ export default class CanvasManager {
         element: hit,
         wasSelected
       };
+    } else {
+      this.mouseDownTarget = null;
     }
 
     this.dragStart = {
@@ -143,8 +147,21 @@ export default class CanvasManager {
   }
 
   private onMouseUp(event: MouseEvent | TouchEvent) {
+    const canSelectMultiple = this.canSelectMultiple(event);
+
+    if (this.selectionRect) {
+      const newSelections = this.selectionRect.getSelectedElements(
+        this.children.map((ele) => ele.element)
+      );
+      this.select(newSelections, { keepSelection: canSelectMultiple });
+      this.selectionRect = null;
+      this.requestRedraw();
+      return;
+    }
+
     // when the user dragged the mouse, we don't want to select anything
     if (this.moved) return;
+
     const hit = this.findHitElement(this.dragStart!);
     // needs to be more complicated since selected state is set in mouseDown listener
     const alreadySelected = (() => {
@@ -155,7 +172,6 @@ export default class CanvasManager {
       }
       return this.selected.includes(hit);
     })();
-    const canSelectMultiple = this.canSelectMultiple(event);
 
     if (hit) {
       if (alreadySelected) {
@@ -205,10 +221,24 @@ export default class CanvasManager {
     }
 
     // set moved to true if we moved more than threshold
-    if (!this.moved && Calc.distance(coords, this.dragStart!) > 5)
+    if (
+      !this.moved &&
+      this.dragStart &&
+      Calc.distance(coords, this.dragStart) > 5
+    ) {
       this.moved = true;
 
-    if (this._selected.length > 0) {
+      // only draw selection rect if we're not dragging an element
+      if (!this.mouseDownTarget) {
+        if (!this.canSelectMultiple(event)) this.blur();
+        this.selectionRect = new SelectionRect(this._ctx, {
+          x: this.dragStart!.x,
+          y: this.dragStart!.y
+        });
+      }
+    }
+
+    if (this._selected.length > 0 && this.mouseDownTarget) {
       // drag currently selected element
       coords.x -= this.dragStart!.x;
       coords.y -= this.dragStart!.y;
@@ -222,18 +252,28 @@ export default class CanvasManager {
 
       this.requestRedraw();
     } else {
-      this.upadateCursor(coords);
+      // draw selection rect
+      if (this.selectionRect) {
+        this.selectionRect.setSecondCoords(coords);
+        this.requestRedraw();
+      }
     }
   }
 
-  select(shape: Draggable, options: { keepSelection?: boolean } = {}) {
+  select(
+    shape: Draggable | Draggable[],
+    options: { keepSelection?: boolean } = {}
+  ) {
     const { keepSelection = false } = options;
 
     if (!keepSelection) this.blur();
 
-    if (!this._selected.includes(shape)) {
-      this._selected.push(shape);
-      shape.select();
+    const shapes = Array.isArray(shape) ? shape : [shape];
+    for (const shape of shapes) {
+      if (!this._selected.includes(shape)) {
+        this._selected.push(shape);
+        shape.select();
+      }
     }
   }
 
@@ -313,6 +353,8 @@ export default class CanvasManager {
     for (const shape of this.children.map((s) => s).reverse()) {
       shape.element.draw();
     }
+
+    this.selectionRect?.draw();
   }
 
   setCanvas(canvas: HTMLCanvasElement) {

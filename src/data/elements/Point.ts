@@ -38,10 +38,10 @@ export default class Point extends Draggable {
     this.requestRedraw();
   }
 
-  getHit(point: Point): Draggable | null {
+  getHit(point: Point): Draggable[] {
     return Calc.distance(this, point) - this.clickTargetSize <
       this.size + this.lineWidth / 2
-      ? this
+      ? [this]
       : super.getHit(point);
   }
 }

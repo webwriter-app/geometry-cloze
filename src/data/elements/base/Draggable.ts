@@ -24,16 +24,13 @@ export default abstract class Draggable extends Stylable {
     this.addEventListener('unselect', this.blur.bind(this));
   }
 
-  public getHit(point: MathPoint): Draggable | null {
-    return this.children.reduce(
-      (cur, child) => {
-        if (cur) return cur;
-        if (child instanceof Draggable) return child.getHit(point);
-        return null;
-      },
-      null as Draggable | null
-    );
+  public getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    return this.children.flatMap((child) => {
+      if (child instanceof Draggable) return child.getHit(point, point2);
+      return [];
+    });
   }
+
   public move(coords: { x?: number; y?: number; relative: boolean }): void {
     const change = coords.relative
       ? coords

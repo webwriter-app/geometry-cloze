@@ -44,8 +44,8 @@ export default class Polygon extends Draggable {
     this.requestRedraw();
   }
 
-  getHit(point: Point): Draggable | null {
-    return super.getHit(point);
+  getHit(point: Point, point2?: Point): Draggable[] {
+    return super.getHit(point, point2);
   }
 
   addPoint(...points: Point[]) {
