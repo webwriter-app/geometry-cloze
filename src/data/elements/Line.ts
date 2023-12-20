@@ -57,9 +57,17 @@ export default class Line extends Draggable {
         y2: point2.y
       };
       const hits = [];
-      if (Calc.isInRect(rect, this)) hits.push(this);
-      if (Calc.isInRect(rect, this._start)) hits.push(this._start);
-      if (Calc.isInRect(rect, this._end)) hits.push(this._end);
+      const lineHit = Calc.isInRect(rect, this);
+      const startHit = Calc.isInRect(rect, this._start);
+      const endHit = Calc.isInRect(rect, this._end);
+
+      // if start AND end are selected, we select the line -> line is part of selection
+      // if only start OR end are selected, we don't select the line -> likely intentional to select this line
+      // if neither start nor end are selected, we don't select the line -> likely intentional to not select this line
+      if (startHit) hits.push(this._start);
+      if (endHit) hits.push(this._end);
+      if (lineHit && startHit === endHit) hits.push(this);
+
       return hits;
     } else {
       const pointHit = super.getHit(point);
