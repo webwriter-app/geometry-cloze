@@ -2,6 +2,7 @@ import Calc, { MathPoint } from './helper/Calc';
 import Draggable from './elements/base/Draggable';
 import Element from './elements/base/Element';
 import SelectionRect from './components/SelectionRect';
+import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
 
 interface MountedElement<El extends Element = Element> {
   element: El;
@@ -15,6 +16,8 @@ export default class CanvasManager {
   private clickTargetEle: HTMLDivElement;
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
+  private contextMenu: WwGeomContextMenu;
+
   private children: MountedElement[] = [];
   /**
    * Information about the first click/mouse down when dragging an element
@@ -38,9 +41,10 @@ export default class CanvasManager {
    */
   private _selected: Draggable[] = [];
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, contentMenu: WwGeomContextMenu) {
     this._canvas = canvas;
     this._ctx = this._canvas.getContext('2d')!;
+    this.contextMenu = contentMenu;
 
     this.clickTargetEle = canvas.parentElement?.querySelector('.click-target')!;
 
@@ -294,8 +298,14 @@ export default class CanvasManager {
     const hit = this.findHitElement(coords);
     if (hit) {
       event.preventDefault();
-      const menu = hit.getContextMenu();
-      if (menu) menu.open(event.clientX, event.clientY);
+      const menuitems = hit.getContextMenuItems();
+      if (menuitems.length) {
+        const localX =
+          event.clientX - this._canvas.getBoundingClientRect().left;
+        const localY = event.clientY - this._canvas.getBoundingClientRect().top;
+        this.contextMenu.items = menuitems;
+        this.contextMenu.open(localX, localY);
+      }
     }
   }
 

@@ -4,6 +4,8 @@ import Point from '../../data/elements/Point';
 import CanvasManager from '/data/CanvasManager';
 import Polygon from '../../data/elements/Polygon';
 import Line from '../../data/elements/Line';
+import { WwGeomContextMenu } from '../context-menu/ww-geom-context-menu';
+import '../context-menu/ww-geom-context-menu';
 
 /**
  *
@@ -11,17 +13,24 @@ import Line from '../../data/elements/Line';
 @customElement('ww-geom-canvas')
 export class WwGeomCanvas extends LitElement {
   @query('canvas') canvas!: HTMLCanvasElement;
+  @query('ww-geom-context-menu') contextMenu!: WwGeomContextMenu;
 
   render() {
     return html`<div class="wrapper">
       <canvas width="2000" height="1000"></canvas>
       <div class="click-target"></div>
+      <ww-geom-context-menu></ww-geom-context-menu>
     </div>`;
   }
 
+  private onBlur() {
+    this.contextMenu?.close();
+  }
+
   firstUpdated() {
+    this.addEventListener('blur', this.onBlur.bind(this));
     if (this.canvas) {
-      const manager = new CanvasManager(this.canvas);
+      const manager = new CanvasManager(this.canvas, this.contextMenu);
 
       const point = new Point(manager, { x: 200, y: 200 });
       point.name = 'top left';
@@ -46,6 +55,11 @@ export class WwGeomCanvas extends LitElement {
       //@ts-ignore
       window.manager = manager;
     } else console.warn('No canvas context');
+  }
+
+  disconnectedCallback(): void {
+    this.removeEventListener('blur', this.onBlur);
+    super.disconnectedCallback();
   }
 
   static styles = css`

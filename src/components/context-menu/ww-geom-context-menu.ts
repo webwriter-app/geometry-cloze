@@ -1,0 +1,119 @@
+import { LitElement, TemplateResult, css, html } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
+import { ContextMenuItem } from '/types/ContextMenu';
+import { classMap } from 'lit/directives/class-map.js';
+import { SlMenu, SlSelectEvent } from '@shoelace-style/shoelace';
+
+/**
+ *
+ */
+@customElement('ww-geom-context-menu')
+export class WwGeomContextMenu extends LitElement {
+  @property({ type: Array, attribute: true }) items: ContextMenuItem[] = [];
+  @property({ type: Boolean, attribute: 'open' }) _open = false;
+  @property({ type: Number, attribute: true }) x = 0;
+  @property({ type: Number, attribute: true }) y = 0;
+
+  @query('sl-menu.menu') menu!: SlMenu;
+
+  public open(x: number, y: number) {
+    this._open = true;
+    this.x = x;
+    this.y = y;
+    this.menu?.focus();
+  }
+  public close() {
+    this._open = false;
+    this.menu?.blur();
+  }
+
+  private getContextMenuItem(item: ContextMenuItem): TemplateResult {
+    switch (item.type) {
+      case 'button':
+        return html`<sl-menu-item
+          value="${item.key}"
+          .disabled=${item.disabled ?? false}>
+          ${item.label}
+        </sl-menu-item>`;
+      case 'checkbox':
+        return html`<sl-menu-item
+          value="${item.key}"
+          type="checkbox"
+          .checked=${item.getChecked()}
+          .disabled=${item.disabled ?? false}>
+          ${item.label}
+        </sl-menu-item>`;
+      case 'submenu':
+        return html`<sl-menu-item>
+          ${item.label}
+          <sl-menu slot="submenu">
+            ${item.items.map((item) => this.getContextMenuItem(item))}
+          </sl-menu>
+        </sl-menu-item>`;
+      case 'divider':
+        return html`<sl-divider></sl-divider>`;
+      default:
+        return html``;
+    }
+  }
+
+  private handleClick(e: SlSelectEvent, items = this.items) {
+    e.stopPropagation();
+    const key = e.detail.item.value;
+    if (!key) return;
+    const item = items.find((item) => 'key' in item && item.key === key);
+    if (!item) {
+      items.forEach((item) => {
+        if (item.type === 'submenu') this.handleClick(e, item.items);
+      });
+    } else {
+      if (item.type !== 'button' && item.type !== 'checkbox') return;
+
+      if (item.type === 'checkbox') {
+        item.action(e.detail.item.checked);
+        e.detail.item.checked = item.getChecked();
+      } else item.action();
+
+      if (!item.keepOpenAfterClick) this.close();
+    }
+  }
+
+  private onBlur(e: KeyboardEvent) {
+    if (e.key === 'Escape') this.close();
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    document.addEventListener('keydown', this.onBlur.bind(this));
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    document.removeEventListener('keydown', this.onBlur);
+  }
+
+  render() {
+    return html`<sl-menu
+      class="menu${this._open ? ' open' : ''}"
+      style="left: ${this.x}px; top: ${this.y}px"
+      @sl-select="${this.handleClick}">
+      ${this.items.map((item) => this.getContextMenuItem(item))}
+    </sl-menu> `;
+  }
+
+  static styles = css`
+    .menu {
+      position: absolute;
+      z-index: 1000;
+    }
+    .menu:not(.open) {
+      display: none;
+    }
+  `;
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'ww-geom-context-menu': WwGeomContextMenu;
+  }
+}
