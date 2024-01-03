@@ -5,28 +5,38 @@ export default class Element {
   public name = '[unset]';
   constructor(protected manager: CanvasManager) {}
 
-  // TODO: keep track of parent to bubble up events
+  protected parent: Element | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
+  registerParent(element: Element) {
+    this.parent = element;
+  }
+  unregisterParent() {
+    this.parent = null;
+  }
+
   protected addChildAt(child: Element, index: number) {
     this._children.splice(index, 0, child);
     child.addEventListener('request-redraw', this.requestRedraw.bind(this));
+    child.registerParent(this);
   }
 
   protected addChild(...children: Element[]) {
     this._children.push(...children);
-    children.forEach((child) =>
-      child.addEventListener('request-redraw', this.requestRedraw.bind(this))
-    );
+    children.forEach((child) => {
+      child.registerParent(this);
+      child.addEventListener('request-redraw', this.requestRedraw.bind(this));
+    });
   }
   protected removeChild(child: Element) {
     const index = this._children.indexOf(child);
     if (index === -1) return;
     this._children.splice(index, 1);
     child.removeEventListener('request-redraw', this.requestRedraw.bind(this));
+    child.unregisterParent();
   }
 
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
