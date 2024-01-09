@@ -164,4 +164,19 @@ export default class Polygon extends Draggable {
 
     return lines;
   }
+
+  draw(): void {
+    this.ctx.strokeStyle = 'transparent';
+    this.ctx.fillStyle = this.fill;
+    this.ctx.beginPath();
+    const lastPoint = this._points.slice(-1)[0];
+    if (!lastPoint) return;
+    this.ctx.moveTo(lastPoint.x, lastPoint.y);
+    for (const point of this._points) {
+      this.ctx.lineTo(point.x, point.y);
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    super.draw();
+  }
 }
