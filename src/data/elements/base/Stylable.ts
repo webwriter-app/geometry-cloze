@@ -1,5 +1,6 @@
 import CanvasManager from '../../CanvasManager';
 import Element from './Element';
+import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface StylableData {
   lineWidth?: number;
@@ -43,7 +44,8 @@ export default class Stylable extends Element {
     const newValue = newLineWidth ?? 3;
     const hasChanges = newValue !== this._lineWidth;
     this._lineWidth = newValue;
-    if (hasChanges) this.fireEvent('style-change');
+    if (hasChanges)
+      this.fireEvent('style-change', { lineWidth: this.lineWidth });
   }
   get lineWidth() {
     return this._lineWidth;
@@ -53,7 +55,7 @@ export default class Stylable extends Element {
     const newValue = size ?? 10;
     const hasChanges = newValue !== this._size;
     this._size = newValue;
-    if (hasChanges) this.fireEvent('style-change');
+    if (hasChanges) this.fireEvent('style-change', { size: this.size });
   }
   get size() {
     return this._size;
@@ -63,7 +65,7 @@ export default class Stylable extends Element {
     const newValue = stroke ?? 'transparent';
     const hasChanges = newValue !== this._stroke;
     this._stroke = newValue;
-    if (hasChanges) this.fireEvent('style-change');
+    if (hasChanges) this.fireEvent('style-change', { stroke: this.stroke });
   }
   get stroke() {
     return this._stroke;
@@ -73,7 +75,7 @@ export default class Stylable extends Element {
     const newValue = fill ?? 'transparent';
     const hasChanges = newValue !== this._fill;
     this._fill = newValue;
-    if (hasChanges) this.fireEvent('style-change');
+    if (hasChanges) this.fireEvent('style-change', { fill: this.fill });
   }
   get fill() {
     return this._fill;
@@ -83,9 +85,105 @@ export default class Stylable extends Element {
     const newValue = shadow ?? false;
     const hasChanges = newValue !== this._shadow;
     this._shadow = newValue;
-    if (hasChanges) this.fireEvent('style-change');
+    if (hasChanges) this.fireEvent('style-change', { shadow: this.shadow });
   }
   get shadow() {
     return this._shadow;
+  }
+
+  protected getStyleContextMenuItems(options: {
+    stroke: boolean;
+    fill: boolean;
+  }): ContextMenuItem[] {
+    const res: ContextMenuItem[] = [];
+    if (options.stroke)
+      res.push({
+        type: 'submenu',
+        label: 'Stoke',
+        items: [
+          {
+            type: 'checkbox',
+            label: 'blue',
+            getChecked: () => this._stroke === 'blue',
+            action: () => this.setStroke('blue'),
+            key: 'stroke_blue'
+          },
+          {
+            type: 'checkbox',
+            label: 'red',
+            getChecked: () => this._stroke === 'red',
+            action: () => this.setStroke('red'),
+            key: 'stroke_red'
+          },
+          {
+            type: 'checkbox',
+            label: 'green',
+            getChecked: () => this._stroke === 'green',
+            action: () => this.setStroke('green'),
+            key: 'stroke_green'
+          },
+          {
+            type: 'checkbox',
+            label: 'black',
+            getChecked: () => this._stroke === 'black',
+            action: () => this.setStroke('black'),
+            key: 'stroke_black'
+          },
+          {
+            type: 'checkbox',
+            label: 'transparent',
+            getChecked: () => this._stroke === 'transparent',
+            action: () => this.setStroke(null),
+            key: 'stroke_transparent'
+          }
+        ]
+      });
+    if (options.fill)
+      res.push({
+        type: 'submenu',
+        label: 'Fill',
+        items: [
+          {
+            type: 'checkbox',
+            getChecked: () => this._fill === 'blue',
+            label: 'blue',
+            action: () => this.setFill('blue'),
+            key: 'fill_blue'
+          },
+          {
+            type: 'checkbox',
+            getChecked: () => this._fill === 'red',
+            label: 'red',
+            action: () => this.setFill('red'),
+            key: 'fill_red'
+          },
+          {
+            type: 'checkbox',
+            getChecked: () => this._fill === 'green',
+            label: 'green',
+            action: () => this.setFill('green'),
+            key: 'fill_green'
+          },
+          {
+            type: 'checkbox',
+            getChecked: () => this._fill === 'black',
+            label: 'black',
+            action: () => this.setFill('black'),
+            key: 'fill_black'
+          },
+          {
+            type: 'checkbox',
+            getChecked: () => this._fill === 'transparent',
+            label: 'transparent',
+            action: () => this.setFill(null),
+            key: 'fill_transparent'
+          }
+        ]
+      });
+    return res;
+  }
+
+  public getContextMenuItems(): ContextMenuItem[] {
+    return [...super.getContextMenuItems()];
   }
 }

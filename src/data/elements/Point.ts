@@ -1,6 +1,7 @@
 import Calc from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
 import Draggable from './base/Draggable';
+import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface PointData {
   x: number;
@@ -43,5 +44,12 @@ export default class Point extends Draggable {
       this.size + this.lineWidth / 2
       ? [this]
       : super.getHit(point);
+  }
+
+  public getContextMenuItems(): ContextMenuItem[] {
+    return [
+      ...super.getContextMenuItems(),
+      ...this.getStyleContextMenuItems({ stroke: true, fill: true })
+    ];
   }
 }

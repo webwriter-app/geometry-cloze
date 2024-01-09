@@ -3,6 +3,7 @@ import Draggable from './base/Draggable';
 import Calc from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
 import Element from './base/Element';
+import { ContextMenuItem } from '/types/ContextMenu';
 
 export default class Line extends Draggable {
   private _start: Point;
@@ -81,5 +82,12 @@ export default class Line extends Draggable {
         return [this];
       return [];
     }
+  }
+
+  public getContextMenuItems(): ContextMenuItem[] {
+    return [
+      ...super.getContextMenuItems(),
+      ...this.getStyleContextMenuItems({ stroke: true, fill: false })
+    ];
   }
 }

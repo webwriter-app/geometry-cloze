@@ -1,6 +1,7 @@
 import { MathPoint } from '../../helper/Calc';
 import CanvasManager from '../../CanvasManager';
 import Stylable, { StylableData } from './Stylable';
+import Element from './Element';
 
 export interface DraggableData {
   selected?: boolean;
@@ -22,6 +23,7 @@ export default abstract class Draggable extends Stylable {
 
     this.addEventListener('select', this.select.bind(this));
     this.addEventListener('unselect', this.blur.bind(this));
+    this.addEventListener('style-change', this.styleChangeListener.bind(this));
   }
 
   public getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
@@ -53,6 +55,24 @@ export default abstract class Draggable extends Stylable {
 
   private overwrittenStyle: Partial<StylableData> = {};
 
+  // boolean to not store style changes when setting the style for signaling that the element is selected
+  private isSettingStyle = false;
+  private setSelectedStyle() {
+    this.isSettingStyle = true;
+    this.setShadow(true);
+    // this.setFill('blue');
+    this.isSettingStyle = false;
+  }
+
+  private styleChangeListener(_: Element, style: Partial<StylableData>) {
+    if (this.isSettingStyle || !this.selected) return;
+    this.overwrittenStyle = {
+      ...this.overwrittenStyle,
+      ...style
+    };
+    this.setSelectedStyle();
+  }
+
   select() {
     if (!this.onSelect()) return;
     this._selected = true;
@@ -60,8 +80,7 @@ export default abstract class Draggable extends Stylable {
       fill: this.fill,
       shadow: this.shadow
     };
-    this.setShadow(true);
-    this.setFill('blue');
+    this.setSelectedStyle();
   }
 
   /**
@@ -75,8 +94,10 @@ export default abstract class Draggable extends Stylable {
   blur() {
     if (!this.onBlur()) return;
     this._selected = false;
+    this.isSettingStyle = true;
     this.setShadow(this.overwrittenStyle.shadow ?? null);
-    this.setFill(this.overwrittenStyle.fill ?? null);
+    // this.setFill(this.overwrittenStyle.fill ?? null);
+    this.isSettingStyle = false;
     this.overwrittenStyle = {};
   }
 
