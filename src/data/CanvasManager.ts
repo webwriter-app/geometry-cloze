@@ -264,6 +264,13 @@ export default class CanvasManager {
     }
   }
 
+  removeChild(element: Element) {
+    const index = this.children.findIndex((ele) => ele.element === element);
+    if (index < 0) return;
+    this.children.splice(index, 1);
+    this.requestRedraw();
+  }
+
   select(
     shape: Draggable | Draggable[],
     options: { keepSelection?: boolean } = {}
@@ -352,6 +359,7 @@ export default class CanvasManager {
     });
     this.requestRedraw();
 
+    shape.registerParent(this);
     shape.addEventListener('request-redraw', this.redraw.bind(this));
   }
 

@@ -5,13 +5,13 @@ export default class Element {
   public name = '[unset]';
   constructor(protected manager: CanvasManager) {}
 
-  protected parent: Element | null = null;
+  protected parent: Element | CanvasManager | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
-  registerParent(element: Element) {
+  registerParent(element: Element | CanvasManager) {
     this.parent = element;
   }
   unregisterParent() {
@@ -46,7 +46,11 @@ export default class Element {
     return this.manager.ctx;
   }
 
-  delete() {}
+  delete() {
+    if (!this.parent) return;
+    if (this.parent instanceof Element) this.parent.removeChild(this);
+    else this.parent.removeChild(this);
+  }
 
   draw() {
     this._children.forEach((child) => child.draw());

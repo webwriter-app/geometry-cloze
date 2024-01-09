@@ -49,8 +49,11 @@ export class WwGeomCanvas extends LitElement {
       const point6 = new Point(manager, { x: 300, y: 900 });
       const line = new Line(manager, point5, point6);
 
+      const point7 = new Point(manager, { x: 100, y: 100 });
+
       manager.addShape(polygon);
       manager.addShape(line);
+      manager.addShape(point7);
 
       //@ts-ignore
       window.manager = manager;

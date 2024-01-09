@@ -2,6 +2,7 @@ import Point from './Point';
 import Draggable from './base/Draggable';
 import Calc from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
+import Element from './base/Element';
 
 export default class Line extends Draggable {
   private _start: Point;
@@ -19,6 +20,10 @@ export default class Line extends Draggable {
     this._y = start.y;
 
     start.addEventListener('move', this.onStartMove.bind(this));
+  }
+
+  protected removeChild(child: Element): void {
+    this.delete();
   }
 
   onStartMove() {
