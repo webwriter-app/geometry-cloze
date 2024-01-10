@@ -73,23 +73,21 @@ export class WwGeomContextMenu extends LitElement {
         item.action(e.detail.item.checked);
         e.detail.item.checked = item.getChecked();
       } else item.action();
-
-      if (!item.keepOpenAfterClick) this.close();
     }
   }
 
-  private onBlur(e: KeyboardEvent) {
+  private onKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') this.close();
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    document.addEventListener('keydown', this.onBlur.bind(this));
+    document.addEventListener('keydown', this.onKeydown.bind(this));
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    document.removeEventListener('keydown', this.onBlur);
+    document.removeEventListener('keydown', this.onKeydown);
   }
 
   render() {

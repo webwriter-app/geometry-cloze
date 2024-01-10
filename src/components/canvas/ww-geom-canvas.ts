@@ -27,8 +27,13 @@ export class WwGeomCanvas extends LitElement {
     this.contextMenu?.close();
   }
 
+  private onClick() {
+    this.contextMenu?.close();
+  }
+
   firstUpdated() {
     this.addEventListener('blur', this.onBlur.bind(this));
+    this.addEventListener('click', this.onClick.bind(this));
     if (this.canvas) {
       const manager = new CanvasManager(this.canvas, this.contextMenu);
 
@@ -62,6 +67,7 @@ export class WwGeomCanvas extends LitElement {
 
   disconnectedCallback(): void {
     this.removeEventListener('blur', this.onBlur);
+    this.removeEventListener('click', this.onClick);
     super.disconnectedCallback();
   }
 

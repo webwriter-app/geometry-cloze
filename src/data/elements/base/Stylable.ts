@@ -92,94 +92,125 @@ export default class Stylable extends Element {
   }
 
   protected getStyleContextMenuItems(options: {
-    stroke: boolean;
-    fill: boolean;
+    stroke?: boolean;
+    fill?: boolean;
+    lineWidth?: boolean;
   }): ContextMenuItem[] {
     const res: ContextMenuItem[] = [];
-    if (options.stroke)
+    if (options.stroke) {
+      const options = [
+        {
+          label: 'Blue',
+          value: 'blue'
+        },
+        {
+          label: 'Red',
+          value: 'red'
+        },
+        {
+          label: 'Green',
+          value: 'green'
+        },
+        {
+          label: 'Black',
+          value: 'black'
+        },
+        {
+          label: 'Transparent',
+          value: 'transparent'
+        }
+      ];
       res.push({
         type: 'submenu',
         label: 'Stoke',
-        items: [
-          {
-            type: 'checkbox',
-            label: 'blue',
-            getChecked: () => this._stroke === 'blue',
-            action: () => this.setStroke('blue'),
-            key: 'stroke_blue'
-          },
-          {
-            type: 'checkbox',
-            label: 'red',
-            getChecked: () => this._stroke === 'red',
-            action: () => this.setStroke('red'),
-            key: 'stroke_red'
-          },
-          {
-            type: 'checkbox',
-            label: 'green',
-            getChecked: () => this._stroke === 'green',
-            action: () => this.setStroke('green'),
-            key: 'stroke_green'
-          },
-          {
-            type: 'checkbox',
-            label: 'black',
-            getChecked: () => this._stroke === 'black',
-            action: () => this.setStroke('black'),
-            key: 'stroke_black'
-          },
-          {
-            type: 'checkbox',
-            label: 'transparent',
-            getChecked: () => this._stroke === 'transparent',
-            action: () => this.setStroke(null),
-            key: 'stroke_transparent'
-          }
-        ]
+        items: options.map(
+          (option) =>
+            ({
+              type: 'checkbox',
+              label: option.label,
+              getChecked: () => this._stroke === option.value,
+              action: () => this.setStroke(option.value),
+              key: `stroke_${option.label.toLowerCase()}`
+            }) as const
+        )
       });
-    if (options.fill)
+    }
+    if (options.fill) {
+      const options = [
+        {
+          label: 'Blue',
+          value: 'blue'
+        },
+        {
+          label: 'Red',
+          value: 'red'
+        },
+        {
+          label: 'Green',
+          value: 'green'
+        },
+        {
+          label: 'Black',
+          value: 'black'
+        },
+        {
+          label: 'Transparent',
+          value: 'transparent'
+        }
+      ];
       res.push({
         type: 'submenu',
         label: 'Fill',
-        items: [
-          {
-            type: 'checkbox',
-            getChecked: () => this._fill === 'blue',
-            label: 'blue',
-            action: () => this.setFill('blue'),
-            key: 'fill_blue'
-          },
-          {
-            type: 'checkbox',
-            getChecked: () => this._fill === 'red',
-            label: 'red',
-            action: () => this.setFill('red'),
-            key: 'fill_red'
-          },
-          {
-            type: 'checkbox',
-            getChecked: () => this._fill === 'green',
-            label: 'green',
-            action: () => this.setFill('green'),
-            key: 'fill_green'
-          },
-          {
-            type: 'checkbox',
-            getChecked: () => this._fill === 'black',
-            label: 'black',
-            action: () => this.setFill('black'),
-            key: 'fill_black'
-          },
-          {
-            type: 'checkbox',
-            getChecked: () => this._fill === 'transparent',
-            label: 'transparent',
-            action: () => this.setFill(null),
-            key: 'fill_transparent'
-          }
-        ]
+        items: options.map(
+          (option) =>
+            ({
+              type: 'checkbox',
+              getChecked: () => this._fill === option.value,
+              label: option.label,
+              action: () => this.setFill(option.value),
+              key: `fill_${option.label.toLowerCase()}}`
+            }) as const
+        )
       });
+    }
+    if (options.lineWidth) {
+      const options = [
+        {
+          label: 'Extra thin',
+          value: 1
+        },
+        {
+          label: 'Thin',
+          value: 2
+        },
+        {
+          label: 'Medium',
+          value: 3
+        },
+        {
+          label: 'Thick',
+          value: 5
+        },
+        {
+          label: 'Extra Thick',
+          value: 7
+        }
+      ];
+      res.push({
+        type: 'submenu',
+        label: 'Line Width',
+        items: options.map(
+          (option) =>
+            ({
+              type: 'checkbox',
+              getChecked: () => this._lineWidth === option.value,
+              label: option.label,
+              action: () => this.setLineWidth(option.value),
+              key: `line-width_${option.label.toLowerCase()}`
+            }) as const
+        )
+      });
+    }
     return res;
   }
 

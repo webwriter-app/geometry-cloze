@@ -87,7 +87,7 @@ export default class Line extends Draggable {
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ stroke: true, fill: false })
+      ...this.getStyleContextMenuItems({ stroke: true, lineWidth: true })
     ];
   }
 }

@@ -49,7 +49,11 @@ export default class Point extends Draggable {
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ stroke: true, fill: true })
+      ...this.getStyleContextMenuItems({
+        stroke: true,
+        fill: true,
+        lineWidth: true
+      })
     ];
   }
 }

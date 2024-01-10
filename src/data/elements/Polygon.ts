@@ -190,7 +190,7 @@ export default class Polygon extends Draggable {
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ stroke: false, fill: true })
+      ...this.getStyleContextMenuItems({ fill: true })
     ];
   }
 }
