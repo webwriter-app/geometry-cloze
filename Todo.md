@@ -1,8 +1,8 @@
 # Todolist
 
-- fill polygon
-- context menu
-- selection tool (drag rect to select group of objects)
+- better selection style
+- deletion of polygon parts
+- history (undo, redo)
 
 # Bugs
 
