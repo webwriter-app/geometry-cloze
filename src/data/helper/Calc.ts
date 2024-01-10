@@ -170,4 +170,23 @@ export default class Calc {
     const { x: x2, y: y2 } = line.end;
     return ((y - y1) * (x2 - x1)) / (y2 - y1) + x1;
   }
+
+  static isPointInPolygon(point: MathPoint, polygon: MathPoint[]): boolean {
+    const x = point.x;
+    const y = point.y;
+
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x;
+      const yi = polygon[i].y;
+      const xj = polygon[j].x;
+      const yj = polygon[j].y;
+
+      const intersect =
+        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  }
 }

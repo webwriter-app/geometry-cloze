@@ -3,6 +3,7 @@ import CanvasManager from '../CanvasManager';
 import Draggable from './base/Draggable';
 import Line from './Line';
 import Point from './Point';
+import { ContextMenuItem } from '/types/ContextMenu';
 
 export default class Polygon extends Draggable {
   protected _x: number;
@@ -21,14 +22,6 @@ export default class Polygon extends Draggable {
   }
 
   move(coords: { x?: number; y?: number; relative: boolean }): void {
-    if (coords.relative) {
-      this._x += coords.x ?? 0;
-      this._y += coords.y ?? 0;
-    } else {
-      this._x = coords.x ?? this.x;
-      this._y = coords.y ?? this.y;
-    }
-
     const change = coords.relative
       ? coords
       : {
@@ -37,15 +30,29 @@ export default class Polygon extends Draggable {
           relative: true
         };
 
+    if (coords.relative) {
+      this._x += coords.x ?? 0;
+      this._y += coords.y ?? 0;
+    } else {
+      this._x = coords.x ?? this.x;
+      this._y = coords.y ?? this.y;
+    }
+
     this._points.forEach((point) => point.move(change));
 
-    this.recreateLines();
     this.fireEvent('move', this);
     this.requestRedraw();
   }
 
   getHit(point: Point, point2?: Point): Draggable[] {
-    return super.getHit(point, point2);
+    const res: Draggable[] = [];
+    const edgeHits = super.getHit(point, point2);
+    if (!point2 && edgeHits.length > 0) return edgeHits;
+    res.push(...edgeHits);
+
+    if (Calc.isPointInPolygon(point, this._points)) res.push(this);
+
+    return res;
   }
 
   addPoint(...points: Point[]) {
@@ -178,5 +185,12 @@ export default class Polygon extends Draggable {
     this.ctx.closePath();
     this.ctx.fill();
     super.draw();
+  }
+
+  public getContextMenuItems(): ContextMenuItem[] {
+    return [
+      ...super.getContextMenuItems(),
+      ...this.getStyleContextMenuItems({ stroke: false, fill: true })
+    ];
   }
 }
