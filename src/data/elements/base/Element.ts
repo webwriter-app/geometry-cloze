@@ -50,6 +50,7 @@ export default class Element {
     if (!this.parent) return;
     if (this.parent instanceof Element) this.parent.removeChild(this);
     else this.parent.removeChild(this);
+    this.fireEvent('delete');
   }
 
   draw() {
