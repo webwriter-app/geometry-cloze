@@ -4,6 +4,7 @@ import Draggable from './base/Draggable';
 import Line from './Line';
 import Point from './Point';
 import { ContextMenuItem } from '/types/ContextMenu';
+import Element from './base/Element';
 
 export default class Polygon extends Draggable {
   protected _x: number;
@@ -19,6 +20,12 @@ export default class Polygon extends Draggable {
     this._x = Calc.getExtremePoint(points, 'min', 'x')?.x ?? 0;
     this._y = Calc.getExtremePoint(points, 'min', 'y')?.y ?? 0;
     this.recreateLines();
+  }
+
+  protected removeChild(child: Element): void {
+    if (child instanceof Point && this._points.includes(child))
+      this.removePoint(child);
+    else super.removeChild(child);
   }
 
   move(coords: { x?: number; y?: number; relative: boolean }): void {
@@ -110,6 +117,8 @@ export default class Polygon extends Draggable {
 
     this._lines = lines;
     this.addChild(...lines);
+
+    this._points.forEach((p) => p.registerParent(this));
 
     return lines;
   }
