@@ -3,6 +3,8 @@ import Draggable from './elements/base/Draggable';
 import Element from './elements/base/Element';
 import SelectionRect from './components/SelectionRect';
 import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
+import Point from './elements/Point';
+import Line from './elements/Line';
 
 interface MountedElement<El extends Element = Element> {
   element: El;
@@ -40,6 +42,8 @@ export default class CanvasManager {
    * Currently selected element
    */
   private _selected: Draggable[] = [];
+
+  private _mode: 'drag' | 'connect' = 'drag';
 
   constructor(canvas: HTMLCanvasElement, contentMenu: WwGeomContextMenu) {
     this._canvas = canvas;
@@ -153,6 +157,7 @@ export default class CanvasManager {
   private onMouseUp(event: MouseEvent | TouchEvent) {
     const canSelectMultiple = this.canSelectMultiple(event);
 
+    if (this.mode !== 'drag') this.selectionRect = null;
     if (this.selectionRect) {
       const newSelections = this.selectionRect.getSelectedElements(
         this.children.map((ele) => ele.element)
@@ -177,35 +182,62 @@ export default class CanvasManager {
       return this.selected.includes(hit);
     })();
 
-    if (hit) {
-      if (alreadySelected) {
-        if (canSelectMultiple) {
-          // when clicking on a selected element while holding ctrl, we want to deselect it
-          this.blur(hit);
-        } else {
-          if (this.selected.length > 1) {
-            // when clicking on a selected element while many elements are selected, we want to select only that element
-            this.select(hit, { keepSelection: false });
+    if (this.mode === 'drag') {
+      if (hit) {
+        if (alreadySelected) {
+          if (canSelectMultiple) {
+            // when clicking on a selected element while holding ctrl, we want to deselect it
+            this.blur(hit);
           } else {
-            // when clicking on a selected element while only one element is selected, we want to deselect it
-            this.blur();
+            if (this.selected.length > 1) {
+              // when clicking on a selected element while many elements are selected, we want to select only that element
+              this.select(hit, { keepSelection: false });
+            } else {
+              // when clicking on a selected element while only one element is selected, we want to deselect it
+              this.blur();
+            }
+          }
+        } else {
+          if (canSelectMultiple) {
+            // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
+            this.select(hit, { keepSelection: true });
+          } else {
+            // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
+            this.select(hit, { keepSelection: false });
           }
         }
       } else {
-        if (canSelectMultiple) {
-          // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
-          this.select(hit, { keepSelection: true });
-        } else {
-          // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
-          this.select(hit, { keepSelection: false });
+        if (!canSelectMultiple) {
+          // when clicking on nothing while not holding ctrl, we want to deselect all elements
+          this.blur();
+        }
+        // click clicking nothing while holding ctrl, we want to keep the current selection
+
+        // create new element when alt clicking while nothing selected
+        if (event.altKey && this.selected.length === 0 && this.dragStart) {
+          const point = new Point(this, this.dragStart);
+          this.addShape(point);
         }
       }
-    } else {
-      if (!canSelectMultiple) {
-        // when clicking on nothing while not holding ctrl, we want to deselect all elements
+    } else if (this.mode === 'connect') {
+      if (hit) {
+        if (hit instanceof Point) {
+          if (this.selected.length === 0) {
+            this.select(hit);
+          } else {
+            if (alreadySelected) this.blur();
+            else {
+              const point1 = this.selected[0] as Point;
+              const line = new Line(this, point1, hit);
+              this.removeChild(point1);
+              this.removeChild(hit);
+              this.addShape(line);
+            }
+          }
+        }
+      } else {
         this.blur();
       }
-      // click clicking nothing while holding ctrl, we want to keep the current selection
     }
   }
 
@@ -235,10 +267,11 @@ export default class CanvasManager {
       // only draw selection rect if we're not dragging an element
       if (!this.mouseDownTarget) {
         if (!this.canSelectMultiple(event)) this.blur();
-        this.selectionRect = new SelectionRect(this._ctx, {
-          x: this.dragStart!.x,
-          y: this.dragStart!.y
-        });
+        if (this._mode === 'drag')
+          this.selectionRect = new SelectionRect(this._ctx, {
+            x: this.dragStart!.x,
+            y: this.dragStart!.y
+          });
       }
     }
 
@@ -421,5 +454,13 @@ export default class CanvasManager {
 
   get selected() {
     return this._selected;
+  }
+
+  public get mode() {
+    return this._mode;
+  }
+
+  public set mode(mode: typeof this._mode) {
+    this._mode = mode;
   }
 }
