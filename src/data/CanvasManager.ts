@@ -5,6 +5,7 @@ import SelectionRect from './components/SelectionRect';
 import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
 import Point from './elements/Point';
 import Line from './elements/Line';
+import Shape from './elements/Shape';
 
 interface MountedElement<El extends Element = Element> {
   element: El;
@@ -215,7 +216,7 @@ export default class CanvasManager {
 
         // create new element when alt clicking while nothing selected
         if (event.altKey && this.selected.length === 0 && this.dragStart) {
-          const point = new Point(this, this.dragStart);
+          const point = new Shape(this, [this.dragStart]);
           this.addShape(point);
         }
       }
@@ -228,7 +229,14 @@ export default class CanvasManager {
             if (alreadySelected) this.blur();
             else {
               const point1 = this.selected[0] as Point;
-              const line = new Line(this, point1, hit);
+              const line = new Shape(this, [
+                point1,
+                {
+                  start: point1,
+                  end: hit
+                },
+                hit
+              ]);
               this.removeChild(point1);
               this.removeChild(hit);
               this.addShape(line);
@@ -384,7 +392,7 @@ export default class CanvasManager {
     );
   }
 
-  addShape(shape: Element) {
+  addShape(shape: Shape) {
     this.children.push({
       draggable: shape instanceof Draggable,
       selectable: shape instanceof Draggable,

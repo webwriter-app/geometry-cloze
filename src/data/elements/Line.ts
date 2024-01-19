@@ -1,26 +1,25 @@
-import Point from './Point';
 import Draggable from './base/Draggable';
-import Calc from '../helper/Calc';
+import Calc, { MathLine, MathPoint } from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
-import Element from './base/Element';
+import Element, { NamedElement } from './base/Element';
 import { ContextMenuItem } from '/types/ContextMenu';
 
+export type BaseLine = MathLine & NamedElement;
+
 export default class Line extends Draggable {
-  private _start: Point;
-  private _end: Point;
+  private _start: MathPoint;
+  private _end: MathPoint;
   protected _x: number;
   protected _y: number;
   protected clickTargetSize = 2;
 
-  constructor(canvas: CanvasManager, start: Point, end: Point) {
+  constructor(canvas: CanvasManager, data: BaseLine) {
     super(canvas);
-    this._start = start;
-    this._end = end;
-    this.addChild(start, end);
-    this._x = start.x;
-    this._y = start.y;
-
-    start.addEventListener('move', this.onStartMove.bind(this));
+    if (data.name !== undefined) this.name = data.name;
+    this._start = data.start;
+    this._end = data.end;
+    this._x = data.start.x;
+    this._y = data.start.y;
   }
 
   protected removeChild(child: Element): void {
@@ -34,7 +33,6 @@ export default class Line extends Draggable {
 
   delete() {
     super.delete();
-    this.start.removeEventListener('move', this.onStartMove.bind(this));
   }
 
   draw() {
@@ -54,7 +52,7 @@ export default class Line extends Draggable {
     return this._end;
   }
 
-  getHit(point: Point, point2?: Point): Draggable[] {
+  getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
     if (point2) {
       const rect = {
         x1: point.x,
@@ -64,15 +62,8 @@ export default class Line extends Draggable {
       };
       const hits = [];
       const lineHit = Calc.isInRect(rect, this);
-      const startHit = Calc.isInRect(rect, this._start);
-      const endHit = Calc.isInRect(rect, this._end);
 
-      // if start AND end are selected, we select the line -> line is part of selection
-      // if only start OR end are selected, we don't select the line -> likely intentional to select this line
-      // if neither start nor end are selected, we don't select the line -> likely intentional to not select this line
-      if (startHit) hits.push(this._start);
-      if (endHit) hits.push(this._end);
-      if (lineHit && startHit === endHit) hits.push(this);
+      if (lineHit) hits.push(this);
 
       return hits;
     } else {

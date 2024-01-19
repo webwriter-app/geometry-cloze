@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import Point from '../../data/elements/Point';
 import CanvasManager from '/data/CanvasManager';
-import Polygon from '../../data/elements/Polygon';
+import Shape from '../../data/elements/Shape';
 import Line from '../../data/elements/Line';
 import { WwGeomContextMenu } from '../context-menu/ww-geom-context-menu';
 import '../context-menu/ww-geom-context-menu';
@@ -37,24 +37,29 @@ export class WwGeomCanvas extends LitElement {
     if (this.canvas) {
       const manager = new CanvasManager(this.canvas, this.contextMenu);
 
-      const point = new Point(manager, { x: 200, y: 200 });
-      point.name = 'top left';
-      const point2 = new Point(manager, { x: 500, y: 200 });
-      point2.name = 'top right';
-      const point3 = new Point(manager, { x: 500, y: 500 });
-      point3.name = 'bottom right';
-      const point4 = new Point(manager, { x: 200, y: 500 });
-      point4.name = 'bottom left';
-      const point41 = new Point(manager, { x: 600, y: 300 });
-      point41.name = 'middle right';
-      const polygon = new Polygon(manager, [point, point4, point3, point2]);
-      polygon.addPoint(point41);
+      const polygon = Shape.createPolygon(manager, [
+        { x: 200, y: 200, name: 'top left' },
+        { x: 500, y: 200, name: 'top right' },
+        { x: 500, y: 500, name: 'bottom right' },
+        { x: 200, y: 500, name: 'bottom left' }
+      ]);
+      // polygon.addPoint({
+      //   x: 600,
+      //   y: 300,
+      //   name: 'middle right'
+      // });
 
-      const point5 = new Point(manager, { x: 800, y: 100 });
-      const point6 = new Point(manager, { x: 300, y: 900 });
-      const line = new Line(manager, point5, point6);
+      const line = Shape.createLine(manager, {
+        start: { x: 800, y: 100 },
+        end: { x: 300, y: 900 },
+        name: 'standalone line'
+      });
 
-      const point7 = new Point(manager, { x: 100, y: 100 });
+      const point7 = Shape.createPoint(manager, {
+        x: 100,
+        y: 100,
+        name: 'standalone top left'
+      });
 
       manager.addShape(polygon);
       manager.addShape(line);

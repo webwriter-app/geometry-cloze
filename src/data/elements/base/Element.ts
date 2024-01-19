@@ -1,6 +1,10 @@
 import CanvasManager from '../../CanvasManager';
 import { ContextMenuItem } from '/types/ContextMenu';
 
+export interface NamedElement {
+  name?: string;
+}
+
 export default class Element {
   public name = '[unset]';
   constructor(protected manager: CanvasManager) {}

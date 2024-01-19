@@ -1,19 +1,18 @@
-import Calc from '../helper/Calc';
+import Calc, { MathPoint } from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
 import Draggable from './base/Draggable';
 import { ContextMenuItem } from '/types/ContextMenu';
+import { NamedElement } from './base/Element';
 
-export interface PointData {
-  x: number;
-  y: number;
-}
+export type BasePoint = MathPoint & NamedElement;
 
 export default class Point extends Draggable {
   protected _x: number;
   protected _y: number;
 
-  constructor(canvas: CanvasManager, data: PointData, active = true) {
+  constructor(canvas: CanvasManager, data: BasePoint, active = true) {
     super(canvas, {}, active);
+    if (data.name !== undefined) this.name = data.name;
     this._x = data.x;
     this._y = data.y;
   }
