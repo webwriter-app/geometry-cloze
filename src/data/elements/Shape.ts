@@ -20,7 +20,6 @@ export default class Shape extends Draggable {
       throw new Error("Can't create polygon with less than three points");
     const children: (BasePoint | BaseLine)[] = [];
     let lastPoint: Point | null = null;
-    pointsArr.push(pointsArr[0]);
     for (const BasePoint of pointsArr) {
       const point =
         BasePoint instanceof Point ? BasePoint : new Point(manager, BasePoint);
@@ -30,6 +29,9 @@ export default class Shape extends Draggable {
 
       lastPoint = point;
     }
+    children.push(
+      new Line(manager, { start: lastPoint!, end: children[0] as Point })
+    );
 
     return new Shape(manager, children, true);
   }
@@ -48,8 +50,8 @@ export default class Shape extends Draggable {
     return new Shape(manager, [start, lineElement, end], false);
   }
 
-  protected _x: number;
-  protected _y: number;
+  protected _x: number = 0;
+  protected _y: number = 0;
 
   protected closed = true;
 
@@ -60,22 +62,34 @@ export default class Shape extends Draggable {
   ) {
     super(canvas, {});
     this.closed = children.length >= 3 && closed;
-    let minX = Infinity;
-    let minY = Infinity;
     const childrenElements = children.map((child) => {
       if (child instanceof Line || child instanceof Point) return child;
       if ('start' in child && 'end' in child)
         return new Line(this.manager, child);
-      if ('x' in child && 'y' in child) {
-        minX = Math.min(minX, child.x);
-        minY = Math.min(minY, child.y);
+      if (child.x !== undefined && child.y !== undefined) {
         return new Point(this.manager, child);
       }
       throw new Error('Invalid child type');
     });
     this.addChild(...childrenElements);
-    this._x = minX;
-    this._y = minY;
+  }
+
+  protected calculateOrigin() {
+    const points = this.getPoints();
+    const minX = Calc.getExtremePoint(points, 'min', 'x');
+    const minY = Calc.getExtremePoint(points, 'min', 'y');
+    if (minX) this._x = minX.x;
+    if (minY) this._y = minY.y;
+  }
+
+  protected addChildAt(child: Element, index: number): void {
+    super.addChildAt(child, index);
+    this.calculateOrigin();
+  }
+
+  protected addChild(...children: Element[]): void {
+    super.addChild(...children);
+    this.calculateOrigin();
   }
 
   protected removeChild(child: Element): void {

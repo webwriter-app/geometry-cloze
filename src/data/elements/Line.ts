@@ -3,6 +3,7 @@ import Calc, { MathLine, MathPoint } from '../helper/Calc';
 import CanvasManager from '../CanvasManager';
 import Element, { NamedElement } from './base/Element';
 import { ContextMenuItem } from '/types/ContextMenu';
+import Point from './Point';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -20,6 +21,19 @@ export default class Line extends Draggable {
     this._end = data.end;
     this._x = data.start.x;
     this._y = data.start.y;
+  }
+
+  public move(coords: {
+    x?: number | undefined;
+    y?: number | undefined;
+    relative: boolean;
+  }): void {
+    super.move(coords);
+    const relativeCoords = coords.relative
+      ? { x: coords.x! - this._x, y: coords.y! - this._y }
+      : coords;
+    if (this._start instanceof Point) this._start.move(coords);
+    if (this._end instanceof Point) this._end.move(coords);
   }
 
   protected removeChild(child: Element): void {
