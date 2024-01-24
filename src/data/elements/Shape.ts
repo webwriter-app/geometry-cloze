@@ -195,10 +195,13 @@ export default class Shape extends Draggable {
     const index = this.children.findIndex((ele) => ele === point);
     if (index === -1) return;
 
-    const nextLine = this.children[index + 1];
+    const nextIndex = (index + 1 + this.children.length) % this.children.length;
+    const nextLine = this.children[nextIndex];
     if (nextLine && nextLine instanceof Line) this.removeChildUnsafe(nextLine);
 
-    const previousLine = this.children[index - 1];
+    const previousIndex =
+      (index - 1 + this.children.length) % this.children.length;
+    const previousLine = this.children[previousIndex];
     if (previousLine && previousLine instanceof Line)
       this.removeChildUnsafe(previousLine);
 
@@ -242,6 +245,7 @@ export default class Shape extends Draggable {
         return false;
       }) + 1;
 
+    // sort children so that when shape is a line, that the point where it is split is at the end
     const sortedChildren = filteredChildren
       .slice(startIndex)
       .concat(filteredChildren.slice(0, startIndex));
