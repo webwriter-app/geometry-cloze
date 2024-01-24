@@ -51,10 +51,6 @@ export default class Line extends Draggable {
     this._y = this.start.y;
   }
 
-  delete() {
-    super.delete();
-  }
-
   draw() {
     super.draw();
     this.ctx.beginPath();

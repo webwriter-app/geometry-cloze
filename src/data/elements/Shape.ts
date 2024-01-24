@@ -100,7 +100,9 @@ export default class Shape extends Draggable {
   }
 
   protected removeChild(child: Element): void {
-    super.removeChild(child);
+    if (child instanceof Point) this.removePoint(child);
+    else if (child instanceof Line) this.removeLine(child);
+    else super.removeChild(child);
     this.checkShapeValidity();
   }
 
@@ -204,6 +206,23 @@ export default class Shape extends Draggable {
     const previousLine = this.children[previousIndex];
     if (previousLine && previousLine instanceof Line)
       this.removeChildUnsafe(previousLine);
+
+    if (
+      previousLine &&
+      nextLine &&
+      previousLine instanceof Line &&
+      nextLine instanceof Line &&
+      this.children.length >= 5 // at least three points and two lines
+    ) {
+      const start = previousLine.start;
+      const end = nextLine.end;
+      // check if these points are already connected
+      const newLine = new Line(this.manager, {
+        start,
+        end
+      });
+      this.addChildAt(newLine, previousIndex);
+    }
 
     this.removeChildUnsafe(point);
     this.checkShapeValidity();
