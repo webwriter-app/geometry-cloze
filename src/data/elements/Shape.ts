@@ -215,17 +215,47 @@ export default class Shape extends Draggable {
    * Checks is still connected
    */
   private checkShapeValidity() {
-    const initialChildren = this.children.map((c) => c);
-    const shapes: { elements: (Line | Point)[] }[] = [{ elements: [] }];
+    const initialChildren = this.children.slice();
+    const shapes: { elements: (Line | Point)[]; closed: boolean }[] = [
+      { elements: [], closed: false }
+    ];
+
+    // remove all children that are neither points nor lines
+    // remove all lines that are not connected to two points
+    const filteredChildren = this.children.filter((child, index) => {
+      const isLine = child instanceof Line;
+      const isPoint = child instanceof Point;
+      if (!isLine && !isPoint) return false;
+      const isNextALine = this.children[index + 1] instanceof Line;
+      const isPreviousALine = this.children[index - 1] instanceof Line;
+      if (isLine && (isPreviousALine || isNextALine)) return false;
+
+      return true;
+    });
+
+    let startIndex =
+      filteredChildren.findIndex((child, index) => {
+        const current = child;
+        const next = filteredChildren[index + 1];
+        if (current instanceof Point && next instanceof Point) return true;
+        if (current instanceof Line && next instanceof Line) return true;
+        return false;
+      }) + 1;
+
+    const sortedChildren = filteredChildren
+      .slice(startIndex)
+      .concat(filteredChildren.slice(0, startIndex));
+
     let lastElement: Line | Point | null = null;
-    for (const element of this.children as (Line | Point)[]) {
+    for (const element of sortedChildren as (Line | Point)[]) {
       if (element instanceof Point) {
         if (lastElement instanceof Line) {
           // valid next entry
           shapes.slice(-1)[0].elements.push(element);
         } else {
+          shapes.slice(-1)[0].closed = true;
           // two points without connection -> create new shape
-          shapes.push({ elements: [element] });
+          shapes.push({ elements: [element], closed: false });
         }
       } else if (element instanceof Line) {
         if (lastElement instanceof Point) {
@@ -238,25 +268,28 @@ export default class Shape extends Draggable {
             shapes.slice(-1)[0].elements.pop();
           // dont add current line
           // start new shape
-          shapes.push({ elements: [] });
+          shapes.push({ elements: [], closed: false });
         }
       }
       lastElement = element;
     }
+
     const nonEmptyShapes = shapes.filter((shape) => shape.elements.length > 0);
     const self = nonEmptyShapes.pop()!;
+    this.closed = self.closed;
     const removedElements = this.children.filter(
       (child) => !self.elements.includes(child as Line | Point)
     );
     for (const element of removedElements) this.removeChildUnsafe(element);
 
-    for (const newShapes of nonEmptyShapes) {
-      const shape = new Shape(this.manager, newShapes.elements);
+    for (const newShape of nonEmptyShapes) {
+      const shape = new Shape(this.manager, newShape.elements, newShape.closed);
       this.manager.addShape(shape);
     }
 
     console.log('checked shape validity', {
       children: initialChildren,
+      sortedChildren,
       shapes: nonEmptyShapes
     });
 
