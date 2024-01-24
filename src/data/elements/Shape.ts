@@ -92,6 +92,13 @@ export default class Shape extends Draggable {
     this.calculateOrigin();
   }
 
+  /**
+   * Remove child without checking for shape validity
+   */
+  protected removeChildUnsafe(child: Element): void {
+    super.removeChild(child);
+  }
+
   protected removeChild(child: Element): void {
     super.removeChild(child);
     this.checkShapeValidity();
@@ -175,7 +182,7 @@ export default class Shape extends Draggable {
           continue;
         const line1 = new Line(this.manager, { start, end: point });
         const line2 = new Line(this.manager, { start: point, end });
-        this.removeChild(nearestLine.line);
+        this.removeChildUnsafe(nearestLine.line);
         this.addChildAt(line2, lineIndex);
         this.addChildAt(point, lineIndex);
         this.addChildAt(line1, lineIndex);
@@ -189,18 +196,18 @@ export default class Shape extends Draggable {
     if (index === -1) return;
 
     const nextLine = this.children[index + 1];
-    if (nextLine && nextLine instanceof Line) this.removeChild(nextLine);
+    if (nextLine && nextLine instanceof Line) this.removeChildUnsafe(nextLine);
 
     const previousLine = this.children[index - 1];
     if (previousLine && previousLine instanceof Line)
-      this.removeChild(previousLine);
+      this.removeChildUnsafe(previousLine);
 
-    this.removeChild(point);
+    this.removeChildUnsafe(point);
     this.checkShapeValidity();
   }
 
   removeLine(line: Line) {
-    this.removeChild(line);
+    this.removeChildUnsafe(line);
     this.checkShapeValidity();
   }
 
@@ -208,7 +215,7 @@ export default class Shape extends Draggable {
    * Checks is still connected
    */
   private checkShapeValidity() {
-    const initialChildren = this.children.slice();
+    const initialChildren = this.children.map((c) => c);
     const shapes: { elements: (Line | Point)[] }[] = [{ elements: [] }];
     let lastElement: Line | Point | null = null;
     for (const element of this.children as (Line | Point)[]) {
@@ -241,7 +248,7 @@ export default class Shape extends Draggable {
     const removedElements = this.children.filter(
       (child) => !self.elements.includes(child as Line | Point)
     );
-    for (const element of removedElements) this.removeChild(element);
+    for (const element of removedElements) this.removeChildUnsafe(element);
 
     for (const newShapes of nonEmptyShapes) {
       const shape = new Shape(this.manager, newShapes.elements);

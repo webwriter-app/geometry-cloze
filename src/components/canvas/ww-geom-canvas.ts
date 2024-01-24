@@ -41,11 +41,11 @@ export class WwGeomCanvas extends LitElement {
         { x: 500, y: 500, name: 'bottom right' },
         { x: 200, y: 500, name: 'bottom left' }
       ]);
-      // polygon.addPoint({
-      //   x: 600,
-      //   y: 300,
-      //   name: 'middle right'
-      // });
+      polygon.addPoint({
+        x: 600,
+        y: 300,
+        name: 'middle right'
+      });
 
       const line = Shape.createLine(manager, {
         start: { x: 800, y: 100 },
