@@ -1,9 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
-import Point from '../../data/elements/Point';
 import CanvasManager from '/data/CanvasManager';
 import Shape from '../../data/elements/Shape';
-import Line from '../../data/elements/Line';
 import { WwGeomContextMenu } from '../context-menu/ww-geom-context-menu';
 import '../context-menu/ww-geom-context-menu';
 

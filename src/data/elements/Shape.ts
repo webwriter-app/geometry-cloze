@@ -97,6 +97,30 @@ export default class Shape extends Draggable {
     this.checkShapeValidity();
   }
 
+  public move(coords: {
+    x?: number | undefined;
+    y?: number | undefined;
+    relative: boolean;
+  }): void {
+    const points = this.getPoints();
+    const relativeCoords = coords.relative
+      ? coords
+      : {
+          x: (coords?.x ?? this._x) - this._x,
+          y: (coords?.y ?? this._y) - this._y,
+          relative: true
+        };
+
+    this._x += relativeCoords.x ?? 0;
+    this._y += relativeCoords.y ?? 0;
+
+    for (const point of points) {
+      point.move(relativeCoords);
+    }
+
+    this.requestRedraw();
+  }
+
   getPoints() {
     return this.children.filter((child) => child instanceof Point) as Point[];
   }

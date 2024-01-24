@@ -28,12 +28,18 @@ export default class Line extends Draggable {
     y?: number | undefined;
     relative: boolean;
   }): void {
-    super.move(coords);
     const relativeCoords = coords.relative
-      ? { x: coords.x! - this._x, y: coords.y! - this._y }
-      : coords;
-    if (this._start instanceof Point) this._start.move(coords);
-    if (this._end instanceof Point) this._end.move(coords);
+      ? coords
+      : {
+          x: (coords?.x ?? this._x) - this._x,
+          y: (coords?.y ?? this._y) - this._y,
+          relative: true
+        };
+    super.move(coords);
+    if (this._start instanceof Point) this._start.move(relativeCoords);
+    if (this._end instanceof Point) this._end.move(relativeCoords);
+    this.fireEvent('move', this);
+    this.requestRedraw();
   }
 
   protected removeChild(child: Element): void {
