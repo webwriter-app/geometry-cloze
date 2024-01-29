@@ -141,9 +141,13 @@ export default class Shape extends Draggable {
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
     const res: Draggable[] = [];
-    const edgeHits = super.getHit(point, point2);
-    if (!point2 && edgeHits.length > 0) return edgeHits;
-    res.push(...edgeHits);
+    // points should be first, since they have higher priority to be selected
+    const hits = super.getHit(point, point2).sort((a, b) => {
+      if (a instanceof Point) return b instanceof Point ? 0 : -10;
+      else return b instanceof Point ? 10 : 0;
+    });
+    if (!point2 && hits.length > 0) return hits;
+    res.push(...hits);
 
     if (this.closed && Calc.isPointInPolygon(point, this.getPoints()))
       res.push(this);
@@ -238,7 +242,6 @@ export default class Shape extends Draggable {
    * Checks is still connected
    */
   private checkShapeValidity() {
-    const initialChildren = this.children.slice();
     const shapes: { elements: (Line | Point)[]; closed: boolean }[] = [
       { elements: [], closed: false }
     ];
@@ -310,12 +313,6 @@ export default class Shape extends Draggable {
       const shape = new Shape(this.manager, newShape.elements, newShape.closed);
       this.manager.addShape(shape);
     }
-
-    console.log('checked shape validity', {
-      children: initialChildren,
-      sortedChildren,
-      shapes: nonEmptyShapes
-    });
 
     this.requestRedraw();
   }

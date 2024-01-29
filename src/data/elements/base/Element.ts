@@ -1,3 +1,4 @@
+import Shape from '../Shape';
 import ChildrenManager from '/data/CanvasManager/ChildrenManager';
 import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';
@@ -10,26 +11,26 @@ export default class Element {
   public name = '[unset]';
   constructor(protected manager: InteractionManager) {}
 
-  protected parent: Element | ChildrenManager | null = null;
+  protected parent: Shape | ChildrenManager | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
-  registerParent(element: Element | ChildrenManager) {
+  registerParent(element: Shape | ChildrenManager) {
     this.parent = element;
   }
   unregisterParent() {
     this.parent = null;
   }
 
-  protected addChildAt(child: Element, index: number) {
+  protected addChildAt(this: Shape, child: Element, index: number) {
     this._children.splice(index, 0, child);
     child.addEventListener('request-redraw', this.requestRedraw.bind(this));
     child.registerParent(this);
   }
 
-  protected addChild(...children: Element[]) {
+  protected addChild(this: Shape, ...children: Element[]) {
     this._children.push(...children);
     children.forEach((child) => {
       child.registerParent(this);
@@ -47,7 +48,7 @@ export default class Element {
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
 
-  delete() {
+  delete(this: Shape) {
     if (!this.parent) return;
     if (this.parent instanceof Element) this.parent.removeChild(this);
     else this.parent.removeChild(this);
@@ -90,15 +91,13 @@ export default class Element {
     this.fireEvent('request-redraw');
   }
 
-  public getContextMenuItems(): ContextMenuItem[] {
+  public getContextMenuItems(this: Shape): ContextMenuItem[] {
     return [
       {
         key: 'delete',
         type: 'button',
         label: 'Delete',
-        action: () => {
-          this.delete();
-        }
+        action: this.delete.bind(this)
       }
     ];
   }
