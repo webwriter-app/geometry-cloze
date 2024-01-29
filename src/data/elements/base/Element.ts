@@ -45,6 +45,10 @@ export default class Element {
     child.unregisterParent();
   }
 
+  public hasChild(child: Element) {
+    return this._children.includes(child);
+  }
+
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
 

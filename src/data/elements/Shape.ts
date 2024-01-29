@@ -150,7 +150,7 @@ export default class Shape extends Draggable {
     res.push(...hits);
 
     if (this.closed && Calc.isPointInPolygon(point, this.getPoints()))
-      res.push(this);
+      res.unshift(this);
 
     return res;
   }

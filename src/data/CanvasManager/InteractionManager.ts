@@ -1,16 +1,15 @@
 import SelectionRect from '../components/SelectionRect';
-import Point from '../elements/Point';
 import Shape from '../elements/Shape';
 import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
 import ChildrenManager from './ChildrenManager';
 import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
 
-export type InteractionMode = 'drag' | 'connect';
+export type InteractionMode = 'select' | 'create';
 
 export default class InteractionManager extends ChildrenManager {
   private wrapper: HTMLElement;
-  private _mode: InteractionMode = 'drag';
+  private _mode: InteractionMode = 'select';
 
   private clickTargetEle: HTMLDivElement;
   private contextMenu: WwGeomContextMenu;
@@ -117,7 +116,7 @@ export default class InteractionManager extends ChildrenManager {
   }
 
   private canUseSelectRect() {
-    return this._mode === 'drag';
+    return this._mode === 'select';
   }
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
@@ -127,10 +126,6 @@ export default class InteractionManager extends ChildrenManager {
 
   private preventTouchScroll(event: TouchEvent) {
     event.preventDefault();
-  }
-
-  private canSelectMultiple(event: MouseEvent | TouchEvent) {
-    return event.ctrlKey;
   }
 
   private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
@@ -159,8 +154,7 @@ export default class InteractionManager extends ChildrenManager {
     if (hit) {
       const wasSelected = this._selected.includes(hit);
 
-      if (!wasSelected)
-        this.select(hit, { keepSelection: this.canSelectMultiple(event) });
+      if (!wasSelected) this.select(hit, { keepSelection: event.ctrlKey });
 
       this.mouseDownTarget = {
         element: hit,
@@ -182,87 +176,28 @@ export default class InteractionManager extends ChildrenManager {
   private onMouseUp(event: MouseEvent | TouchEvent) {
     const isRightClick = 'button' in event && event.button === 2;
 
-    const canSelectMultiple = this.canSelectMultiple(event);
-
-    if (!this.canUseSelectRect()) this.selectionRect = null;
-    if (this.selectionRect) {
-      const newSelections = this.selectionRect.getSelectedElements(
-        this.getChildren()
-      );
-      this.select(newSelections, { keepSelection: canSelectMultiple });
-      this.selectionRect = null;
-      this.requestRedraw();
+    if (this.moved) {
+      this.handleDragEnd({
+        from: this.dragStart!,
+        to: this.getRelativeCoordinates(event),
+        ctrlKeyPressed: event.ctrlKey
+      });
       return;
-    }
+    } else {
+      const hit = this.getElementAt(this.dragStart!);
+      // needs to be more complicated since selected state is set in mouseDown listener
+      const alreadySelected = (() => {
+        if (!hit) return false;
+        if (this.mouseDownTarget) return this.mouseDownTarget.wasSelected;
+        return this._selected.includes(hit);
+      })();
 
-    // when the user dragged the mouse, we don't want to select anything
-    if (this.moved) return;
-
-    const hit = this.getElementAt(this.dragStart!);
-
-    // click on hit element
-
-    // clicked on nothing
-    if (!hit) {
-      if (!canSelectMultiple) this.blur();
-      return;
-    }
-
-    // needs to be more complicated since selected state is set in mouseDown listener
-    const alreadySelected = (() => {
-      if (this.mouseDownTarget) return this.mouseDownTarget.wasSelected;
-      return this._selected.includes(hit);
-    })();
-
-    // do not unselect on context menu
-    if (isRightClick && alreadySelected) return;
-
-    if (this._mode === 'drag') {
-      if (alreadySelected) {
-        if (canSelectMultiple) {
-          // when clicking on a selected element while holding ctrl, we want to deselect it
-          this.blur(hit);
-        } else {
-          if (this._selected.length > 1) {
-            // when clicking on a selected element while many elements are selected, we want to select only that element
-            this.select(hit, { keepSelection: false });
-          } else {
-            // when clicking on a selected element while only one element is selected, we want to deselect it
-            this.blur();
-          }
-        }
-      } else {
-        if (canSelectMultiple) {
-          // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
-          this.select(hit, { keepSelection: true });
-        } else {
-          // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
-          this.select(hit, { keepSelection: false });
-        }
-      }
-    } else if (this._mode === 'connect') {
-      // TODO: rewrite - no more points only shapes
-      if (hit instanceof Point) {
-        if (this._selected.length === 0) {
-          this.select(hit);
-        } else {
-          if (alreadySelected) this.blur();
-          else {
-            const point1 = this._selected[0];
-            const line = new Shape(this, [
-              point1,
-              {
-                start: point1,
-                end: hit
-              },
-              hit
-            ]);
-            point1.delete();
-            hit.delete();
-            this.addShape(line);
-          }
-        }
-      }
+      this.handleClick({
+        hit,
+        alreadySelected,
+        ctrlPressed: event.ctrlKey,
+        isRightClick
+      });
     }
   }
 
@@ -272,6 +207,14 @@ export default class InteractionManager extends ChildrenManager {
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
     if ('buttons' in event && event.buttons !== 1) {
       this.upadateCursor(coords);
+      if (this.moved) {
+        this.handleDragEnd({
+          from: this.dragStart!,
+          to: coords,
+          ctrlKeyPressed: event.ctrlKey
+        });
+        this.moved = false;
+      }
       return;
     }
 
@@ -283,37 +226,16 @@ export default class InteractionManager extends ChildrenManager {
     ) {
       this.moved = true;
 
-      // only draw selection rect if we're not dragging an element
-      if (!this.mouseDownTarget) {
-        if (!this.canSelectMultiple(event)) this.blur();
-        if (this._mode === 'drag')
-          this.selectionRect = new SelectionRect({
-            x: this.dragStart!.x,
-            y: this.dragStart!.y
-          });
-      }
-    }
-
-    if (this._selected.length > 0 && this.mouseDownTarget) {
-      // drag currently selected element
-      coords.x -= this.dragStart!.x;
-      coords.y -= this.dragStart!.y;
-
-      this._selected.forEach((shape, index) => {
-        const startCoords = this.dragStart!.startPositions[index];
-        const x = startCoords.x + coords.x;
-        const y = startCoords.y + coords.y;
-        shape.move({ x, y, relative: false });
+      this.handleDragStart({
+        start: this.dragStart,
+        ctrlKeyPressed: event.ctrlKey
       });
-
-      this.requestRedraw();
-    } else {
-      // draw selection rect
-      if (this.selectionRect) {
-        this.selectionRect.setSecondCoords(coords);
-        this.requestRedraw();
-      }
     }
+
+    this.handleDragging({
+      start: this.dragStart!,
+      current: coords
+    });
   }
 
   private handleContextMenu(event: MouseEvent) {
@@ -330,6 +252,142 @@ export default class InteractionManager extends ChildrenManager {
         this.contextMenu.open(localX, localY);
       }
     }
+  }
+
+  private handleClick({
+    hit,
+    alreadySelected,
+    ctrlPressed,
+    isRightClick
+  }: {
+    hit: Draggable | null;
+    alreadySelected: boolean;
+    ctrlPressed: boolean;
+    isRightClick: boolean;
+  }) {
+    switch (this._mode) {
+      case 'select':
+        if (!this.canUseSelectRect()) this.selectionRect = null;
+        if (this.selectionRect) {
+          const newSelections = this.selectionRect.getSelectedElements(
+            this.getChildren()
+          );
+          this.select(newSelections, { keepSelection: ctrlPressed });
+          this.selectionRect = null;
+          this.requestRedraw();
+          return;
+        }
+
+        // do not unselect on context menu
+        if (isRightClick && alreadySelected) break;
+
+        if (hit) {
+          if (alreadySelected) {
+            if (ctrlPressed) {
+              // when clicking on a selected element while holding ctrl, we want to deselect it
+              this.blur(hit);
+            } else {
+              // blur clicked element / blur everything
+              this.blur(hit);
+            }
+          } else {
+            if (ctrlPressed) {
+              // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
+              this.select(hit, { keepSelection: true });
+            } else {
+              // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
+              this.select(hit, { keepSelection: false });
+            }
+          }
+        } else {
+          if (!ctrlPressed) this.blur();
+        }
+        break;
+      case 'create':
+        break;
+    }
+  }
+
+  private handleDragStart({
+    ctrlKeyPressed,
+    start
+  }: {
+    start: MathPoint;
+    ctrlKeyPressed: boolean;
+  }) {
+    switch (this._mode) {
+      case 'select':
+        // only draw selection rect if we're not dragging an element
+        if (!this.mouseDownTarget) {
+          if (!ctrlKeyPressed) this.blur();
+          this.selectionRect = new SelectionRect({
+            x: this.dragStart!.x,
+            y: this.dragStart!.y
+          });
+        }
+        break;
+    }
+  }
+
+  private handleDragging({
+    start,
+    current
+  }: {
+    start: MathPoint;
+    current: MathPoint;
+  }) {
+    switch (this._mode) {
+      case 'select':
+        if (this._selected.length > 0 && this.mouseDownTarget) {
+          // drag currently selected element
+          const change = {
+            x: current.x - start.x,
+            y: current.y - start.y
+          };
+
+          this._selected.forEach((shape, index) => {
+            const startCoords = this.dragStart!.startPositions[index];
+            const x = startCoords.x + change.x;
+            const y = startCoords.y + change.y;
+            // prevent moving element twice (move element and its parent)
+            if (!this._selected.some((child) => child.hasChild(shape)))
+              shape.move({ x, y, relative: false });
+          });
+
+          this.requestRedraw();
+        } else {
+          // draw selection rect
+          if (this.selectionRect) {
+            this.selectionRect.setSecondCoords(current);
+            this.requestRedraw();
+          }
+        }
+        break;
+    }
+  }
+
+  private handleDragEnd({
+    from,
+    to,
+    ctrlKeyPressed
+  }: {
+    from: MathPoint;
+    to: MathPoint;
+    ctrlKeyPressed: boolean;
+  }) {
+    switch (this._mode) {
+      case 'select':
+        if (this.selectionRect) {
+          const newSelections = this.selectionRect.getSelectedElements(
+            this.getChildren()
+          );
+          this.select(newSelections, { keepSelection: ctrlKeyPressed });
+          this.selectionRect = null;
+          this.requestRedraw();
+        }
+        break;
+    }
+    this.selectionRect = null;
   }
 
   private upadateCursor(coords: MathPoint) {
@@ -355,7 +413,7 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
-  blur(element?: Draggable) {
+  blur(element?: Draggable | null) {
     if (element) {
       const index = this._selected.indexOf(element);
       if (index < 0) return;
