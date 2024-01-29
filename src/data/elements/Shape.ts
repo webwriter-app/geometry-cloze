@@ -1,5 +1,4 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import CanvasManager from '../CanvasManager/CanvasManager';
 import Draggable from './base/Draggable';
 import Line, { BaseLine } from './Line';
 import Point, { BasePoint } from './Point';
@@ -8,10 +7,13 @@ import Element from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
 
 export default class Shape extends Draggable {
-  static createPolygon(manager: CanvasManager, points: BasePoint[]): Shape;
-  static createPolygon(manager: CanvasManager, ...points: BasePoint[]): Shape;
+  static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
   static createPolygon(
-    manager: CanvasManager,
+    manager: InteractionManager,
+    ...points: BasePoint[]
+  ): Shape;
+  static createPolygon(
+    manager: InteractionManager,
     ...points: [BasePoint[]] | BasePoint[]
   ): Shape {
     let pointsArr: BasePoint[];
@@ -37,13 +39,13 @@ export default class Shape extends Draggable {
     return new Shape(manager, children, true);
   }
 
-  static createPoint(manager: CanvasManager, point: BasePoint) {
+  static createPoint(manager: InteractionManager, point: BasePoint) {
     const pointElement =
       point instanceof Point ? point : new Point(manager, point);
     return new Shape(manager, [pointElement], false);
   }
 
-  static createLine(manager: CanvasManager, line: BaseLine) {
+  static createLine(manager: InteractionManager, line: BaseLine) {
     const start = new Point(manager, line.start);
     const end = new Point(manager, line.end);
     const lineElement =

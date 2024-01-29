@@ -11,7 +11,7 @@ export default class InteractionManager extends ChildrenManager {
   private wrapper: HTMLElement;
   private _mode: InteractionMode = 'select';
 
-  private clickTargetEle: HTMLDivElement;
+  private clickTargetEle: HTMLElement;
   private contextMenu: WwGeomContextMenu;
 
   /**
@@ -41,7 +41,7 @@ export default class InteractionManager extends ChildrenManager {
     this.wrapper = canvas;
     this.contextMenu = contextMenu;
 
-    this.clickTargetEle = canvas.parentElement?.querySelector('.click-target')!;
+    this.clickTargetEle = canvas;
 
     this.clickTargetEle.addEventListener(
       'mousedown',
@@ -193,6 +193,7 @@ export default class InteractionManager extends ChildrenManager {
       })();
 
       this.handleClick({
+        coords: this.getRelativeCoordinates(event),
         hit,
         alreadySelected,
         ctrlPressed: event.ctrlKey,
@@ -258,8 +259,10 @@ export default class InteractionManager extends ChildrenManager {
     hit,
     alreadySelected,
     ctrlPressed,
-    isRightClick
+    isRightClick,
+    coords
   }: {
+    coords: MathPoint;
     hit: Draggable | null;
     alreadySelected: boolean;
     ctrlPressed: boolean;
@@ -304,6 +307,11 @@ export default class InteractionManager extends ChildrenManager {
         }
         break;
       case 'create':
+        if (!hit) {
+          // create new point
+          const shape = Shape.createPoint(this, coords);
+          this.addShape(shape);
+        }
         break;
     }
   }
