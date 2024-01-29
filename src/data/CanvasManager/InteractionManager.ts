@@ -1,4 +1,6 @@
 import SelectionRect from '../components/SelectionRect';
+import Line from '../elements/Line';
+import Point from '../elements/Point';
 import Shape from '../elements/Shape';
 import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
@@ -14,23 +16,6 @@ export default class InteractionManager extends ChildrenManager {
   private clickTargetEle: HTMLElement;
   private contextMenu: WwGeomContextMenu;
 
-  /**
-   * Information about the first click/mouse down when dragging an element
-   */
-  private dragStart: {
-    // position of the first click/mouse down
-    x: number;
-    y: number;
-    // positions of selected elements at the time of the first click/mouse down
-    startPositions: { x: number; y: number }[];
-  } | null = null;
-  private selectionRect: SelectionRect | null = null;
-  /**
-   * Wether for the current mouse down event the mouse has been moved beyond the threshold
-   */
-  private moved: boolean = false;
-  private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
-    null;
   /**
    * Currently selected element
    */
@@ -122,6 +107,7 @@ export default class InteractionManager extends ChildrenManager {
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
     this.selectionRect?.draw(ctx);
+    this.ghostLine?.draw(ctx);
   }
 
   private preventTouchScroll(event: TouchEvent) {
@@ -145,6 +131,12 @@ export default class InteractionManager extends ChildrenManager {
     return { x, y };
   }
 
+  /**
+   * Wether for the current mouse down event the mouse has been moved beyond the threshold
+   */
+  private moved: boolean = false;
+  private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
+    null;
   private onMouseDown(event: MouseEvent | TouchEvent) {
     this.moved = false;
     const coords = this.getRelativeCoordinates(event);
@@ -202,6 +194,16 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
+  /**
+   * Information about the first click/mouse down when dragging an element
+   */
+  private dragStart: {
+    // position of the first click/mouse down
+    x: number;
+    y: number;
+    // positions of selected elements at the time of the first click/mouse down
+    startPositions: { x: number; y: number }[];
+  } | null = null;
   private onMouseMove(event: MouseEvent | TouchEvent) {
     const coords = this.getRelativeCoordinates(event);
 
@@ -229,7 +231,8 @@ export default class InteractionManager extends ChildrenManager {
 
       this.handleDragStart({
         start: this.dragStart,
-        ctrlKeyPressed: event.ctrlKey
+        ctrlKeyPressed: event.ctrlKey,
+        hit: this.getElementAt(this.dragStart!)
       });
     }
 
@@ -311,17 +314,31 @@ export default class InteractionManager extends ChildrenManager {
           // create new point
           const shape = Shape.createPoint(this, coords);
           this.addShape(shape);
+        } else if (hit instanceof Line) {
+          // create new point in line
+          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          if (!shape) {
+            console.log('no shape');
+            break;
+          }
+          const point = new Point(this, coords);
+          shape.addPoint(point);
+          this.requestRedraw();
         }
         break;
     }
   }
 
+  private ghostLine: Line | null = null;
+  private selectionRect: SelectionRect | null = null;
   private handleDragStart({
     ctrlKeyPressed,
-    start
+    start,
+    hit
   }: {
     start: MathPoint;
     ctrlKeyPressed: boolean;
+    hit: Draggable | null;
   }) {
     switch (this._mode) {
       case 'select':
@@ -334,6 +351,18 @@ export default class InteractionManager extends ChildrenManager {
           });
         }
         break;
+      case 'create':
+        // if dragging point -> create line starting at point
+        if (hit) {
+          this.ghostLine = new Line(this, {
+            start: {
+              x: hit.x,
+              y: hit.y
+            },
+            end: start
+          });
+          this.ghostLine.setStroke('#000000b0');
+        }
     }
   }
 
@@ -371,6 +400,10 @@ export default class InteractionManager extends ChildrenManager {
           }
         }
         break;
+      case 'create':
+        if (this.ghostLine) this.ghostLine.setEnd(current);
+        this.requestRedraw();
+        break;
     }
   }
 
@@ -391,11 +424,19 @@ export default class InteractionManager extends ChildrenManager {
           );
           this.select(newSelections, { keepSelection: ctrlKeyPressed });
           this.selectionRect = null;
-          this.requestRedraw();
+        }
+        break;
+      case 'create':
+        if (this.ghostLine && this.mouseDownTarget) {
+          // create new line from point -> check if lands on point -> end on point + merge shapes
+          const end = this.getElementAt(to) ?? Shape.createPoint(this, to);
+          const start = this.mouseDownTarget;
         }
         break;
     }
+    this.ghostLine = null;
     this.selectionRect = null;
+    this.requestRedraw();
   }
 
   private upadateCursor(coords: MathPoint) {

@@ -60,6 +60,16 @@ export default class Line extends Draggable {
     ctx.stroke();
   }
 
+  setStart(start: MathPoint) {
+    this._start = start;
+    this.requestRedraw();
+  }
+
+  setEnd(end: MathPoint) {
+    this._end = end;
+    this.requestRedraw();
+  }
+
   get start() {
     return this._start;
   }

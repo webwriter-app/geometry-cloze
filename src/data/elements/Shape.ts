@@ -5,6 +5,7 @@ import Point, { BasePoint } from './Point';
 import { ContextMenuItem } from '/types/ContextMenu';
 import Element from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
+import Arrays from '../helper/Arrays';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
@@ -180,8 +181,9 @@ export default class Shape extends Draggable {
         );
       } else {
         const lineIndex = this.children.indexOf(nearestLine.line);
-        const start = this.children[lineIndex - 1];
-        const end = this.children[lineIndex + 1];
+        const start = Arrays.at(this.children, lineIndex - 1);
+        const end = Arrays.at(this.children, lineIndex + 1);
+        console.log({ start, end });
         if (
           !start ||
           !end ||
@@ -304,7 +306,11 @@ export default class Shape extends Draggable {
     }
 
     const nonEmptyShapes = shapes.filter((shape) => shape.elements.length > 0);
-    const self = nonEmptyShapes.pop()!;
+    const self = nonEmptyShapes.pop();
+    if (!self) {
+      this.delete();
+      return;
+    }
     this.closed = self.closed;
     const removedElements = this.children.filter(
       (child) => !self.elements.includes(child as Line | Point)
