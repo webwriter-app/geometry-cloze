@@ -104,7 +104,7 @@ export default class Calc {
     if ('start' in obj) return this.isLineInRect(rect, obj);
     else return this.isPointInRect(rect, obj);
   }
-  private static isPointInRect(rect: MathRect, point: MathPoint) {
+  static isPointInRect(rect: MathRect, point: MathPoint) {
     return (
       point.x >= rect.x1 &&
       point.x <= rect.x2 &&

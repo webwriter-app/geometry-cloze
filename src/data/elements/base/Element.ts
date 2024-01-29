@@ -1,4 +1,5 @@
-import CanvasManager from '../../CanvasManager';
+import ChildrenManager from '/data/CanvasManager/ChildrenManager';
+import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface NamedElement {
@@ -7,15 +8,15 @@ export interface NamedElement {
 
 export default class Element {
   public name = '[unset]';
-  constructor(protected manager: CanvasManager) {}
+  constructor(protected manager: InteractionManager) {}
 
-  protected parent: Element | CanvasManager | null = null;
+  protected parent: Element | ChildrenManager | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
-  registerParent(element: Element | CanvasManager) {
+  registerParent(element: Element | ChildrenManager) {
     this.parent = element;
   }
   unregisterParent() {
@@ -46,10 +47,6 @@ export default class Element {
   protected listeners: Map<string, ((ele: Element, ...args: any[]) => void)[]> =
     new Map();
 
-  get ctx() {
-    return this.manager.ctx;
-  }
-
   delete() {
     if (!this.parent) return;
     if (this.parent instanceof Element) this.parent.removeChild(this);
@@ -57,8 +54,8 @@ export default class Element {
     this.fireEvent('delete');
   }
 
-  draw() {
-    this._children.forEach((child) => child.draw());
+  draw(ctx: CanvasRenderingContext2D) {
+    this._children.forEach((child) => child.draw(ctx));
   }
 
   addEventListener(

@@ -2,24 +2,21 @@ import Draggable from '../elements/base/Draggable';
 import Element from '../elements/base/Element';
 
 export default class SelectionRect {
-  constructor(
-    private ctx: CanvasRenderingContext2D,
-    private coords: { x: number; y: number }
-  ) {}
+  constructor(private coords: { x: number; y: number }) {}
 
-  draw() {
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    this.ctx.lineWidth = 2;
-    this.ctx.rect(
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.rect(
       this.coords.x,
       this.coords.y,
       this.secondCoords.x - this.coords.x,
       this.secondCoords.y - this.coords.y
     );
-    this.ctx.stroke();
-    this.ctx.fill();
+    ctx.stroke();
+    ctx.fill();
   }
 
   private secondCoords: { x: number; y: number } = { x: 0, y: 0 };

@@ -1,10 +1,11 @@
-import Calc from '../helper/Calc';
-import CanvasManager from '../CanvasManager';
+import Calc, { MathPoint } from '../helper/Calc';
+import CanvasManager from '../CanvasManager/CanvasManager';
 import Draggable from './base/Draggable';
 import Line, { BaseLine } from './Line';
 import Point, { BasePoint } from './Point';
 import { ContextMenuItem } from '/types/ContextMenu';
 import Element from './base/Element';
+import InteractionManager from '../CanvasManager/InteractionManager';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: CanvasManager, points: BasePoint[]): Shape;
@@ -56,7 +57,7 @@ export default class Shape extends Draggable {
   protected closed = true;
 
   constructor(
-    canvas: CanvasManager,
+    canvas: InteractionManager,
     children: (BasePoint | BaseLine)[],
     closed = true
   ) {
@@ -138,7 +139,7 @@ export default class Shape extends Draggable {
     return this.children.filter((child) => child instanceof Line) as Line[];
   }
 
-  getHit(point: Point, point2?: Point): Draggable[] {
+  getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
     const res: Draggable[] = [];
     const edgeHits = super.getHit(point, point2);
     if (!point2 && edgeHits.length > 0) return edgeHits;
@@ -319,20 +320,23 @@ export default class Shape extends Draggable {
     this.requestRedraw();
   }
 
-  draw(): void {
-    this.ctx.strokeStyle = 'transparent';
-    this.ctx.fillStyle = this.fill;
-    this.ctx.beginPath();
-    const points = this.getPoints();
-    const lastPoint = points.slice(-1)[0] as Point | undefined;
-    if (!lastPoint) return;
-    this.ctx.moveTo(lastPoint.x, lastPoint.y);
-    for (const point of points) {
-      this.ctx.lineTo(point.x, point.y);
+  draw(ctx: CanvasRenderingContext2D): void {
+    if (this.closed) {
+      ctx.strokeStyle = 'transparent';
+      ctx.fillStyle = this.fill;
+      ctx.beginPath();
+      const points = this.getPoints();
+      const lastPoint = points.slice(-1)[0] as Point | undefined;
+      if (!lastPoint) return;
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      for (const point of points) {
+        ctx.lineTo(point.x, point.y);
+      }
+      ctx.closePath();
+      ctx.fill();
     }
-    this.ctx.closePath();
-    this.ctx.fill();
-    super.draw();
+
+    super.draw(ctx);
   }
 
   public getContextMenuItems(): ContextMenuItem[] {

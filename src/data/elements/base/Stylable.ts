@@ -1,5 +1,6 @@
-import CanvasManager from '../../CanvasManager';
+import CanvasManager from '../../CanvasManager/CanvasManager';
 import Element from './Element';
+import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface StylableData {
@@ -17,7 +18,7 @@ export default class Stylable extends Element {
   private _fill: string;
   private _shadow: boolean;
 
-  constructor(canvas: CanvasManager, data: StylableData = {}) {
+  constructor(canvas: InteractionManager, data: StylableData = {}) {
     super(canvas);
     this._lineWidth = data.lineWidth || 3;
     this._size = data.size || 10;
@@ -28,16 +29,16 @@ export default class Stylable extends Element {
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
 
-  draw() {
-    super.draw();
-    this.ctx.lineWidth = this.lineWidth;
-    this.ctx.strokeStyle = this.stroke;
-    this.ctx.fillStyle = this.fill;
+  draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    ctx.lineWidth = this.lineWidth;
+    ctx.strokeStyle = this.stroke;
+    ctx.fillStyle = this.fill;
 
-    this.ctx.shadowBlur = this.shadow ? 5 : 0;
-    this.ctx.shadowColor = this.shadow ? '#000000b0' : 'transparent';
-    this.ctx.shadowOffsetX = this.shadow ? 5 : 0;
-    this.ctx.shadowOffsetY = this.shadow ? 5 : 0;
+    ctx.shadowBlur = this.shadow ? 5 : 0;
+    ctx.shadowColor = this.shadow ? '#000000b0' : 'transparent';
+    ctx.shadowOffsetX = this.shadow ? 5 : 0;
+    ctx.shadowOffsetY = this.shadow ? 5 : 0;
   }
 
   setLineWidth(newLineWidth: number | null) {

@@ -1,8 +1,8 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import CanvasManager from '../CanvasManager';
 import Draggable from './base/Draggable';
 import { ContextMenuItem } from '/types/ContextMenu';
 import { NamedElement } from './base/Element';
+import InteractionManager from '../CanvasManager/InteractionManager';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -10,20 +10,19 @@ export default class Point extends Draggable {
   protected _x: number;
   protected _y: number;
 
-  constructor(canvas: CanvasManager, data: BasePoint, active = true) {
-    super(canvas, {}, active);
+  constructor(canvas: InteractionManager, data: BasePoint) {
+    super(canvas, {});
     if (data.name !== undefined) this.name = data.name;
     this._x = data.x;
     this._y = data.y;
   }
 
-  draw() {
-    if (!this.active) return;
-    super.draw();
-    this.ctx.beginPath();
-    this.ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-    this.ctx.fill();
-    this.ctx.stroke();
+  draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
   }
 
   move(coords: { x?: number; y?: number; relative: boolean }) {
@@ -38,11 +37,25 @@ export default class Point extends Draggable {
     this.requestRedraw();
   }
 
-  getHit(point: Point): Draggable[] {
-    return Calc.distance(this, point) - this.clickTargetSize <
-      this.size + this.lineWidth / 2
-      ? [this]
-      : super.getHit(point);
+  getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (!point2)
+      return Calc.distance(this, point) - this.clickTargetSize <
+        this.size + this.lineWidth / 2
+        ? [this]
+        : super.getHit(point, point2);
+    else {
+      const isInSelection = Calc.isPointInRect(
+        {
+          x1: point.x,
+          y1: point.y,
+          x2: point2.x,
+          y2: point2.y
+        },
+        this
+      );
+      if (isInSelection) return [this];
+      return super.getHit(point, point2);
+    }
   }
 
   public getContextMenuItems(): ContextMenuItem[] {

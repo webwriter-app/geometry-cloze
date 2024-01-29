@@ -1,9 +1,9 @@
 import Draggable from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
-import CanvasManager from '../CanvasManager';
 import Element, { NamedElement } from './base/Element';
 import { ContextMenuItem } from '/types/ContextMenu';
 import Point from './Point';
+import InteractionManager from '../CanvasManager/InteractionManager';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -14,7 +14,7 @@ export default class Line extends Draggable {
   protected _y: number;
   protected clickTargetSize = 2;
 
-  constructor(canvas: CanvasManager, data: BaseLine) {
+  constructor(canvas: InteractionManager, data: BaseLine) {
     super(canvas);
     if (data.name !== undefined) this.name = data.name;
     this._start = data.start;
@@ -51,13 +51,13 @@ export default class Line extends Draggable {
     this._y = this.start.y;
   }
 
-  draw() {
-    super.draw();
-    this.ctx.beginPath();
+  draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    ctx.beginPath();
     // TODO: account for point size
-    this.ctx.moveTo(this._start.x, this._start.y);
-    this.ctx.lineTo(this._end.x, this._end.y);
-    this.ctx.stroke();
+    ctx.moveTo(this._start.x, this._start.y);
+    ctx.lineTo(this._end.x, this._end.y);
+    ctx.stroke();
   }
 
   get start() {
