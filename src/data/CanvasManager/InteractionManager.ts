@@ -442,7 +442,14 @@ export default class InteractionManager extends ChildrenManager {
   private upadateCursor(coords: MathPoint) {
     // check if we're hovering over a draggable element and change cursor accordingly
     const hit = this.getElementAt(coords);
-    this.clickTargetEle.style.cursor = hit ? 'pointer' : 'default';
+    switch (this.mode) {
+      case 'select':
+        this.clickTargetEle.style.cursor = hit ? 'grab' : 'default';
+        break;
+      case 'create':
+        this.clickTargetEle.style.cursor = hit ? 'crosshair' : 'pointer';
+        break;
+    }
   }
 
   select(
