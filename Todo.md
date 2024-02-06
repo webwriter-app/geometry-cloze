@@ -1,9 +1,8 @@
 # Todolist
 
-- gui for editing
+- snap to grid
 - webwriter integration
 - better selection style
-- history (undo, redo)
 
 # Bugs
 
