@@ -63,6 +63,7 @@ export default class InteractionManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
+    document.addEventListener('keydown', this.handleKeyboardEvent.bind(this));
   }
 
   unmount() {
@@ -97,6 +98,10 @@ export default class InteractionManager extends ChildrenManager {
     this.clickTargetEle.removeEventListener(
       'contextmenu',
       this.handleContextMenu.bind(this)
+    );
+    document.removeEventListener(
+      'keydown',
+      this.handleKeyboardEvent.bind(this)
     );
   }
 
@@ -475,6 +480,35 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
+  private handleKeyboardEvent(event: KeyboardEvent) {
+    switch (this.mode) {
+      case 'select':
+        switch (event.key) {
+          case 'c':
+          case 'C':
+            this.mode = 'create';
+            break;
+          case 'Escape':
+            this.blur();
+            break;
+          case 'Delete':
+          case 'Backspace':
+            this._selected.forEach((shape) => shape.delete());
+            this._selected = [];
+            break;
+        }
+        break;
+      case 'create':
+        switch (event.key) {
+          case 's':
+          case 'S':
+            this.mode = 'select';
+            break;
+        }
+        break;
+    }
+  }
+
   select(
     shape: Draggable | Draggable[],
     options: { keepSelection?: boolean } = {}
@@ -510,5 +544,16 @@ export default class InteractionManager extends ChildrenManager {
 
   public set mode(mode: typeof this._mode) {
     this._mode = mode;
+    this.modeListeners(this._mode);
+  }
+
+  private modeListeners: (mode: InteractionMode) => void = () => {};
+  public listenForModeChange(
+    listener: (mode: InteractionMode) => void
+  ): () => void {
+    this.modeListeners = listener;
+    return () => {
+      this.modeListeners = () => {};
+    };
   }
 }

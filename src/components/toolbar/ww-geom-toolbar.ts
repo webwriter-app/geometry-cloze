@@ -8,7 +8,7 @@ import { InteractionMode } from '/data/CanvasManager/InteractionManager';
  */
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElement {
-  @property({ attribute: false })
+  @property({ attribute: true })
   mode: InteractionMode = 'select';
 
   render() {

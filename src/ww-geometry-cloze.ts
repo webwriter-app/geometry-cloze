@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import './components/toolbar/ww-geom-toolbar';
 // init shoelace
 import './misc/shoelaceSetup';
@@ -18,10 +18,15 @@ export class WwGeometryCloze extends LitElement {
 
   manager: CanvasManager | null = null;
 
+  @property({ attribute: true })
+  mode: InteractionMode = 'select';
+
   render() {
     return html`<div class="wrapper">
       <ww-geom-toolbar
+        mode=${this.mode}
         @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
+          this.mode = e.detail.mode;
           if (!this.manager) return;
           this.manager.mode = e.detail.mode;
         }}></ww-geom-toolbar>
@@ -48,6 +53,7 @@ export class WwGeometryCloze extends LitElement {
         return;
       }
       this.manager = new CanvasManager(this.canvas, this.contextMenu);
+      this.manager.listenForModeChange((mode) => (this.mode = mode));
 
       const polygon = Shape.createPolygon(this.manager, [
         { x: 200, y: 200, name: 'top left' },
