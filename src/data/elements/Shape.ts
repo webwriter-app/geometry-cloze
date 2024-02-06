@@ -159,48 +159,78 @@ export default class Shape extends Draggable {
     return res;
   }
 
-  addPoint(...points: BasePoint[]) {
-    // TODO: handle not closed shapes
-    const pointElements = points.map((p) => new Point(this.manager, p));
+  addPoint(basePoint: BasePoint, to?: Point): Point | null {
+    const point = new Point(this.manager, basePoint);
     const ownPoints = this.getPoints();
-    for (const point of pointElements) {
-      const nearestLine = this.getLines().reduce(
-        (nearest, curr) => {
-          const dist = Calc.distance(curr, point);
-          if (dist >= nearest.dist) return nearest;
-          return { dist, line: curr };
-        },
-        { dist: Infinity, line: null } as {
-          dist: number;
-          line: Line | null;
-        }
-      );
 
-      if (!nearestLine.line) {
-        this.addChild(
-          new Line(this.manager, { start: ownPoints.slice(-1)[0], end: point }),
-          point
-        );
-      } else {
-        const lineIndex = this.children.indexOf(nearestLine.line);
-        const start = Arrays.at(this.children, lineIndex - 1);
-        const end = Arrays.at(this.children, lineIndex + 1);
-        if (
-          !start ||
-          !end ||
-          !(start instanceof Point) ||
-          !(end instanceof Point)
-        )
-          continue;
-        const line1 = new Line(this.manager, { start, end: point });
-        const line2 = new Line(this.manager, { start: point, end });
-        this.removeChildUnsafe(nearestLine.line);
-        this.addChildAt(line2, lineIndex);
-        this.addChildAt(point, lineIndex);
-        this.addChildAt(line1, lineIndex);
+    if (to) {
+      if (!this.hasChild(to)) return null;
+      if (this.closed) return null;
+      if (!this.isEndPoint(to)) return null;
+    }
+
+    const nearestLine = this.getLines().reduce(
+      (nearest, curr) => {
+        const dist = Calc.distance(curr, point);
+        if (dist >= nearest.dist) return nearest;
+        return { dist, line: curr };
+      },
+      { dist: Infinity, line: null } as {
+        dist: number;
+        line: Line | null;
       }
+    );
+
+    // if shape is not closed we check if the point is on a line otherwise we connect to the nearest endpoint
+    if (!nearestLine.line) {
+      this.addChild(
+        new Line(this.manager, { start: ownPoints.slice(-1)[0], end: point }),
+        point
+      );
+    } else if (this.closed || nearestLine.dist < 2) {
+      const lineIndex = this.children.indexOf(nearestLine.line);
+      const start = Arrays.at(this.children, lineIndex - 1);
+      const end = Arrays.at(this.children, lineIndex + 1);
+      if (
+        !start ||
+        !end ||
+        !(start instanceof Point) ||
+        !(end instanceof Point)
+      )
+        return null;
+      const line1 = new Line(this.manager, { start, end: point });
+      const line2 = new Line(this.manager, { start: point, end });
+      this.removeChildUnsafe(nearestLine.line);
+      this.addChildAt(line2, lineIndex);
+      this.addChildAt(point, lineIndex);
+      this.addChildAt(line1, lineIndex);
+    } else {
+      const nearestEndPoint =
+        to ??
+        [ownPoints[0], Arrays.at(ownPoints, -1)!].reduce(
+          (nearest, curr) => {
+            const dist = Calc.distance(curr, point);
+            if (dist >= nearest.dist) return nearest;
+            return { dist, point: curr };
+          },
+          { dist: Infinity, point: null } as {
+            dist: number;
+            point: Point | null;
+          }
+        ).point;
+
+      const line = new Line(this.manager, {
+        start: nearestEndPoint!,
+        end: point
+      });
+
+      const isStart = nearestEndPoint === ownPoints[0];
+      if (isStart) this.resortChildren((children) => children.reverse());
+      this.addChild(line);
+      this.addChild(point);
     }
     this.requestRedraw();
+    return point;
   }
 
   removePoint(point: Point) {
@@ -278,7 +308,6 @@ export default class Shape extends Draggable {
    * Checks is still connected
    */
   private checkShapeValidity() {
-    const initialChildren = this.children.slice();
     const shapes: { elements: (Line | Point)[]; closed: boolean }[] = [];
 
     // remove all children that are neither points nor lines

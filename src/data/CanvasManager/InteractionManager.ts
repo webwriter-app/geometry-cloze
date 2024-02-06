@@ -223,6 +223,7 @@ export default class InteractionManager extends ChildrenManager {
         });
         this.moved = false;
       }
+      this.handleMouseMove({ current: coords });
       return;
     }
 
@@ -263,6 +264,10 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
+  /**
+   * When creating a shape in create mode
+   */
+  private creatingShape: { shape: Shape; lastPoint: Point } | null = null;
   private handleClick({
     hit,
     alreadySelected,
@@ -316,20 +321,83 @@ export default class InteractionManager extends ChildrenManager {
         break;
       case 'create':
         if (!hit) {
-          // create new point
-          const shape = Shape.createPoint(this, coords);
-          this.addShape(shape);
+          if (isRightClick) {
+            this.ghostLine = null;
+            this.creatingShape = null;
+          } else {
+            if (this.creatingShape) {
+              // add point to creating shape
+              const point = this.creatingShape.shape.addPoint(
+                coords,
+                this.creatingShape.lastPoint
+              );
+              if (point) this.creatingShape.lastPoint = point;
+
+              this.requestRedraw();
+            } else {
+              // create new point
+              const shape = Shape.createPoint(this, coords);
+              this.addShape(shape);
+              this.creatingShape = {
+                shape,
+                lastPoint: shape.getPoints()[0]
+              };
+            }
+            this.ghostLine = new Line(this, {
+              start: coords,
+              end: coords
+            });
+            this.ghostLine.setStroke('#000000b0');
+          }
         } else if (hit instanceof Line) {
           // create new point in line
           const shape = this.getChildren().find((shape) => shape.hasChild(hit));
-          if (!shape) {
-            console.log('no shape');
-            break;
-          }
+          if (!shape) break;
           const point = new Point(this, coords);
           shape.addPoint(point);
           this.requestRedraw();
+        } else if (hit instanceof Point) {
+          if (this.creatingShape) {
+            const isLastPoint = hit === this.creatingShape.lastPoint;
+            const isEndpoint = this.creatingShape.shape.isEndPoint(hit);
+            const isChild = this.creatingShape.shape.hasChild(hit);
+            // when clicking on other endpoint -> connect
+            if (!isLastPoint && isEndpoint) {
+              this.creatingShape.shape.connectPoints(
+                hit,
+                this.creatingShape.lastPoint
+              );
+              this.ghostLine = null;
+              this.creatingShape = null;
+            } else if (isChild) {
+              // when clicking on any other point of same shape -> end creating shape
+              this.ghostLine = null;
+              this.creatingShape = null;
+            } else {
+              // when clicking on an endpoint of another shape -> connect
+              const shape = this.getChildren().find((shape) =>
+                shape.hasChild(hit)
+              );
+              if (!shape || !shape.isEndPoint(hit)) break;
+              this.creatingShape.shape.connect(
+                shape,
+                this.creatingShape.lastPoint,
+                hit
+              );
+              this.ghostLine = null;
+              this.creatingShape = null;
+            }
+          }
         }
+        break;
+    }
+  }
+
+  private handleMouseMove({ current }: { current: MathPoint }) {
+    switch (this.mode) {
+      case 'create':
+        if (this.ghostLine) this.ghostLine.setEnd(current);
+        this.requestRedraw();
         break;
     }
   }
@@ -453,10 +521,10 @@ export default class InteractionManager extends ChildrenManager {
           if (!shape1 || !shape2) {
             console.error("Couldn't find shapes for merging");
           } else shape1.connect(shape2, start.element as Point, end);
+          this.ghostLine = null;
         }
         break;
     }
-    this.ghostLine = null;
     this.selectionRect = null;
     this.requestRedraw();
   }
@@ -504,6 +572,12 @@ export default class InteractionManager extends ChildrenManager {
           case 'S':
             this.mode = 'select';
             break;
+          case 'Escape':
+            this.ghostLine = null;
+            this.creatingShape = null;
+            this.mode = 'select';
+            this.requestRedraw();
+            break;
         }
         break;
     }
@@ -545,6 +619,9 @@ export default class InteractionManager extends ChildrenManager {
   public set mode(mode: typeof this._mode) {
     this._mode = mode;
     this.modeListeners(this._mode);
+    this.ghostLine = null;
+    this.creatingShape = null;
+    this.requestRedraw();
   }
 
   private modeListeners: (mode: InteractionMode) => void = () => {};
