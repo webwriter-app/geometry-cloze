@@ -1,6 +1,5 @@
 {
-  "name": "ww-geometry-cloze",
-  "private": true,
+  "name": "@der-grosse/ww-geometry-cloze",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
