@@ -1,9 +1,10 @@
-import Draggable from './base/Draggable';
+import Draggable, { DraggableData } from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
 import Element, { NamedElement } from './base/Element';
 import { ContextMenuItem } from '/types/ContextMenu';
 import Point from './Point';
 import InteractionManager from '../CanvasManager/InteractionManager';
+import { StylableData } from './base/Stylable';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -14,8 +15,11 @@ export default class Line extends Draggable {
   protected _y: number;
   protected clickTargetSize = 2;
 
-  constructor(canvas: InteractionManager, data: BaseLine) {
-    super(canvas);
+  constructor(
+    canvas: InteractionManager,
+    data: BaseLine & Partial<StylableData & DraggableData>
+  ) {
+    super(canvas, data);
     if (data.name !== undefined) this.name = data.name;
     this._start = data.start;
     this._end = data.end;
@@ -108,7 +112,20 @@ export default class Line extends Draggable {
     ];
   }
 
-  public hasEndpoint(point: MathPoint) {
+  public isEndpoint(point: MathPoint) {
     return this._start === point || this._end === point;
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      _type: 'line' as const,
+      start: this._start,
+      end: this._end
+    };
+  }
+
+  public static import(data: BaseLine, canvas: InteractionManager) {
+    return new Line(canvas, data);
   }
 }

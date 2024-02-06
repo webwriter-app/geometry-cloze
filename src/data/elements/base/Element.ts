@@ -9,6 +9,7 @@ export interface NamedElement {
 
 export default class Element {
   public name = '[unset]';
+  public readonly id = ChildrenManager.getID();
   constructor(protected manager: InteractionManager) {}
 
   protected parent: Shape | ChildrenManager | null = null;
@@ -107,5 +108,26 @@ export default class Element {
         action: this.delete.bind(this)
       }
     ];
+  }
+
+  public getChildByID(id: number): Element | null {
+    if (this.id === id) return this;
+    for (const child of this._children) {
+      const found = child.getChildByID(id);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  public export(): {
+    _type: 'element' | 'point' | 'line';
+    id: number;
+    children: ({ _type: 'point' | 'line' | 'element' } & Object)[];
+  } {
+    return {
+      _type: 'element',
+      id: this.id,
+      children: this._children.map((child) => child.export())
+    };
   }
 }

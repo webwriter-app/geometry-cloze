@@ -125,4 +125,11 @@ export default abstract class Draggable extends Stylable {
   get y() {
     return this._y;
   }
+
+  public export() {
+    return {
+      ...super.export(),
+      selected: this.selected
+    };
+  }
 }

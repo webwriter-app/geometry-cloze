@@ -348,11 +348,11 @@ export default class Shape extends Draggable {
         }
 
         if (element instanceof Line) {
-          if (element.hasEndpoint(lastElement)) {
+          if (element.isEndpoint(lastElement)) {
             // valid shape
             currentShape.elements.push(element);
             // is closed when start point is also one point of the last line
-            currentShape.closed = element.hasEndpoint(currentShape.elements[0]);
+            currentShape.closed = element.isEndpoint(currentShape.elements[0]);
           } else {
             // not connected to last point -> new shape
             // but shape cant start with a line, so we create an empty shape
@@ -363,7 +363,7 @@ export default class Shape extends Draggable {
 
       if (lastElement instanceof Line) {
         if (element instanceof Point) {
-          if (lastElement.hasEndpoint(element)) {
+          if (lastElement.isEndpoint(element)) {
             // valid shape
             currentShape.elements.push(element);
           } else {
@@ -465,5 +465,27 @@ export default class Shape extends Draggable {
     shape.delete();
 
     this.addChild(...newChildren);
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      closed: this.closed
+    };
+  }
+
+  public static import(
+    data: ReturnType<Shape['export']>,
+    manager: InteractionManager
+  ) {
+    const children = data.children
+      .map((child) => {
+        if (child._type === 'point') return Point.import(child as any, manager);
+        if (child._type === 'line') return Line.import(child as any, manager);
+        if (child._type === 'element') return null;
+        throw new Error('Invalid child type');
+      })
+      .filter(Boolean) as (Point | Line)[];
+    return new Shape(manager, children, data.closed);
   }
 }

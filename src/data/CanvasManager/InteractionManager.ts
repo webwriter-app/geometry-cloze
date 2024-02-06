@@ -633,4 +633,58 @@ export default class InteractionManager extends ChildrenManager {
       this.modeListeners = () => {};
     };
   }
+
+  public export() {
+    return {
+      ...super.export(),
+      mode: this._mode,
+      creatingShape: this.creatingShape
+        ? {
+            shape: this.creatingShape.shape.id,
+            lastPoint: this.creatingShape.lastPoint.id
+          }
+        : null,
+      selected: this._selected.map((shape) => shape.id),
+      ghostLine: this.ghostLine?.export() ?? null,
+      mouseDownTarget: this.mouseDownTarget
+        ? {
+            wasSelected: this.mouseDownTarget.wasSelected,
+            element: this.mouseDownTarget.element.id
+          }
+        : null
+    };
+  }
+
+  public import(data: ReturnType<this['export']>) {
+    this.mode = data.mode;
+    const children = data.children.map((child) => Shape.import(child, this));
+    this.getChildren().forEach((child) => this.removeChild(child));
+    children.forEach((child) => this.addShape(child));
+    if (data.creatingShape) {
+      const shape = this.getChildByID(data.creatingShape.shape);
+      const lastPoint = this.getChildByID(data.creatingShape.lastPoint);
+      if (shape instanceof Shape && lastPoint instanceof Point) {
+        this.creatingShape = { shape, lastPoint };
+      } else this.creatingShape = null;
+    } else this.creatingShape = null;
+
+    this.ghostLine = data.ghostLine ? Line.import(data.ghostLine, this) : null;
+
+    if (data.selected) {
+      const selected = data.selected
+        .map((id) => this.getChildByID(id))
+        .filter(Boolean) as Draggable[];
+      this.select(selected);
+    }
+
+    if (data.mouseDownTarget) {
+      const element = this.getChildByID(data.mouseDownTarget.element);
+      if (element instanceof Draggable) {
+        this.mouseDownTarget = {
+          wasSelected: data.mouseDownTarget.wasSelected,
+          element
+        };
+      }
+    } else this.mouseDownTarget = null;
+  }
 }

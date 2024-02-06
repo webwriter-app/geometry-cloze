@@ -1,8 +1,9 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import Draggable from './base/Draggable';
+import Draggable, { DraggableData } from './base/Draggable';
 import { ContextMenuItem } from '/types/ContextMenu';
 import { NamedElement } from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
+import { StylableData } from './base/Stylable';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -10,8 +11,11 @@ export default class Point extends Draggable {
   protected _x: number;
   protected _y: number;
 
-  constructor(canvas: InteractionManager, data: BasePoint) {
-    super(canvas, {});
+  constructor(
+    canvas: InteractionManager,
+    data: BasePoint & Partial<StylableData & DraggableData>
+  ) {
+    super(canvas, data);
     if (data.name !== undefined) this.name = data.name;
     this._x = data.x;
     this._y = data.y;
@@ -67,5 +71,18 @@ export default class Point extends Draggable {
         lineWidth: true
       })
     ];
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      _type: 'point' as const,
+      x: this.x,
+      y: this.y
+    };
+  }
+
+  public static import(data: BasePoint, canvas: InteractionManager) {
+    return new Point(canvas, data);
   }
 }
