@@ -6,6 +6,7 @@ import { ContextMenuItem } from '/types/ContextMenu';
 import Element from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import Arrays from '../helper/Arrays';
+import CanvasManager from '../CanvasManager/CanvasManager';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
@@ -159,6 +160,7 @@ export default class Shape extends Draggable {
   }
 
   addPoint(...points: BasePoint[]) {
+    // TODO: handle not closed shapes
     const pointElements = points.map((p) => new Point(this.manager, p));
     const ownPoints = this.getPoints();
     for (const point of pointElements) {
@@ -183,7 +185,6 @@ export default class Shape extends Draggable {
         const lineIndex = this.children.indexOf(nearestLine.line);
         const start = Arrays.at(this.children, lineIndex - 1);
         const end = Arrays.at(this.children, lineIndex + 1);
-        console.log({ start, end });
         if (
           !start ||
           !end ||
@@ -237,18 +238,48 @@ export default class Shape extends Draggable {
     this.checkShapeValidity();
   }
 
-  removeLine(line: Line) {
-    this.removeChildUnsafe(line);
+  connectPoints(point1: Point, point2: Point) {
+    if (this.closed) return;
+    const start = this.children.indexOf(point1);
+    const end = this.children.indexOf(point2);
+    const lastIndex = this.children.length - 1;
+    // cant connect anything but the endpoints
+    if (
+      !(start === 0 && end === lastIndex) &&
+      !(start === lastIndex && end === 0)
+    )
+      return;
+
+    const line = new Line(this.manager, { start: point1, end: point2 });
+    this.addChild(line);
+    this.closed = true;
     this.checkShapeValidity();
+    this.requestRedraw();
+  }
+
+  removeLine(line: Line) {
+    const index = this.children.indexOf(line);
+    this.removeChildUnsafe(line);
+    // resort children, so that the new formed gap is now at the start + end
+    const start = this.children.slice(index);
+    const end = this.children.slice(0, index);
+    const sortedChildren = start.concat(end);
+    this.resortChildren(() => sortedChildren);
+    this.closed = false;
+    this.checkShapeValidity();
+  }
+
+  isEndPoint(point: Point) {
+    if (this.closed) return false;
+    return this.children[0] === point || Arrays.at(this.children, -1) === point;
   }
 
   /**
    * Checks is still connected
    */
   private checkShapeValidity() {
-    const shapes: { elements: (Line | Point)[]; closed: boolean }[] = [
-      { elements: [], closed: false }
-    ];
+    const initialChildren = this.children.slice();
+    const shapes: { elements: (Line | Point)[]; closed: boolean }[] = [];
 
     // remove all children that are neither points nor lines
     // remove all lines that are not connected to two points
@@ -279,30 +310,55 @@ export default class Shape extends Draggable {
 
     let lastElement: Line | Point | null = null;
     for (const element of sortedChildren as (Line | Point)[]) {
-      if (element instanceof Point) {
-        if (lastElement instanceof Line) {
-          // valid next entry
-          shapes.slice(-1)[0].elements.push(element);
-        } else {
-          shapes.slice(-1)[0].closed = true;
-          // two points without connection -> create new shape
+      const currentShape = shapes.slice(-1)[0];
+
+      if (lastElement instanceof Point) {
+        if (element instanceof Point) {
+          // to points without connection -> new shape
           shapes.push({ elements: [element], closed: false });
         }
-      } else if (element instanceof Line) {
-        if (lastElement instanceof Point) {
-          // valid shape
-          shapes.slice(-1)[0].elements.push(element);
-        } else {
-          // two lines without endpoint -> delete both
-          // check if last added element is a line
-          if (shapes.slice(-1)[0].elements instanceof Line)
-            shapes.slice(-1)[0].elements.pop();
-          // dont add current line
-          // start new shape
+
+        if (element instanceof Line) {
+          if (element.hasEndpoint(lastElement)) {
+            // valid shape
+            currentShape.elements.push(element);
+            // is closed when start point is also one point of the last line
+            currentShape.closed = element.hasEndpoint(currentShape.elements[0]);
+          } else {
+            // not connected to last point -> new shape
+            // but shape cant start with a line, so we create an empty shape
+            shapes.push({ elements: [], closed: false });
+          }
+        }
+      }
+
+      if (lastElement instanceof Line) {
+        if (element instanceof Point) {
+          if (lastElement.hasEndpoint(element)) {
+            // valid shape
+            currentShape.elements.push(element);
+          } else {
+            // not connected to last line -> new shape
+            shapes.push({ elements: [element], closed: false });
+          }
+        }
+
+        if (element instanceof Line) {
+          // two lines without point -> new shape
+          // but shape cant start with a line, so we create an empty shape
           shapes.push({ elements: [], closed: false });
         }
       }
-      lastElement = element;
+
+      if (!lastElement) {
+        if (element instanceof Point) {
+          // create new shape
+          shapes.push({ elements: [element], closed: false });
+        }
+      }
+
+      const newesetShapeElement = shapes.slice(-1)[0].elements.slice(-1)[0];
+      lastElement = newesetShapeElement ?? null;
     }
 
     const nonEmptyShapes = shapes.filter((shape) => shape.elements.length > 0);
@@ -349,5 +405,36 @@ export default class Shape extends Draggable {
       ...super.getContextMenuItems(),
       ...this.getStyleContextMenuItems({ fill: true })
     ];
+  }
+
+  public connect(shape: Shape, point: Point, to: Point) {
+    // cannot connect when shape is already closed
+    if (this.closed || shape.closed) return;
+    if (shape === this) return this.connectPoints(point, to);
+
+    if (Arrays.at(this.children, -1) !== point) {
+      if (this.children[0] === point)
+        this.resortChildren((children) => children.reverse());
+      else {
+        // cant connect to this point since it is not an endpoint
+        return;
+      }
+    }
+
+    const newChildren = shape.children.slice(); // copy the array
+    if (newChildren[0] !== to) {
+      if (Arrays.at(newChildren, -1) === to) newChildren.reverse();
+      else {
+        // cant connect to this point since it is not an endpoint
+        return;
+      }
+    }
+
+    const line = new Line(this.manager, { start: point, end: to });
+    this.addChild(line);
+
+    shape.delete();
+
+    this.addChild(...newChildren);
   }
 }

@@ -353,7 +353,9 @@ export default class InteractionManager extends ChildrenManager {
         break;
       case 'create':
         // if dragging point -> create line starting at point
-        if (hit) {
+        if (hit && hit instanceof Point) {
+          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          if (!shape || !shape.isEndPoint(hit)) break;
           this.ghostLine = new Line(this, {
             start: {
               x: hit.x,
@@ -429,8 +431,23 @@ export default class InteractionManager extends ChildrenManager {
       case 'create':
         if (this.ghostLine && this.mouseDownTarget) {
           // create new line from point -> check if lands on point -> end on point + merge shapes
-          const end = this.getElementAt(to) ?? Shape.createPoint(this, to);
+          const hitElement = this.getElementAt(to);
+          if (!(hitElement instanceof Point)) break;
+          const end = hitElement ?? Shape.createPoint(this, to);
           const start = this.mouseDownTarget;
+
+          const children = this.getChildren();
+          const shape1 = children.find((shape) =>
+            shape.hasChild(start.element)
+          );
+          const shape2 =
+            end instanceof Shape
+              ? end
+              : children.find((shape) => shape.hasChild(end));
+
+          if (!shape1 || !shape2) {
+            console.error("Couldn't find shapes for merging");
+          } else shape1.connect(shape2, start.element as Point, end);
         }
         break;
     }
@@ -447,7 +464,13 @@ export default class InteractionManager extends ChildrenManager {
         this.clickTargetEle.style.cursor = hit ? 'grab' : 'default';
         break;
       case 'create':
-        this.clickTargetEle.style.cursor = hit ? 'crosshair' : 'pointer';
+        if (hit && hit instanceof Point) {
+          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          const isEndPoint = shape?.isEndPoint(hit);
+          this.clickTargetEle.style.cursor = isEndPoint
+            ? 'crosshair'
+            : 'default';
+        } else this.clickTargetEle.style.cursor = 'pointer';
         break;
     }
   }

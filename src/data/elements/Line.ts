@@ -107,4 +107,8 @@ export default class Line extends Draggable {
       ...this.getStyleContextMenuItems({ stroke: true, lineWidth: true })
     ];
   }
+
+  public hasEndpoint(point: MathPoint) {
+    return this._start === point || this._end === point;
+  }
 }

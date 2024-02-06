@@ -44,6 +44,9 @@ export default class Element {
     child.removeEventListener('request-redraw', this.requestRedraw.bind(this));
     child.unregisterParent();
   }
+  protected resortChildren(sort: (children: Element[]) => Element[]) {
+    this._children = sort(this._children);
+  }
 
   public hasChild(child: Element) {
     return this._children.includes(child);

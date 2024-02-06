@@ -62,8 +62,10 @@ export class WwGeometryCloze extends LitElement {
       });
 
       const line = Shape.createLine(this.manager, {
-        start: { x: 800, y: 100 },
-        end: { x: 300, y: 900 },
+        // @ts-ignore
+        start: { x: 800, y: 100, name: 'top right' },
+        // @ts-ignore
+        end: { x: 300, y: 900, name: 'bottom left' },
         name: 'standalone line'
       });
 

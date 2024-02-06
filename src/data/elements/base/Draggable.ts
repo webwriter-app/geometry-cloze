@@ -113,7 +113,6 @@ export default abstract class Draggable extends Stylable {
     this._selected = false;
     this.removeEventListener('select', this.select.bind(this));
     this.removeEventListener('unselect', this.blur.bind(this));
-    // TODO: implement
   }
 
   get selected() {
