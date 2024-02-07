@@ -105,7 +105,8 @@ export default class Element {
         key: 'delete',
         type: 'button',
         label: 'Delete',
-        action: this.delete.bind(this)
+        action: this.delete.bind(this),
+        badge: 'Del/Backspace'
       }
     ];
   }

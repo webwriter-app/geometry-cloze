@@ -34,6 +34,11 @@ export class WwGeomContextMenu extends LitElement {
           value="${item.key}"
           .disabled=${item.disabled ?? false}>
           ${item.label}
+          ${item.badge
+            ? html`<sl-badge slot="suffix" variant="neutral"
+                >${item.badge}</sl-badge
+              >`
+            : ''}
         </sl-menu-item>`;
       case 'checkbox':
         return html`<sl-menu-item
