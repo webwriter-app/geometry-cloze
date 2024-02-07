@@ -3,7 +3,8 @@
 - snap to grid
 - webwriter integration
 - better selection style
+- delete with keyboard shortcut in create
 
 # Bugs
 
-no known bugs :)
+- dragging from point to empty creates problems with ghost line
