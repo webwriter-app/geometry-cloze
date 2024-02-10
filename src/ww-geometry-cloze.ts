@@ -3,10 +3,9 @@ import { customElement, property, query } from 'lit/decorators.js';
 import './components/toolbar/ww-geom-toolbar';
 // init shoelace
 import './misc/shoelaceSetup';
-import { InteractionMode } from './data/CanvasManager/InteractionManager';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
-import CanvasManager from './data/CanvasManager/CanvasManager';
 import Shape from './data/elements/Shape';
+import CanvasManager from './data/CanvasManager/CanvasManager';
 
 /**
  * A widget to create and view geometry exercises.

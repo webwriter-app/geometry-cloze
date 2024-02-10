@@ -1,4 +1,3 @@
-import CanvasManager from '../../CanvasManager/CanvasManager';
 import Element from './Element';
 import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';

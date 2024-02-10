@@ -112,6 +112,14 @@ export default class ChildrenManager {
     };
   }
 
+  public import(data: ReturnType<this['export']>) {
+    const children = data.children.map((child) =>
+      Shape.import(child, this as any)
+    );
+    this.getChildren().forEach((child) => this.removeChild(child));
+    children.forEach((child) => this.addShape(child));
+  }
+
   private static idCounter = 0;
   public static getID() {
     return ChildrenManager.idCounter++;

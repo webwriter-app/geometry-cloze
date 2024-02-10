@@ -3,111 +3,12 @@ import Line from '../elements/Line';
 import Point from '../elements/Point';
 import Shape from '../elements/Shape';
 import Draggable from '../elements/base/Draggable';
-import Calc, { MathPoint } from '../helper/Calc';
-import ChildrenManager from './ChildrenManager';
-import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
+import { MathPoint } from '../helper/Calc';
+import EventManager from './EventManager';
 
-export type InteractionMode = 'select' | 'create';
-
-export default class InteractionManager extends ChildrenManager {
-  private wrapper: HTMLElement;
+export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-
-  private clickTargetEle: HTMLElement;
-  private contextMenu: WwGeomContextMenu;
-
-  /**
-   * Currently selected element
-   */
-  private _selected: Draggable[] = [];
-
-  constructor(canvas: HTMLCanvasElement, contextMenu: WwGeomContextMenu) {
-    super(canvas);
-    this.wrapper = canvas;
-    this.contextMenu = contextMenu;
-
-    this.clickTargetEle = canvas;
-
-    this.clickTargetEle.addEventListener(
-      'mousedown',
-      this.onMouseDown.bind(this)
-    );
-    this.clickTargetEle.addEventListener(
-      'touchstart',
-      this.onMouseDown.bind(this)
-    );
-    this.clickTargetEle.addEventListener('mouseup', this.onMouseUp.bind(this));
-    this.clickTargetEle.addEventListener('touchend', this.onMouseUp.bind(this));
-    this.clickTargetEle.addEventListener(
-      'mousemove',
-      this.onMouseMove.bind(this),
-      {
-        passive: true,
-        capture: false
-      }
-    );
-    this.clickTargetEle.addEventListener(
-      'touchmove',
-      this.onMouseMove.bind(this),
-      {
-        passive: true,
-        capture: false
-      }
-    );
-    this.clickTargetEle.addEventListener('touchmove', this.preventTouchScroll, {
-      passive: false,
-      capture: false
-    });
-
-    this.clickTargetEle.addEventListener(
-      'contextmenu',
-      this.handleContextMenu.bind(this)
-    );
-    document.addEventListener('keydown', this.handleKeyboardEvent.bind(this));
-  }
-
-  unmount() {
-    this.clickTargetEle.removeEventListener(
-      'mousedown',
-      this.onMouseDown.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'touchstart',
-      this.onMouseDown.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'mouseup',
-      this.onMouseUp.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'touchend',
-      this.onMouseUp.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'mousemove',
-      this.onMouseMove.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'touchmove',
-      this.onMouseMove.bind(this)
-    );
-    this.clickTargetEle.removeEventListener(
-      'touchmove',
-      this.preventTouchScroll
-    );
-    this.clickTargetEle.removeEventListener(
-      'contextmenu',
-      this.handleContextMenu.bind(this)
-    );
-    document.removeEventListener(
-      'keydown',
-      this.handleKeyboardEvent.bind(this)
-    );
-  }
-
-  private canUseSelectRect() {
-    return this._mode === 'select';
-  }
+  private snapSpacing: number | null = 50;
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
@@ -115,163 +16,14 @@ export default class InteractionManager extends ChildrenManager {
     this.ghostLine?.draw(ctx);
   }
 
-  private preventTouchScroll(event: TouchEvent) {
-    event.preventDefault();
-  }
-
-  private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
-    const rect = this.wrapper.getBoundingClientRect();
-    const absX =
-      ('clientX' in event ? event.clientX : event.touches[0].clientX) -
-      rect.left;
-    const absY =
-      ('clientX' in event ? event.clientY : event.touches[0].clientY) -
-      rect.top;
-
-    const { width: canvasWidth, height: canvasHeight } =
-      this.getCanvasDimensions();
-    const x = (absX / rect.width) * canvasWidth;
-    const y = (absY / rect.height) * canvasHeight;
-
-    return { x, y };
-  }
-
-  /**
-   * Wether for the current mouse down event the mouse has been moved beyond the threshold
-   */
-  private moved: boolean = false;
-  private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
-    null;
-  private onMouseDown(event: MouseEvent | TouchEvent) {
-    this.moved = false;
-    const coords = this.getRelativeCoordinates(event);
-
-    const hit = this.getElementAt(coords);
-
-    if (hit) {
-      const wasSelected = this._selected.includes(hit);
-
-      if (!wasSelected) this.select(hit, { keepSelection: event.ctrlKey });
-
-      this.mouseDownTarget = {
-        element: hit,
-        wasSelected
-      };
-    } else {
-      this.mouseDownTarget = null;
-    }
-
-    this.dragStart = {
-      ...coords,
-      startPositions: this._selected.map((shape) => ({
-        x: shape.x,
-        y: shape.y
-      }))
-    };
-  }
-
-  private onMouseUp(event: MouseEvent | TouchEvent) {
-    const isRightClick = 'button' in event && event.button === 2;
-
-    if (this.moved) {
-      this.handleDragEnd({
-        from: this.dragStart!,
-        to: this.getRelativeCoordinates(event),
-        ctrlKeyPressed: event.ctrlKey
-      });
-      return;
-    } else {
-      const hit = this.getElementAt(this.dragStart!);
-      // needs to be more complicated since selected state is set in mouseDown listener
-      const alreadySelected = (() => {
-        if (!hit) return false;
-        if (this.mouseDownTarget) return this.mouseDownTarget.wasSelected;
-        return this._selected.includes(hit);
-      })();
-
-      this.handleClick({
-        coords: this.getRelativeCoordinates(event),
-        hit,
-        alreadySelected,
-        ctrlPressed: event.ctrlKey,
-        isRightClick
-      });
-    }
-  }
-
-  /**
-   * Information about the first click/mouse down when dragging an element
-   */
-  private dragStart: {
-    // position of the first click/mouse down
-    x: number;
-    y: number;
-    // positions of selected elements at the time of the first click/mouse down
-    startPositions: { x: number; y: number }[];
-  } | null = null;
-  private onMouseMove(event: MouseEvent | TouchEvent) {
-    const coords = this.getRelativeCoordinates(event);
-
-    // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
-    if ('buttons' in event && event.buttons !== 1) {
-      this.upadateCursor(coords);
-      if (this.moved) {
-        this.handleDragEnd({
-          from: this.dragStart!,
-          to: coords,
-          ctrlKeyPressed: event.ctrlKey
-        });
-        this.moved = false;
-      }
-      this.handleMouseMove({ current: coords });
-      return;
-    }
-
-    // set moved to true if we moved more than threshold
-    if (
-      !this.moved &&
-      this.dragStart &&
-      Calc.distance(coords, this.dragStart) > 5
-    ) {
-      this.moved = true;
-
-      this.handleDragStart({
-        start: this.dragStart,
-        ctrlKeyPressed: event.ctrlKey,
-        hit: this.getElementAt(this.dragStart!)
-      });
-    }
-
-    this.handleDragging({
-      start: this.dragStart!,
-      current: coords
-    });
-  }
-
-  private handleContextMenu(event: MouseEvent) {
-    const coords = this.getRelativeCoordinates(event);
-    const hit = this.getElementAt(coords);
-    if (hit) {
-      event.preventDefault();
-      const menuitems = hit.getContextMenuItems();
-      if (menuitems.length) {
-        const localX =
-          event.clientX - this.wrapper.getBoundingClientRect().left;
-        const localY = event.clientY - this.wrapper.getBoundingClientRect().top;
-        this.contextMenu.items = menuitems;
-        this.contextMenu.open(localX, localY);
-      }
-    }
-  }
-
   /**
    * When creating a shape in create mode
    */
   private creatingShape: { shape: Shape; lastPoint: Point } | null = null;
-  private handleClick({
+  protected handleClick({
     hit,
-    alreadySelected,
     ctrlPressed,
+    alreadySelected,
     isRightClick,
     coords
   }: {
@@ -281,9 +33,9 @@ export default class InteractionManager extends ChildrenManager {
     ctrlPressed: boolean;
     isRightClick: boolean;
   }) {
+    console.log('click');
     switch (this._mode) {
       case 'select':
-        if (!this.canUseSelectRect()) this.selectionRect = null;
         if (this.selectionRect) {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
@@ -393,7 +145,7 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
-  private handleMouseMove({ current }: { current: MathPoint }) {
+  protected handleMouseMove({ current }: { current: MathPoint }) {
     switch (this.mode) {
       case 'create':
         if (this.ghostLine) this.ghostLine.setEnd(current);
@@ -404,7 +156,7 @@ export default class InteractionManager extends ChildrenManager {
 
   private ghostLine: Line | null = null;
   private selectionRect: SelectionRect | null = null;
-  private handleDragStart({
+  protected handleDragStart({
     ctrlKeyPressed,
     start,
     hit
@@ -416,11 +168,11 @@ export default class InteractionManager extends ChildrenManager {
     switch (this._mode) {
       case 'select':
         // only draw selection rect if we're not dragging an element
-        if (!this.mouseDownTarget) {
+        if (!hit) {
           if (!ctrlKeyPressed) this.blur();
           this.selectionRect = new SelectionRect({
-            x: this.dragStart!.x,
-            y: this.dragStart!.y
+            x: start.x,
+            y: start.y
           });
         }
         break;
@@ -441,28 +193,32 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
-  private handleDragging({
+  protected handleDragging({
     start,
-    current
+    current,
+    element,
+    dragStart
   }: {
     start: MathPoint;
     current: MathPoint;
+    element: Draggable | null;
+    dragStart: MathPoint & { startPositions: MathPoint[] };
   }) {
     switch (this._mode) {
       case 'select':
-        if (this._selected.length > 0 && this.mouseDownTarget) {
+        if (this.selected.length > 0 && element) {
           // drag currently selected element
           const change = {
             x: current.x - start.x,
             y: current.y - start.y
           };
 
-          this._selected.forEach((shape, index) => {
-            const startCoords = this.dragStart!.startPositions[index];
+          this.selected.forEach((shape, index) => {
+            const startCoords = dragStart.startPositions[index];
             const x = startCoords.x + change.x;
             const y = startCoords.y + change.y;
             // prevent moving element twice (move element and its parent)
-            if (!this._selected.some((child) => child.hasChild(shape)))
+            if (!this.selected.some((child) => child.hasChild(shape)))
               shape.move({ x, y, relative: false });
           });
 
@@ -482,14 +238,16 @@ export default class InteractionManager extends ChildrenManager {
     }
   }
 
-  private handleDragEnd({
+  protected handleDragEnd({
     from,
     to,
-    ctrlKeyPressed
+    ctrlKeyPressed,
+    element
   }: {
     from: MathPoint;
     to: MathPoint;
     ctrlKeyPressed: boolean;
+    element: Draggable | null;
   }) {
     switch (this._mode) {
       case 'select':
@@ -500,19 +258,27 @@ export default class InteractionManager extends ChildrenManager {
           this.select(newSelections, { keepSelection: ctrlKeyPressed });
           this.selectionRect = null;
         }
+        if (element && this.snapSpacing) {
+          // snap to grid
+          const snap = (value: number) =>
+            Math.round(value / this.snapSpacing!) * this.snapSpacing!;
+          element.move({
+            relative: false,
+            x: snap(element.x),
+            y: snap(element.y)
+          });
+        }
         break;
       case 'create':
-        if (this.ghostLine && this.mouseDownTarget) {
+        if (this.ghostLine && element) {
           // create new line from point -> check if lands on point -> end on point + merge shapes
           const hitElement = this.getElementAt(to);
           if (!(hitElement instanceof Point)) break;
           const end = hitElement ?? Shape.createPoint(this, to);
-          const start = this.mouseDownTarget;
+          const start = element;
 
           const children = this.getChildren();
-          const shape1 = children.find((shape) =>
-            shape.hasChild(start.element)
-          );
+          const shape1 = children.find((shape) => shape.hasChild(start));
           const shape2 =
             end instanceof Shape
               ? end
@@ -520,7 +286,7 @@ export default class InteractionManager extends ChildrenManager {
 
           if (!shape1 || !shape2) {
             console.error("Couldn't find shapes for merging");
-          } else shape1.connect(shape2, start.element as Point, end);
+          } else shape1.connect(shape2, element as Point, end);
           this.ghostLine = null;
         }
         break;
@@ -529,26 +295,24 @@ export default class InteractionManager extends ChildrenManager {
     this.requestRedraw();
   }
 
-  private upadateCursor(coords: MathPoint) {
+  protected upadateCursor(coords: MathPoint): CSSStyleDeclaration['cursor'] {
     // check if we're hovering over a draggable element and change cursor accordingly
     const hit = this.getElementAt(coords);
     switch (this.mode) {
       case 'select':
-        this.clickTargetEle.style.cursor = hit ? 'grab' : 'default';
-        break;
+        return hit ? 'grab' : 'default';
       case 'create':
         if (hit && hit instanceof Point) {
           const shape = this.getChildren().find((shape) => shape.hasChild(hit));
           const isEndPoint = shape?.isEndPoint(hit);
-          this.clickTargetEle.style.cursor = isEndPoint
-            ? 'crosshair'
-            : 'default';
-        } else this.clickTargetEle.style.cursor = 'pointer';
-        break;
+          return isEndPoint ? 'crosshair' : 'default';
+        } else return 'pointer';
+      default:
+        return 'default';
     }
   }
 
-  private handleKeyboardEvent(event: KeyboardEvent) {
+  protected handleKeyboardEvent(event: KeyboardEvent) {
     switch (this.mode) {
       case 'select':
         switch (event.key) {
@@ -561,8 +325,8 @@ export default class InteractionManager extends ChildrenManager {
             break;
           case 'Delete':
           case 'Backspace':
-            this._selected.forEach((shape) => shape.delete());
-            this._selected = [];
+            this.selected.forEach((shape) => shape.delete());
+            this.blur();
             break;
         }
         break;
@@ -580,35 +344,6 @@ export default class InteractionManager extends ChildrenManager {
             break;
         }
         break;
-    }
-  }
-
-  select(
-    shape: Draggable | Draggable[],
-    options: { keepSelection?: boolean } = {}
-  ) {
-    const { keepSelection = false } = options;
-
-    if (!keepSelection) this.blur();
-
-    const shapes = Array.isArray(shape) ? shape : [shape];
-    for (const shape of shapes) {
-      if (!this._selected.includes(shape)) {
-        this._selected.push(shape);
-        shape.select();
-      }
-    }
-  }
-
-  blur(element?: Draggable | null) {
-    if (element) {
-      const index = this._selected.indexOf(element);
-      if (index < 0) return;
-      this._selected.splice(index, 1);
-      element.blur();
-    } else {
-      this._selected.forEach((shape) => shape.blur());
-      this._selected = [];
     }
   }
 
@@ -644,22 +379,14 @@ export default class InteractionManager extends ChildrenManager {
             lastPoint: this.creatingShape.lastPoint.id
           }
         : null,
-      selected: this._selected.map((shape) => shape.id),
-      ghostLine: this.ghostLine?.export() ?? null,
-      mouseDownTarget: this.mouseDownTarget
-        ? {
-            wasSelected: this.mouseDownTarget.wasSelected,
-            element: this.mouseDownTarget.element.id
-          }
-        : null
+      ghostLine: this.ghostLine?.export() ?? null
     };
   }
 
   public import(data: ReturnType<this['export']>) {
+    super.import(data);
     this.mode = data.mode;
-    const children = data.children.map((child) => Shape.import(child, this));
-    this.getChildren().forEach((child) => this.removeChild(child));
-    children.forEach((child) => this.addShape(child));
+
     if (data.creatingShape) {
       const shape = this.getChildByID(data.creatingShape.shape);
       const lastPoint = this.getChildByID(data.creatingShape.lastPoint);
@@ -669,22 +396,5 @@ export default class InteractionManager extends ChildrenManager {
     } else this.creatingShape = null;
 
     this.ghostLine = data.ghostLine ? Line.import(data.ghostLine, this) : null;
-
-    if (data.selected) {
-      const selected = data.selected
-        .map((id) => this.getChildByID(id))
-        .filter(Boolean) as Draggable[];
-      this.select(selected);
-    }
-
-    if (data.mouseDownTarget) {
-      const element = this.getChildByID(data.mouseDownTarget.element);
-      if (element instanceof Draggable) {
-        this.mouseDownTarget = {
-          wasSelected: data.mouseDownTarget.wasSelected,
-          element
-        };
-      }
-    } else this.mouseDownTarget = null;
   }
 }

@@ -1,7 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../context-menu/ww-geom-context-menu';
-import { InteractionMode } from '/data/CanvasManager/InteractionManager';
 
 /**
  *

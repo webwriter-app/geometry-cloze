@@ -6,7 +6,6 @@ import { ContextMenuItem } from '/types/ContextMenu';
 import Element from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import Arrays from '../helper/Arrays';
-import CanvasManager from '../CanvasManager/CanvasManager';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;

@@ -86,7 +86,7 @@ export default abstract class Draggable extends Stylable {
    * Gets called when the element is selected
    * @returns Whether the element should be selected
    */
-  onSelect(): boolean {
+  protected onSelect(): boolean {
     return true;
   }
 
@@ -104,7 +104,7 @@ export default abstract class Draggable extends Stylable {
    * Gets called when the element is unselected
    * @returns Whether the element should be unselected
    */
-  onBlur(): boolean {
+  protected onBlur(): boolean {
     return true;
   }
 

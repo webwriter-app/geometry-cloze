@@ -1,7 +1,6 @@
 import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { ContextMenuItem } from '/types/ContextMenu';
-import { classMap } from 'lit/directives/class-map.js';
 import { SlMenu, SlSelectEvent } from '@shoelace-style/shoelace';
 
 /**
