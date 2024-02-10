@@ -115,7 +115,7 @@ export default class Shape extends Draggable {
     y?: number | undefined;
     relative: boolean;
   }): void {
-    const points = this.getPoints();
+    const lines = this.getLines();
     const relativeCoords = coords.relative
       ? coords
       : {
@@ -127,7 +127,7 @@ export default class Shape extends Draggable {
     this._x += relativeCoords.x ?? 0;
     this._y += relativeCoords.y ?? 0;
 
-    for (const point of points) {
+    for (const point of lines) {
       point.move(relativeCoords);
     }
 

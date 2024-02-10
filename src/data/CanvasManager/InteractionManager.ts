@@ -8,7 +8,19 @@ import EventManager from './EventManager';
 
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-  private snapSpacing: number | null = 50;
+  protected snapSpacing: number | null = 50;
+  private snap<Value extends number | MathPoint>(value: Value): Value {
+    if (this.snapSpacing === null) return value;
+    if (typeof value === 'object') {
+      return {
+        ...value,
+        x: this.snap(value.x),
+        y: this.snap(value.y)
+      } as Value;
+    } else
+      return (Math.round((value as number) / this.snapSpacing) *
+        this.snapSpacing) as Value;
+  }
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
@@ -33,6 +45,7 @@ export default class InteractionManager extends EventManager {
     ctrlPressed: boolean;
     isRightClick: boolean;
   }) {
+    coords = this.snap(coords);
     console.log('click');
     switch (this._mode) {
       case 'select':
@@ -215,11 +228,30 @@ export default class InteractionManager extends EventManager {
 
           this.selected.forEach((shape, index) => {
             const startCoords = dragStart.startPositions[index];
-            const x = startCoords.x + change.x;
-            const y = startCoords.y + change.y;
+            const x = this.snap(startCoords.x + change.x);
+            const y = this.snap(startCoords.y + change.y);
+            // if (Math.abs(startCoords.x - x) > 100) {
+            //   console.log('x', startCoords.x, x);
+            // }
+            // if (Math.abs(startCoords.y - y) > 100) {
+            //   console.log('y', startCoords.y, y);
+            // }
             // prevent moving element twice (move element and its parent)
-            if (!this.selected.some((child) => child.hasChild(shape)))
-              shape.move({ x, y, relative: false });
+            if (!this.selected.some((child) => child.hasChild(shape))) {
+              const move = { x, y, relative: false };
+              // console.log('move', {
+              //   // x,
+              //   y,
+              //   // startX: startCoords.x,
+              //   orgY: startCoords.y,
+              //   // changeX: change.x,
+              //   changeY: change.y,
+              //   startY: start.y,
+              //   currentY: current.y
+              // });
+              console.log(move);
+              shape.move(move);
+            }
           });
 
           this.requestRedraw();
@@ -258,15 +290,14 @@ export default class InteractionManager extends EventManager {
           this.select(newSelections, { keepSelection: ctrlKeyPressed });
           this.selectionRect = null;
         }
-        if (element && this.snapSpacing) {
+        if (element) {
           // snap to grid
-          const snap = (value: number) =>
-            Math.round(value / this.snapSpacing!) * this.snapSpacing!;
           element.move({
             relative: false,
-            x: snap(element.x),
-            y: snap(element.y)
+            x: this.snap(element.x),
+            y: this.snap(element.y)
           });
+          console.log('drag end', element.x, element.y);
         }
         break;
       case 'create':
@@ -396,5 +427,9 @@ export default class InteractionManager extends EventManager {
     } else this.creatingShape = null;
 
     this.ghostLine = data.ghostLine ? Line.import(data.ghostLine, this) : null;
+  }
+
+  public setSnapping(spacing: number | null) {
+    this.snapSpacing = spacing;
   }
 }
