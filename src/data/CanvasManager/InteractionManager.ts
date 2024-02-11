@@ -369,6 +369,11 @@ export default class InteractionManager extends EventManager {
             this.mode = 'select';
             this.requestRedraw();
             break;
+          case 'Delete':
+          case 'Backspace':
+            this.selected.forEach((shape) => shape.delete());
+            this.blur();
+            break;
         }
         break;
     }
