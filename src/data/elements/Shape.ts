@@ -293,6 +293,9 @@ export default class Shape extends Draggable {
 
   removeLine(line: Line) {
     const index = this.children.indexOf(line);
+    if (index === -1) return;
+    // when shape is only two points connected by a line, we delete the shape
+    if (this.children.length === 3) return this.delete();
     this.removeChildUnsafe(line);
     // resort children, so that the new formed gap is now at the start + end
     const start = this.children.slice(index);
