@@ -58,9 +58,30 @@ export default class Line extends Draggable {
   draw(ctx: CanvasRenderingContext2D) {
     super.draw(ctx);
     ctx.beginPath();
-    // TODO: account for point size
-    ctx.moveTo(this._start.x, this._start.y);
-    ctx.lineTo(this._end.x, this._end.y);
+    const vector = {
+      x: this._end.x - this._start.x,
+      y: this._end.y - this._start.y
+    };
+    const normalized = Calc.normalize(vector);
+    const start = {
+      x: this._start.x,
+      y: this._start.y
+    };
+    if (this.start instanceof Point) {
+      start.x += normalized.x * this.start.size;
+      start.y += normalized.y * this.start.size;
+    }
+    ctx.moveTo(start.x, start.y);
+
+    const end = {
+      x: this._end.x,
+      y: this._end.y
+    };
+    if (this.end instanceof Point) {
+      end.x -= normalized.x * this.end.size;
+      end.y -= normalized.y * this.end.size;
+    }
+    ctx.lineTo(end.x, end.y);
     ctx.stroke();
   }
 
