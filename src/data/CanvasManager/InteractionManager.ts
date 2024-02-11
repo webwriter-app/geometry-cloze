@@ -299,22 +299,23 @@ export default class InteractionManager extends EventManager {
         if (this.ghostLine && element) {
           // create new line from point -> check if lands on point -> end on point + merge shapes
           const hitElement = this.getElementAt(to);
-          if (!(hitElement instanceof Point)) break;
-          const end = hitElement ?? Shape.createPoint(this, to);
-          const start = element;
+          if (hitElement instanceof Point) {
+            const end = hitElement ?? Shape.createPoint(this, to);
+            const start = element;
 
-          const children = this.getChildren();
-          const shape1 = children.find((shape) => shape.hasChild(start));
-          const shape2 =
-            end instanceof Shape
-              ? end
-              : children.find((shape) => shape.hasChild(end));
+            const children = this.getChildren();
+            const shape1 = children.find((shape) => shape.hasChild(start));
+            const shape2 =
+              end instanceof Shape
+                ? end
+                : children.find((shape) => shape.hasChild(end));
 
-          if (!shape1 || !shape2) {
-            console.error("Couldn't find shapes for merging");
-          } else shape1.connect(shape2, element as Point, end);
-          this.ghostLine = null;
+            if (!shape1 || !shape2) {
+              console.error("Couldn't find shapes for merging");
+            } else shape1.connect(shape2, element as Point, end);
+          }
         }
+        this.ghostLine = null;
         break;
     }
     this.selectionRect = null;

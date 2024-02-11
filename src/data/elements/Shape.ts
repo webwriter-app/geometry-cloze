@@ -280,6 +280,10 @@ export default class Shape extends Draggable {
     )
       return;
 
+    // if shape is only two points that are already connected, we dont need to do anything
+    // lastIndex is 2 since 0 is the first point and 1 is the line
+    if (lastIndex === 2) return;
+
     const line = new Line(this.manager, { start: point1, end: point2 });
     this.addChild(line);
     this.closed = true;
@@ -351,8 +355,6 @@ export default class Shape extends Draggable {
           if (element.isEndpoint(lastElement)) {
             // valid shape
             currentShape.elements.push(element);
-            // is closed when start point is also one point of the last line
-            currentShape.closed = element.isEndpoint(currentShape.elements[0]);
           } else {
             // not connected to last point -> new shape
             // but shape cant start with a line, so we create an empty shape
@@ -367,12 +369,20 @@ export default class Shape extends Draggable {
             // valid shape
             currentShape.elements.push(element);
           } else {
+            // since last shape is now finished, we can check if it is closed
+            currentShape.closed = lastElement.isEndpoint(
+              currentShape.elements[0]
+            );
             // not connected to last line -> new shape
             shapes.push({ elements: [element], closed: false });
           }
         }
 
         if (element instanceof Line) {
+          // since last shape is now finished, we can check if it is closed
+          currentShape.closed = lastElement.isEndpoint(
+            currentShape.elements[0]
+          );
           // two lines without point -> new shape
           // but shape cant start with a line, so we create an empty shape
           shapes.push({ elements: [], closed: false });
