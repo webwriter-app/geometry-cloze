@@ -403,6 +403,11 @@ export default class Shape extends Draggable {
       lastElement = newesetShapeElement ?? null;
     }
 
+    if (lastElement instanceof Line)
+      shapes.slice(-1)[0].closed = lastElement.isEndpoint(
+        shapes.slice(-1)[0].elements[0]
+      );
+
     const nonEmptyShapes = shapes.filter((shape) => shape.elements.length > 0);
     const self = nonEmptyShapes.pop();
     if (!self) {
