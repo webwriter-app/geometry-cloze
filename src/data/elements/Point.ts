@@ -29,18 +29,6 @@ export default class Point extends Draggable {
     ctx.stroke();
   }
 
-  move(coords: { x?: number; y?: number; relative: boolean }) {
-    if (coords.relative) {
-      this._x += coords.x ?? 0;
-      this._y += coords.y ?? 0;
-    } else {
-      this._x = coords.x ?? this.x;
-      this._y = coords.y ?? this.y;
-    }
-    this.fireEvent('move', this);
-    this.requestRedraw();
-  }
-
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
     if (!point2)
       return Calc.distance(this, point) - this.clickTargetSize <

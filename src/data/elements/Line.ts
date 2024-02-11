@@ -39,7 +39,7 @@ export default class Line extends Draggable {
           y: (coords?.y ?? this._y) - this._y,
           relative: true
         };
-    super.move(coords);
+    super.move(relativeCoords);
     if (this._start instanceof Point) this._start.move(relativeCoords);
     if (this._end instanceof Point) this._end.move(relativeCoords);
     this.fireEvent('move', this);
