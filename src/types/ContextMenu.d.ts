@@ -8,6 +8,7 @@ interface GeneralContextMenuItem<Type extends ContextMenuItemType> {
 
 export interface ContextMenuButton extends GeneralContextMenuItem<'button'> {
   key: string;
+  badge?: string;
   isDisabled?: () => boolean;
   disabled?: boolean;
   action: () => void;

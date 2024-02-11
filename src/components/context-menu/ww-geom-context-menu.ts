@@ -1,7 +1,6 @@
 import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { ContextMenuItem } from '/types/ContextMenu';
-import { classMap } from 'lit/directives/class-map.js';
 import { SlMenu, SlSelectEvent } from '@shoelace-style/shoelace';
 
 /**
@@ -34,6 +33,11 @@ export class WwGeomContextMenu extends LitElement {
           value="${item.key}"
           .disabled=${item.disabled ?? false}>
           ${item.label}
+          ${item.badge
+            ? html`<sl-badge slot="suffix" variant="neutral"
+                >${item.badge}</sl-badge
+              >`
+            : ''}
         </sl-menu-item>`;
       case 'checkbox':
         return html`<sl-menu-item

@@ -1,7 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../context-menu/ww-geom-context-menu';
-import { InteractionMode } from '/data/CanvasManager/InteractionManager';
 
 /**
  *
@@ -14,16 +13,21 @@ export class WwGeomToolbar extends LitElement {
   render() {
     return html`<div class="wrapper">
       <sl-button-group label="Mode">
-        <sl-button
-          @click=${this.handleModeChange.bind(this, 'select')}
-          variant=${this.mode === 'select' ? 'primary' : 'default'}
-          >Select</sl-button
-        >
-        <sl-button
-          @click=${this.handleModeChange.bind(this, 'create')}
-          variant=${this.mode === 'create' ? 'primary' : 'default'}
-          >Create</sl-button
-        >
+        <sl-tooltip content="Press [S] to switch">
+          <sl-button
+            @click=${this.handleModeChange.bind(this, 'select')}
+            variant=${this.mode === 'select' ? 'primary' : 'default'}>
+            Select
+          </sl-button>
+        </sl-tooltip>
+
+        <sl-tooltip content="Press [C] to switch">
+          <sl-button
+            @click=${this.handleModeChange.bind(this, 'create')}
+            variant=${this.mode === 'create' ? 'primary' : 'default'}>
+            Create
+          </sl-button>
+        </sl-tooltip>
       </sl-button-group>
     </div>`;
   }

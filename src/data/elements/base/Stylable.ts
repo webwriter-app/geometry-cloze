@@ -1,4 +1,3 @@
-import CanvasManager from '../../CanvasManager/CanvasManager';
 import Element from './Element';
 import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';
@@ -217,5 +216,16 @@ export default class Stylable extends Element {
 
   public getContextMenuItems(): ContextMenuItem[] {
     return [...super.getContextMenuItems()];
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      lineWidth: this._lineWidth,
+      size: this._size,
+      stroke: this._stroke,
+      fill: this._fill,
+      shadow: this._shadow
+    };
   }
 }

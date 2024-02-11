@@ -6,7 +6,6 @@ import { ContextMenuItem } from '/types/ContextMenu';
 import Element from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import Arrays from '../helper/Arrays';
-import CanvasManager from '../CanvasManager/CanvasManager';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
@@ -132,6 +131,7 @@ export default class Shape extends Draggable {
       point.move(relativeCoords);
     }
 
+    this.fireEvent('move');
     this.requestRedraw();
   }
 
@@ -280,6 +280,10 @@ export default class Shape extends Draggable {
     )
       return;
 
+    // if shape is only two points that are already connected, we dont need to do anything
+    // lastIndex is 2 since 0 is the first point and 1 is the line
+    if (lastIndex === 2) return;
+
     const line = new Line(this.manager, { start: point1, end: point2 });
     this.addChild(line);
     this.closed = true;
@@ -289,6 +293,9 @@ export default class Shape extends Draggable {
 
   removeLine(line: Line) {
     const index = this.children.indexOf(line);
+    if (index === -1) return;
+    // when shape is only two points connected by a line, we delete the shape
+    if (this.children.length === 3) return this.delete();
     this.removeChildUnsafe(line);
     // resort children, so that the new formed gap is now at the start + end
     const start = this.children.slice(index);
@@ -348,11 +355,9 @@ export default class Shape extends Draggable {
         }
 
         if (element instanceof Line) {
-          if (element.hasEndpoint(lastElement)) {
+          if (element.isEndpoint(lastElement)) {
             // valid shape
             currentShape.elements.push(element);
-            // is closed when start point is also one point of the last line
-            currentShape.closed = element.hasEndpoint(currentShape.elements[0]);
           } else {
             // not connected to last point -> new shape
             // but shape cant start with a line, so we create an empty shape
@@ -363,16 +368,24 @@ export default class Shape extends Draggable {
 
       if (lastElement instanceof Line) {
         if (element instanceof Point) {
-          if (lastElement.hasEndpoint(element)) {
+          if (lastElement.isEndpoint(element)) {
             // valid shape
             currentShape.elements.push(element);
           } else {
+            // since last shape is now finished, we can check if it is closed
+            currentShape.closed = lastElement.isEndpoint(
+              currentShape.elements[0]
+            );
             // not connected to last line -> new shape
             shapes.push({ elements: [element], closed: false });
           }
         }
 
         if (element instanceof Line) {
+          // since last shape is now finished, we can check if it is closed
+          currentShape.closed = lastElement.isEndpoint(
+            currentShape.elements[0]
+          );
           // two lines without point -> new shape
           // but shape cant start with a line, so we create an empty shape
           shapes.push({ elements: [], closed: false });
@@ -389,6 +402,11 @@ export default class Shape extends Draggable {
       const newesetShapeElement = shapes.slice(-1)[0].elements.slice(-1)[0];
       lastElement = newesetShapeElement ?? null;
     }
+
+    if (lastElement instanceof Line)
+      shapes.slice(-1)[0].closed = lastElement.isEndpoint(
+        shapes.slice(-1)[0].elements[0]
+      );
 
     const nonEmptyShapes = shapes.filter((shape) => shape.elements.length > 0);
     const self = nonEmptyShapes.pop();
@@ -465,5 +483,27 @@ export default class Shape extends Draggable {
     shape.delete();
 
     this.addChild(...newChildren);
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      closed: this.closed
+    };
+  }
+
+  public static import(
+    data: ReturnType<Shape['export']>,
+    manager: InteractionManager
+  ) {
+    const children = data.children
+      .map((child) => {
+        if (child._type === 'point') return Point.import(child as any, manager);
+        if (child._type === 'line') return Line.import(child as any, manager);
+        if (child._type === 'element') return null;
+        throw new Error('Invalid child type');
+      })
+      .filter(Boolean) as (Point | Line)[];
+    return new Shape(manager, children, data.closed);
   }
 }

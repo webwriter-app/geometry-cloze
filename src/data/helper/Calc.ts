@@ -1,6 +1,4 @@
-import Point from '../elements/Point';
-
-export type MathPoint = Pick<Point, 'x' | 'y'>;
+export type MathPoint = { x: number; y: number };
 export type MathLine = {
   start: MathPoint;
   end: MathPoint;
@@ -61,10 +59,10 @@ export default class Calc {
    * Get the point with the extreme value of a given axis
    */
   static getExtremePoint(
-    points: Point[],
+    points: MathPoint[],
     extreme: 'max' | 'min',
     axis: 'x' | 'y'
-  ): Point | null {
+  ): MathPoint | null {
     const compare = extreme === 'max' ? Math.max : Math.min;
     return (
       points.reduce((extremePoint, point) =>
@@ -188,5 +186,10 @@ export default class Calc {
     }
 
     return inside;
+  }
+
+  static normalize(point: MathPoint): MathPoint {
+    const length = Math.sqrt(point.x ** 2 + point.y ** 2);
+    return { x: point.x / length, y: point.y / length };
   }
 }

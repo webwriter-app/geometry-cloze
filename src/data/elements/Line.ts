@@ -1,9 +1,10 @@
-import Draggable from './base/Draggable';
+import Draggable, { DraggableData } from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
 import Element, { NamedElement } from './base/Element';
 import { ContextMenuItem } from '/types/ContextMenu';
 import Point from './Point';
 import InteractionManager from '../CanvasManager/InteractionManager';
+import { StylableData } from './base/Stylable';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -14,8 +15,11 @@ export default class Line extends Draggable {
   protected _y: number;
   protected clickTargetSize = 2;
 
-  constructor(canvas: InteractionManager, data: BaseLine) {
-    super(canvas);
+  constructor(
+    canvas: InteractionManager,
+    data: BaseLine & Partial<StylableData & DraggableData>
+  ) {
+    super(canvas, data);
     if (data.name !== undefined) this.name = data.name;
     this._start = data.start;
     this._end = data.end;
@@ -35,7 +39,7 @@ export default class Line extends Draggable {
           y: (coords?.y ?? this._y) - this._y,
           relative: true
         };
-    super.move(coords);
+    super.move(relativeCoords);
     if (this._start instanceof Point) this._start.move(relativeCoords);
     if (this._end instanceof Point) this._end.move(relativeCoords);
     this.fireEvent('move', this);
@@ -54,9 +58,30 @@ export default class Line extends Draggable {
   draw(ctx: CanvasRenderingContext2D) {
     super.draw(ctx);
     ctx.beginPath();
-    // TODO: account for point size
-    ctx.moveTo(this._start.x, this._start.y);
-    ctx.lineTo(this._end.x, this._end.y);
+    const vector = {
+      x: this._end.x - this._start.x,
+      y: this._end.y - this._start.y
+    };
+    const normalized = Calc.normalize(vector);
+    const start = {
+      x: this._start.x,
+      y: this._start.y
+    };
+    if (this.start instanceof Point) {
+      start.x += normalized.x * this.start.size;
+      start.y += normalized.y * this.start.size;
+    }
+    ctx.moveTo(start.x, start.y);
+
+    const end = {
+      x: this._end.x,
+      y: this._end.y
+    };
+    if (this.end instanceof Point) {
+      end.x -= normalized.x * this.end.size;
+      end.y -= normalized.y * this.end.size;
+    }
+    ctx.lineTo(end.x, end.y);
     ctx.stroke();
   }
 
@@ -108,7 +133,20 @@ export default class Line extends Draggable {
     ];
   }
 
-  public hasEndpoint(point: MathPoint) {
+  public isEndpoint(point: MathPoint) {
     return this._start === point || this._end === point;
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      _type: 'line' as const,
+      start: this._start,
+      end: this._end
+    };
+  }
+
+  public static import(data: BaseLine, canvas: InteractionManager) {
+    return new Line(canvas, data);
   }
 }

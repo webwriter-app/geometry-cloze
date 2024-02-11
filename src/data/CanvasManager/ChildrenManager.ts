@@ -1,5 +1,6 @@
 import Shape from '../elements/Shape';
 import Draggable from '../elements/base/Draggable';
+import Element from '../elements/base/Element';
 
 export default class ChildrenManager {
   private static FRAME_RATE = 60;
@@ -98,10 +99,29 @@ export default class ChildrenManager {
     };
   }
 
-  /**
-   * Do not use this method
-   */
-  protected getUnsafeCanvasCtx() {
-    return this._ctx;
+  protected getChildByID(id: number) {
+    return this.children.reduce<Element | null>(
+      (cur, child) => cur ?? child.getChildByID(id),
+      null
+    );
+  }
+
+  public export() {
+    return {
+      children: this.children.map((child) => child.export())
+    };
+  }
+
+  public import(data: ReturnType<this['export']>) {
+    const children = data.children.map((child) =>
+      Shape.import(child, this as any)
+    );
+    this.getChildren().forEach((child) => this.removeChild(child));
+    children.forEach((child) => this.addShape(child));
+  }
+
+  private static idCounter = 0;
+  public static getID() {
+    return ChildrenManager.idCounter++;
   }
 }
