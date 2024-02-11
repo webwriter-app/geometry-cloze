@@ -26,6 +26,21 @@ export default class InteractionManager extends EventManager {
     super.redraw(ctx);
     this.selectionRect?.draw(ctx);
     this.ghostLine?.draw(ctx);
+    if (this.snapSpacing !== null && this.snapSpacing > 0) {
+      ctx.strokeStyle = '#00000050';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const { width, height } = this.getCanvasDimensions();
+      for (let x = 0; x < width; x += this.snapSpacing) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+      }
+      for (let y = 0; y < height; y += this.snapSpacing) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+      ctx.stroke();
+    }
   }
 
   /**
@@ -46,7 +61,6 @@ export default class InteractionManager extends EventManager {
     isRightClick: boolean;
   }) {
     coords = this.snap(coords);
-    console.log('click');
     switch (this._mode) {
       case 'select':
         if (this.selectionRect) {
@@ -230,28 +244,10 @@ export default class InteractionManager extends EventManager {
             const startCoords = dragStart.startPositions[index];
             const x = this.snap(startCoords.x + change.x);
             const y = this.snap(startCoords.y + change.y);
-            // if (Math.abs(startCoords.x - x) > 100) {
-            //   console.log('x', startCoords.x, x);
-            // }
-            // if (Math.abs(startCoords.y - y) > 100) {
-            //   console.log('y', startCoords.y, y);
-            // }
+
             // prevent moving element twice (move element and its parent)
-            if (!this.selected.some((child) => child.hasChild(shape))) {
-              const move = { x, y, relative: false };
-              // console.log('move', {
-              //   // x,
-              //   y,
-              //   // startX: startCoords.x,
-              //   orgY: startCoords.y,
-              //   // changeX: change.x,
-              //   changeY: change.y,
-              //   startY: start.y,
-              //   currentY: current.y
-              // });
-              console.log(move);
-              shape.move(move);
-            }
+            if (!this.selected.some((child) => child.hasChild(shape)))
+              shape.move({ x, y, relative: false });
           });
 
           this.requestRedraw();
@@ -297,7 +293,6 @@ export default class InteractionManager extends EventManager {
             x: this.snap(element.x),
             y: this.snap(element.y)
           });
-          console.log('drag end', element.x, element.y);
         }
         break;
       case 'create':
@@ -431,5 +426,6 @@ export default class InteractionManager extends EventManager {
 
   public setSnapping(spacing: number | null) {
     this.snapSpacing = spacing;
+    this.requestRedraw();
   }
 }
