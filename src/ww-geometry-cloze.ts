@@ -26,6 +26,7 @@ export class WwGeometryCloze extends LitElement {
 
   @property({
     attribute: true,
+    reflect: true,
     type: Object
   })
   value: any;
@@ -71,9 +72,7 @@ export class WwGeometryCloze extends LitElement {
   }
 
   private onCanvasValueChange(value: any) {
-    console.log('changing value');
-    // this.value = value;
-    this.setAttribute('value', JSON.stringify(value));
+    this.value = value;
   }
 
   firstUpdated() {
