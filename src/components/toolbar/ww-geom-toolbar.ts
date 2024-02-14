@@ -12,23 +12,31 @@ export class WwGeomToolbar extends LitElement {
 
   render() {
     return html`<div class="wrapper">
-      <sl-button-group label="Mode">
-        <sl-tooltip content="Press [S] to switch">
-          <sl-button
-            @click=${this.handleModeChange.bind(this, 'select')}
-            variant=${this.mode === 'select' ? 'primary' : 'default'}>
-            Select
-          </sl-button>
-        </sl-tooltip>
+      <sl-tooltip>
+        <span slot="content">
+          Select and move objects <strong>[S]</strong>
+        </span>
+        <sl-button
+          size="large"
+          circle
+          @click=${this.handleModeChange.bind(this, 'select')}
+          variant=${this.mode === 'select' ? 'primary' : 'default'}>
+          <sl-icon name="hand-index-thumb" label="Select"></sl-icon>
+        </sl-button>
+      </sl-tooltip>
 
-        <sl-tooltip content="Press [C] to switch">
-          <sl-button
-            @click=${this.handleModeChange.bind(this, 'create')}
-            variant=${this.mode === 'create' ? 'primary' : 'default'}>
-            Create
-          </sl-button>
-        </sl-tooltip>
-      </sl-button-group>
+      <sl-tooltip>
+        <span slot="content">
+          Create and connect objects <strong>[C]</strong>
+        </span>
+        <sl-button
+          size="large"
+          circle
+          @click=${this.handleModeChange.bind(this, 'create')}
+          variant=${this.mode === 'create' ? 'primary' : 'default'}>
+          <sl-icon name="pentagon" label="Create"></sl-icon>
+        </sl-button>
+      </sl-tooltip>
     </div>`;
   }
 
@@ -45,7 +53,9 @@ export class WwGeomToolbar extends LitElement {
 
   static styles = css`
     .wrapper {
-      margin-bottom: 0.5rem;
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
     }
   `;
 }
