@@ -117,10 +117,11 @@ export default class ChildrenManager {
       Shape.import(child, this as any)
     );
     this.getChildren().forEach((child) => this.removeChild(child));
+    this.children = [];
     children.forEach((child) => this.addShape(child));
   }
 
-  private static idCounter = 0;
+  private static idCounter = 1;
   public static getID() {
     return ChildrenManager.idCounter++;
   }

@@ -5,12 +5,22 @@ import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface NamedElement {
   name?: string;
+  id?: number;
 }
 
 export default class Element {
   public name = '[unset]';
-  public readonly id = ChildrenManager.getID();
-  constructor(protected manager: InteractionManager) {}
+  private _id = ChildrenManager.getID();
+  public get id() {
+    return this._id;
+  }
+  constructor(
+    protected manager: InteractionManager,
+    data?: NamedElement
+  ) {
+    if (data?.name) this.name = data.name;
+    if (data?.id) this._id = data.id;
+  }
 
   protected parent: Shape | ChildrenManager | null = null;
   private _children: Element[] = [];
@@ -112,7 +122,7 @@ export default class Element {
   }
 
   public getChildByID(id: number): Element | null {
-    if (this.id === id) return this;
+    if (this._id === id) return this;
     for (const child of this._children) {
       const found = child.getChildByID(id);
       if (found) return found;
@@ -123,12 +133,17 @@ export default class Element {
   public export(): {
     _type: 'element' | 'point' | 'line';
     id: number;
-    children: ({ _type: 'point' | 'line' | 'element' } & Object)[];
+    children?: ({ _type: 'point' | 'line' | 'element' } & Object)[];
   } {
+    if (this.children.length)
+      return {
+        _type: 'element',
+        id: this.id,
+        children: this._children.map((child) => child.export())
+      };
     return {
       _type: 'element',
-      id: this.id,
-      children: this._children.map((child) => child.export())
+      id: this.id
     };
   }
 }

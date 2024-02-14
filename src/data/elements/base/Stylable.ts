@@ -1,4 +1,4 @@
-import Element from './Element';
+import Element, { NamedElement } from './Element';
 import InteractionManager from '/data/CanvasManager/InteractionManager';
 import { ContextMenuItem } from '/types/ContextMenu';
 
@@ -10,6 +10,14 @@ export interface StylableData {
   shadow?: boolean;
 }
 
+const DEFAULT_STYLE = {
+  lineWidth: 3,
+  size: 10,
+  stroke: 'black',
+  fill: 'transparent',
+  shadow: false
+} as const;
+
 export default class Stylable extends Element {
   private _lineWidth: number;
   private _size: number;
@@ -17,13 +25,16 @@ export default class Stylable extends Element {
   private _fill: string;
   private _shadow: boolean;
 
-  constructor(canvas: InteractionManager, data: StylableData = {}) {
-    super(canvas);
-    this._lineWidth = data.lineWidth || 3;
-    this._size = data.size || 10;
-    this._stroke = data.stroke || 'black';
-    this._fill = data.fill || 'transparent';
-    this._shadow = data.shadow || false;
+  constructor(
+    canvas: InteractionManager,
+    data: StylableData & NamedElement = {}
+  ) {
+    super(canvas, data);
+    this._lineWidth = data.lineWidth || DEFAULT_STYLE.lineWidth;
+    this._size = data.size || DEFAULT_STYLE.size;
+    this._stroke = data.stroke || DEFAULT_STYLE.stroke;
+    this._fill = data.fill || DEFAULT_STYLE.fill;
+    this._shadow = data.shadow || DEFAULT_STYLE.shadow;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
@@ -219,13 +230,15 @@ export default class Stylable extends Element {
   }
 
   public export() {
-    return {
-      ...super.export(),
-      lineWidth: this._lineWidth,
-      size: this._size,
-      stroke: this._stroke,
-      fill: this._fill,
-      shadow: this._shadow
-    };
+    const res: StylableData = {};
+
+    if (this._lineWidth !== DEFAULT_STYLE.lineWidth)
+      res.lineWidth = this._lineWidth;
+    if (this._size !== DEFAULT_STYLE.size) res.size = this._size;
+    if (this._stroke !== DEFAULT_STYLE.stroke) res.stroke = this._stroke;
+    if (this._fill !== DEFAULT_STYLE.fill) res.fill = this._fill;
+    if (this._shadow !== DEFAULT_STYLE.shadow) res.shadow = this._shadow;
+
+    return { ...super.export(), ...res };
   }
 }

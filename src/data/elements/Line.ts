@@ -20,7 +20,6 @@ export default class Line extends Draggable {
     data: BaseLine & Partial<StylableData & DraggableData>
   ) {
     super(canvas, data);
-    if (data.name !== undefined) this.name = data.name;
     this._start = data.start;
     this._end = data.end;
     this._x = data.start.x;
@@ -141,8 +140,16 @@ export default class Line extends Draggable {
     return {
       ...super.export(),
       _type: 'line' as const,
-      start: this._start,
-      end: this._end
+      start: {
+        x: this._start.x,
+        y: this._start.y,
+        ...(this._start instanceof Point && { id: this._start.id })
+      },
+      end: {
+        x: this._end.x,
+        y: this._end.y,
+        ...(this._end instanceof Point && { id: this._end.id })
+      }
     };
   }
 

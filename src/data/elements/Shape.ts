@@ -496,14 +496,28 @@ export default class Shape extends Draggable {
     data: ReturnType<Shape['export']>,
     manager: InteractionManager
   ) {
-    const children = data.children
-      .map((child) => {
-        if (child._type === 'point') return Point.import(child as any, manager);
-        if (child._type === 'line') return Line.import(child as any, manager);
-        if (child._type === 'element') return null;
-        throw new Error('Invalid child type');
-      })
-      .filter(Boolean) as (Point | Line)[];
+    const points =
+      data.children
+        ?.filter((child) => child._type === 'point')
+        .map((child) => Point.import(child as any, manager)) ?? [];
+    const children =
+      (data.children
+        ?.map((child: any) => {
+          if (child._type === 'point')
+            return points.find((point) => point.id === child.id);
+          if (child._type === 'line')
+            return Line.import(
+              {
+                ...child,
+                start: points.find((point) => point.id === child.start.id),
+                end: points.find((point) => point.id === child.end.id)
+              },
+              manager
+            );
+          if (child._type === 'element') return null;
+          throw new Error('Invalid child type');
+        })
+        .filter(Boolean) as (Point | Line)[]) ?? [];
     return new Shape(manager, children, data.closed);
   }
 }

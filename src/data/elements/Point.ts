@@ -16,7 +16,6 @@ export default class Point extends Draggable {
     data: BasePoint & Partial<StylableData & DraggableData>
   ) {
     super(canvas, data);
-    if (data.name !== undefined) this.name = data.name;
     this._x = data.x;
     this._y = data.y;
   }
