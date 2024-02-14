@@ -26,6 +26,19 @@
   },
   "type": "module",
   "exports": {
-    "./widgets/GeometryCloze": "./src/ww-geometry-cloze.ts"
+    "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
+    "./snippets/ww-geometry-cloze": "./src/snippets/polygon.html"
+  },
+  "editingConfig": {
+    "./snippets/ww-geometry-cloze": {
+      "label": {
+        "en": "Polygon"
+      }
+    },
+    "./widgets/ww-geometry-cloze": {
+      "label": {
+        "en": "Geometry Cloze"
+      }
+    }
   }
 }

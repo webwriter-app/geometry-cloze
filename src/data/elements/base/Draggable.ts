@@ -1,7 +1,7 @@
 import { MathPoint } from '../../helper/Calc';
 import Stylable, { StylableData } from './Stylable';
 import Element from './Element';
-import InteractionManager from '/data/CanvasManager/InteractionManager';
+import InteractionManager from '../../CanvasManager/InteractionManager';
 
 export interface DraggableData {
   selected?: boolean;

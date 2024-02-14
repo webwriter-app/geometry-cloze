@@ -1,7 +1,7 @@
+import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
 import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
 import ChildrenManager from './ChildrenManager';
-import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
 
 export default class EventManager extends ChildrenManager {
   private wrapper: HTMLElement;

@@ -1,10 +1,10 @@
 import Draggable, { DraggableData } from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
 import Element, { NamedElement } from './base/Element';
-import { ContextMenuItem } from '/types/ContextMenu';
 import Point from './Point';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import { StylableData } from './base/Stylable';
+import { ContextMenuItem } from '../../types/ContextMenu';
 
 export type BaseLine = MathLine & NamedElement;
 

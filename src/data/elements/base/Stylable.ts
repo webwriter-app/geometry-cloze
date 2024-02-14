@@ -1,6 +1,6 @@
+import { ContextMenuItem } from '../../../types/ContextMenu';
+import InteractionManager from '../../CanvasManager/InteractionManager';
 import Element, { NamedElement } from './Element';
-import InteractionManager from '/data/CanvasManager/InteractionManager';
-import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface StylableData {
   lineWidth?: number;

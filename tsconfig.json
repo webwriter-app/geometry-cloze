@@ -19,11 +19,6 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Build options */
-    "baseUrl": "./",
     "outDir": "dist",
-    "paths": {
-      "/*": ["src/*"]
-    }
   },
-  "include": ["src"]
 }

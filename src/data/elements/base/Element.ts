@@ -1,7 +1,7 @@
+import { ContextMenuItem } from '../../../types/ContextMenu';
+import ChildrenManager from '../../CanvasManager/ChildrenManager';
+import InteractionManager from '../../CanvasManager/InteractionManager';
 import Shape from '../Shape';
-import ChildrenManager from '/data/CanvasManager/ChildrenManager';
-import InteractionManager from '/data/CanvasManager/InteractionManager';
-import { ContextMenuItem } from '/types/ContextMenu';
 
 export interface NamedElement {
   name?: string;

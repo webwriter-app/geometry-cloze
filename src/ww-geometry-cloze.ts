@@ -44,7 +44,7 @@ export class WwGeometryCloze extends LitElement {
               }}></ww-geom-toolbar>`
           : ''
       }
-        <canvas width="2000" height="1000"></canvas>
+        <canvas width="1000" height="700"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>`;
@@ -103,10 +103,6 @@ export class WwGeometryCloze extends LitElement {
 
         this.manager.addShape(polygon);
       }
-
-      if (import.meta.env.DEV)
-        //@ts-ignore
-        window.manager = this.manager;
     } else console.warn('No canvas context');
   }
 
@@ -131,7 +127,7 @@ export class WwGeometryCloze extends LitElement {
       outline: none;
     }
     canvas {
-      aspect-ratio: 2 / 1;
+      aspect-ratio: 10 / 7;
       width: calc(100% - 2px);
       border: solid 1px black;
       box-sizing: border-box;

@@ -1,9 +1,9 @@
 import Calc, { MathPoint } from '../helper/Calc';
 import Draggable, { DraggableData } from './base/Draggable';
-import { ContextMenuItem } from '/types/ContextMenu';
 import { NamedElement } from './base/Element';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import { StylableData } from './base/Stylable';
+import { ContextMenuItem } from '../../types/ContextMenu';
 
 export type BasePoint = MathPoint & NamedElement;
 
