@@ -6,6 +6,7 @@ import './misc/shoelaceSetup';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import Shape from './data/elements/Shape';
 import CanvasManager from './data/CanvasManager/CanvasManager';
+import Objects from './data/helper/Objects';
 
 /**
  * A widget to create and view geometry exercises.
@@ -60,8 +61,19 @@ export class WwGeometryCloze extends LitElement {
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
     if (_changedProperties.has('value')) {
-      if (this.manager && this.value) this.manager.import(this.value);
+      if (
+        this.manager &&
+        this.value &&
+        !Objects.deepEqual(this.manager.export(), this.value)
+      )
+        this.manager.import(this.value);
     }
+  }
+
+  private onCanvasValueChange(value: any) {
+    console.log('changing value');
+    // this.value = value;
+    this.setAttribute('value', JSON.stringify(value));
   }
 
   firstUpdated() {
@@ -73,6 +85,7 @@ export class WwGeometryCloze extends LitElement {
         return;
       }
       this.manager = new CanvasManager(this.canvas, this.contextMenu);
+      this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
       this.manager.listenForModeChange((mode) => (this.mode = mode));
 
       if (this.value) {
@@ -102,12 +115,17 @@ export class WwGeometryCloze extends LitElement {
   disconnectedCallback(): void {
     this.removeEventListener('blur', this.onBlur);
     this.removeEventListener('click', this.onClick);
+    if (this.manager) {
+      this.manager.removeUpdateListener(this.onCanvasValueChange);
+      this.manager.unmount();
+    }
     super.disconnectedCallback();
   }
 
   static styles = css`
     :host {
       outline: none;
+      z-index: 0;
     }
     .wrapper {
       margin: 2rem;
