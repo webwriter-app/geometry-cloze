@@ -1,6 +1,10 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../context-menu/ww-geom-context-menu';
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import SlButton from '@shoelace-style/shoelace/dist/components/button/button.component.js';
+import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
 
 /**
  *
@@ -58,6 +62,14 @@ export class WwGeomToolbar extends LitElement {
       left: 0.5rem;
     }
   `;
+
+  public static get scopedElements() {
+    return {
+      'sl-button': SlButton,
+      'sl-tooltip': SlTooltip,
+      'sl-icon': SlIcon
+    };
+  }
 }
 
 declare global {

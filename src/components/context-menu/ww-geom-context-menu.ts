@@ -1,7 +1,13 @@
 import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { ContextMenuItem } from '/types/ContextMenu';
-import { SlMenu, SlSelectEvent } from '@shoelace-style/shoelace';
+
+import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component.js';
+import SlMenuItem from '@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js';
+import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
+import { SlSelectEvent } from '@shoelace-style/shoelace';
+import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.component.js';
+import '@shoelace-style/shoelace/dist/themes/light.css';
 
 /**
  *
@@ -112,6 +118,15 @@ export class WwGeomContextMenu extends LitElement {
       display: none;
     }
   `;
+
+  public static get scopedElements() {
+    return {
+      'sl-menu': SlMenu,
+      'sl-menu-item': SlMenuItem,
+      'sl-divider': SlDivider,
+      'sl-badge': SlBadge
+    };
+  }
 }
 
 declare global {

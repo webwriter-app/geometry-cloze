@@ -1,7 +1,11 @@
 {
   "name": "@der-grosse/ww-geometry-cloze",
   "version": "0.0.0",
-  "type": "module",
+  "keywords": [
+    "webwriter-widget"
+  ],
+  "license": "MIT",
+  "author": " <accounts@der-grosse.de> (Florin Große)",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build",
@@ -11,12 +15,17 @@
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.11.2",
-    "lit": "^2.7.6"
+    "@webwriter/lit": "^1.5.2",
+    "lit": "^3.1.2"
   },
   "devDependencies": {
     "prettier": "^3.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-static-copy": "^0.17.1"
+  },
+  "type": "module",
+  "exports": {
+    "./widgets/GeometryCloze": "./src/ww-geometry-cloze.ts"
   }
 }

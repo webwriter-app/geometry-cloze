@@ -2,11 +2,11 @@ import { LitElement, PropertyValueMap, css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import './components/toolbar/ww-geom-toolbar';
 // init shoelace
-import './misc/shoelaceSetup';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import Shape from './data/elements/Shape';
 import CanvasManager from './data/CanvasManager/CanvasManager';
 import Objects from './data/helper/Objects';
+import '@shoelace-style/shoelace/dist/themes/light.css';
 
 /**
  * A widget to create and view geometry exercises.
@@ -36,13 +36,12 @@ export class WwGeometryCloze extends LitElement {
       ${
         this.isContentEditable
           ? html`<ww-geom-toolbar
-                mode=${this.mode}
-                @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-                  this.mode = e.detail.mode;
-                  if (!this.manager) return;
-                  this.manager.mode = e.detail.mode;
-                }}></ww-geom-toolbar>
-              <div class="canvas-wrapper"></div>`
+              mode=${this.mode}
+              @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
+                this.mode = e.detail.mode;
+                if (!this.manager) return;
+                this.manager.mode = e.detail.mode;
+              }}></ww-geom-toolbar>`
           : ''
       }
         <canvas width="2000" height="1000"></canvas>
@@ -130,9 +129,6 @@ export class WwGeometryCloze extends LitElement {
       margin: 2rem;
       position: relative;
       outline: none;
-    }
-    .canvas-wrapper {
-      position: relative;
     }
     canvas {
       aspect-ratio: 2 / 1;
