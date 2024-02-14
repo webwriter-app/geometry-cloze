@@ -19,6 +19,6 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Build options */
-    "outDir": "dist",
-  },
+    "outDir": "dist"
+  }
 }
