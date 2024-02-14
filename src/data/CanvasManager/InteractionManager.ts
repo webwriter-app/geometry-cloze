@@ -405,13 +405,13 @@ export default class InteractionManager extends EventManager {
     return {
       ...super.export(),
       mode: this._mode,
-      creatingShape: this.creatingShape
-        ? {
-            shape: this.creatingShape.shape.id,
-            lastPoint: this.creatingShape.lastPoint.id
-          }
-        : null,
-      ghostLine: this.ghostLine?.export() ?? null
+      ...(this.creatingShape && {
+        creatingShape: {
+          shape: this.creatingShape.shape.id,
+          lastPoint: this.creatingShape.lastPoint.id
+        }
+      }),
+      ...(this.ghostLine && { ghostLine: this.ghostLine?.export() })
     };
   }
 

@@ -314,13 +314,15 @@ export default class EventManager extends ChildrenManager {
   public export() {
     return {
       ...super.export(),
-      selected: this.selected.map((shape) => shape.id),
-      mouseDownTarget: this.mouseDownTarget
-        ? {
-            wasSelected: this.mouseDownTarget.wasSelected,
-            element: this.mouseDownTarget.element.id
-          }
-        : null
+      ...(this.select.length && {
+        selected: this.selected.map((shape) => shape.id)
+      }),
+      ...(this.mouseDownTarget && {
+        mouseDownTarget: {
+          wasSelected: this.mouseDownTarget.wasSelected,
+          element: this.mouseDownTarget.element.id
+        }
+      })
     };
   }
 
@@ -332,7 +334,7 @@ export default class EventManager extends ChildrenManager {
         .map((id) => this.getChildByID(id))
         .filter(Boolean) as Draggable[];
       this.select(selected);
-    }
+    } else this.blur();
 
     if (data.mouseDownTarget) {
       const element = this.getChildByID(data.mouseDownTarget.element);
