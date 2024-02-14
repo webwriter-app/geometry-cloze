@@ -1,5 +1,5 @@
-import { LitElement, css, html } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { LitElement, PropertyValueMap, css, html } from 'lit';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import './components/toolbar/ww-geom-toolbar';
 // init shoelace
 import './misc/shoelaceSetup';
@@ -17,30 +17,51 @@ export class WwGeometryCloze extends LitElement {
 
   manager: CanvasManager | null = null;
 
-  @property({ attribute: true })
+  @property({ type: String, attribute: 'contenteditable' })
+  contentEditable = '';
+
+  @state()
   mode: InteractionMode = 'select';
+
+  @property({
+    attribute: true,
+    type: Object
+  })
+  value: any;
 
   render() {
     return html`<div class="wrapper">
-      <ww-geom-toolbar
-        mode=${this.mode}
-        @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-          this.mode = e.detail.mode;
-          if (!this.manager) return;
-          this.manager.mode = e.detail.mode;
-        }}></ww-geom-toolbar>
-      <div class="canvas-wrapper">
+      ${
+        this.isContentEditable
+          ? html`<ww-geom-toolbar
+                mode=${this.mode}
+                @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
+                  this.mode = e.detail.mode;
+                  if (!this.manager) return;
+                  this.manager.mode = e.detail.mode;
+                }}></ww-geom-toolbar>
+              <div class="canvas-wrapper"></div>`
+          : ''
+      }
         <canvas width="2000" height="1000"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>`;
   }
+
   private onBlur() {
     this.contextMenu?.close();
   }
-
   private onClick() {
     this.contextMenu?.close();
+  }
+
+  protected updated(
+    _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+  ): void {
+    if (_changedProperties.has('value')) {
+      if (this.manager && this.value) this.manager.import(this.value);
+    }
   }
 
   firstUpdated() {
@@ -54,38 +75,27 @@ export class WwGeometryCloze extends LitElement {
       this.manager = new CanvasManager(this.canvas, this.contextMenu);
       this.manager.listenForModeChange((mode) => (this.mode = mode));
 
-      const polygon = Shape.createPolygon(this.manager, [
-        { x: 200, y: 200, name: 'top left' },
-        { x: 500, y: 200, name: 'top right' },
-        { x: 500, y: 500, name: 'bottom right' },
-        { x: 200, y: 500, name: 'bottom left' }
-      ]);
-      polygon.addPoint({
-        x: 600,
-        y: 300,
-        name: 'middle right'
-      });
+      if (this.value) {
+        this.manager.import(this.value);
+      } else {
+        const polygon = Shape.createPolygon(this.manager, [
+          { x: 200, y: 200, name: 'top left' },
+          { x: 500, y: 200, name: 'top right' },
+          {
+            x: 600,
+            y: 300,
+            name: 'middle right'
+          },
+          { x: 500, y: 500, name: 'bottom right' },
+          { x: 200, y: 500, name: 'bottom left' }
+        ]);
 
-      const line = Shape.createLine(this.manager, {
-        // @ts-ignore
-        start: { x: 800, y: 100, name: 'top right' },
-        // @ts-ignore
-        end: { x: 300, y: 900, name: 'bottom left' },
-        name: 'standalone line'
-      });
+        this.manager.addShape(polygon);
+      }
 
-      const point7 = Shape.createPoint(this.manager, {
-        x: 100,
-        y: 100,
-        name: 'standalone top left'
-      });
-
-      this.manager.addShape(polygon);
-      this.manager.addShape(line);
-      this.manager.addShape(point7);
-
-      //@ts-ignore
-      window.manager = this.manager;
+      if (import.meta.env.DEV)
+        //@ts-ignore
+        window.manager = this.manager;
     } else console.warn('No canvas context');
   }
 
@@ -96,8 +106,13 @@ export class WwGeometryCloze extends LitElement {
   }
 
   static styles = css`
+    :host {
+      outline: none;
+    }
     .wrapper {
       margin: 2rem;
+      position: relative;
+      outline: none;
     }
     .canvas-wrapper {
       position: relative;
@@ -107,6 +122,9 @@ export class WwGeometryCloze extends LitElement {
       width: calc(100% - 2px);
       border: solid 1px black;
       box-sizing: border-box;
+    }
+    :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
+      pointer-events: none;
     }
   `;
 }
