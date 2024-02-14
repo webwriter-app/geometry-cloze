@@ -314,7 +314,7 @@ export default class EventManager extends ChildrenManager {
   public export() {
     return {
       ...super.export(),
-      ...(this.select.length && {
+      ...(this.selected.length && {
         selected: this.selected.map((shape) => shape.id)
       }),
       ...(this.mouseDownTarget && {

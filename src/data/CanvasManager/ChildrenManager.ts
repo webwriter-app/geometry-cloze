@@ -107,15 +107,16 @@ export default class ChildrenManager {
   }
 
   public export() {
-    return {
-      children: this.children.map((child) => child.export())
-    };
+    if (this.children.length)
+      return {
+        children: this.children.map((child) => child.export())
+      };
+    return {};
   }
 
   public import(data: ReturnType<this['export']>) {
-    const children = data.children.map((child) =>
-      Shape.import(child, this as any)
-    );
+    const children =
+      data.children?.map((child) => Shape.import(child, this as any)) ?? [];
     this.getChildren().forEach((child) => this.removeChild(child));
     this.children = [];
     children.forEach((child) => this.addShape(child));
