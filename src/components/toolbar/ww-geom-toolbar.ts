@@ -7,6 +7,9 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
 import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
+import HandSVG from '../icons/hand-index-thumb.svg';
+import PentagonSVG from '../icons/pentagon.svg';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 /**
  *
@@ -27,7 +30,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'select')}
           variant=${this.mode === 'select' ? 'primary' : 'default'}>
-          <sl-icon name="hand-index-thumb" label="Select"></sl-icon>
+          ${unsafeHTML(HandSVG.slice('data:image/svg+xml,'.length))}
         </sl-button>
       </sl-tooltip>
 
@@ -40,7 +43,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'create')}
           variant=${this.mode === 'create' ? 'primary' : 'default'}>
-          <sl-icon name="pentagon" label="Create"></sl-icon>
+          ${unsafeHTML(PentagonSVG.slice('data:image/svg+xml,'.length))}
         </sl-button>
       </sl-tooltip>
     </div>`;
@@ -62,6 +65,9 @@ export class WwGeomToolbar extends LitElementWw {
       position: absolute;
       top: 0.5rem;
       left: 0.5rem;
+    }
+    sl-button::part(label) {
+      padding: 0.5rem;
     }
   `;
 
