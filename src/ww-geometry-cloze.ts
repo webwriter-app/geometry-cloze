@@ -1,25 +1,23 @@
-import { LitElement, PropertyValueMap, css, html } from 'lit';
+import { LitElementWw } from '@webwriter/lit';
+import { PropertyValueMap, css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import './components/toolbar/ww-geom-toolbar';
-// init shoelace
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
+import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager from './data/CanvasManager/CanvasManager';
 import Objects from './data/helper/Objects';
+
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
 /**
  * A widget to create and view geometry exercises.
  */
 @customElement('ww-geometry-cloze')
-export class WwGeometryCloze extends LitElement {
+export class WwGeometryCloze extends LitElementWw {
   @query('canvas') canvas!: HTMLCanvasElement;
   @query('ww-geom-context-menu') contextMenu!: WwGeomContextMenu;
 
   manager: CanvasManager | null = null;
-
-  @property({ type: String, attribute: 'contenteditable' })
-  contentEditable = '';
 
   @state()
   mode: InteractionMode = 'select';
@@ -114,6 +112,13 @@ export class WwGeometryCloze extends LitElement {
       this.manager.unmount();
     }
     super.disconnectedCallback();
+  }
+
+  public static get scopedElements() {
+    return {
+      'ww-geom-toolbar': WwGeomToolbar,
+      'ww-geom-context-menu': WwGeomContextMenu
+    };
   }
 
   static styles = css`

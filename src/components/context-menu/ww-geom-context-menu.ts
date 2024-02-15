@@ -1,4 +1,5 @@
-import { LitElement, TemplateResult, css, html } from 'lit';
+import { LitElementWw } from '@webwriter/lit';
+import { TemplateResult, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import type { SlSelectEvent } from '@shoelace-style/shoelace';
@@ -14,7 +15,7 @@ import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.compon
  *
  */
 @customElement('ww-geom-context-menu')
-export class WwGeomContextMenu extends LitElement {
+export class WwGeomContextMenu extends LitElementWw {
   @property({ type: Array, attribute: true }) items: ContextMenuItem[] = [];
   @property({ type: Boolean, attribute: 'open' }) _open = false;
   @property({ type: Number, attribute: true }) x = 0;

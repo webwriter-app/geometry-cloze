@@ -1,6 +1,6 @@
-import { LitElement, css, html } from 'lit';
+import { LitElementWw } from '@webwriter/lit';
+import { css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import '../context-menu/ww-geom-context-menu';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -12,7 +12,7 @@ import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component
  *
  */
 @customElement('ww-geom-toolbar')
-export class WwGeomToolbar extends LitElement {
+export class WwGeomToolbar extends LitElementWw {
   @property({ attribute: true })
   mode: InteractionMode = 'select';
 
