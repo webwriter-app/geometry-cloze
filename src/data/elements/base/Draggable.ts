@@ -22,7 +22,17 @@ export default abstract class Draggable extends Stylable {
 
     this.addEventListener('select', this.select.bind(this));
     this.addEventListener('unselect', this.blur.bind(this));
-    this.addEventListener('style-change', this.styleChangeListener.bind(this));
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    if (this.selected) {
+      ctx.lineWidth = this.lineWidth + 2;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#000000b0';
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+    }
   }
 
   public getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
@@ -52,34 +62,10 @@ export default abstract class Draggable extends Stylable {
     this.requestRedraw();
   }
 
-  private overwrittenStyle: Partial<StylableData> = {};
-
-  // boolean to not store style changes when setting the style for signaling that the element is selected
-  private isSettingStyle = false;
-  private setSelectedStyle() {
-    this.isSettingStyle = true;
-    this.setShadow(true);
-    // this.setFill('blue');
-    this.isSettingStyle = false;
-  }
-
-  private styleChangeListener(_: Element, style: Partial<StylableData>) {
-    if (this.isSettingStyle || !this.selected) return;
-    this.overwrittenStyle = {
-      ...this.overwrittenStyle,
-      ...style
-    };
-    this.setSelectedStyle();
-  }
-
   select() {
     if (!this.onSelect()) return;
     this._selected = true;
-    this.overwrittenStyle = {
-      fill: this.fill,
-      shadow: this.shadow
-    };
-    this.setSelectedStyle();
+    this.requestRedraw();
   }
 
   /**
@@ -93,11 +79,7 @@ export default abstract class Draggable extends Stylable {
   blur() {
     if (!this.onBlur()) return;
     this._selected = false;
-    this.isSettingStyle = true;
-    this.setShadow(this.overwrittenStyle.shadow ?? null);
-    // this.setFill(this.overwrittenStyle.fill ?? null);
-    this.isSettingStyle = false;
-    this.overwrittenStyle = {};
+    this.requestRedraw();
   }
 
   /**
