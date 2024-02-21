@@ -75,6 +75,7 @@ export default class ChildrenManager {
   }
 
   public removeChild(element: Shape) {
+    console.log('removing child from removeChild()', element);
     const index = this.children.indexOf(element);
     if (index < 0) return;
     this.children.splice(index, 1);
@@ -89,7 +90,7 @@ export default class ChildrenManager {
   }
 
   public getChildren() {
-    return this.children;
+    return this.children.slice(0);
   }
 
   public getCanvasDimensions(): { width: number; height: number } {
@@ -117,7 +118,6 @@ export default class ChildrenManager {
   public import(data: ReturnType<this['export']>) {
     const children =
       data.children?.map((child) => Shape.import(child, this as any)) ?? [];
-    this.getChildren().forEach((child) => this.removeChild(child));
     this.children = [];
     children.forEach((child) => this.addShape(child));
   }
