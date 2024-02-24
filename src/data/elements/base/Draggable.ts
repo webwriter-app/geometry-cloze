@@ -7,11 +7,11 @@ export interface DraggableData {
   selected?: boolean;
 }
 
-export default abstract class Draggable extends Stylable {
+export default class Draggable extends Stylable {
   private _selected: boolean;
   protected clickTargetSize = 0;
-  protected abstract _x: number;
-  protected abstract _y: number;
+  protected _x: number = 0;
+  protected _y: number = 0;
 
   constructor(
     canvas: InteractionManager,
@@ -106,12 +106,5 @@ export default abstract class Draggable extends Stylable {
   }
   get y() {
     return this._y;
-  }
-
-  public export() {
-    return {
-      ...super.export(),
-      selected: this.selected
-    };
   }
 }

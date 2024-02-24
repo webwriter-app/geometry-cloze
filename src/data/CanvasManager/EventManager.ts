@@ -3,7 +3,7 @@ import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
 import ChildrenManager from './ChildrenManager';
 
-export default class EventManager extends ChildrenManager {
+export default abstract class EventManager extends ChildrenManager {
   private wrapper: HTMLElement;
 
   private clickTargetEle: HTMLElement;
@@ -248,35 +248,35 @@ export default class EventManager extends ChildrenManager {
     }
   }
 
-  protected handleClick(_event: {
+  protected abstract handleClick(_event: {
     coords: MathPoint;
     hit: Draggable | null;
     alreadySelected: boolean;
     ctrlPressed: boolean;
     isRightClick: boolean;
-  }) {}
-  protected handleMouseMove(_event: { current: MathPoint }) {}
-  protected handleDragStart(_event: {
+  }): void;
+  protected abstract handleMouseMove(_event: { current: MathPoint }): void;
+  protected abstract handleDragStart(_event: {
     start: MathPoint;
     ctrlKeyPressed: boolean;
     hit: Draggable | null;
-  }) {}
-  protected handleDragging(_event: {
+  }): void;
+  protected abstract handleDragging(_event: {
     start: MathPoint;
     current: MathPoint;
     element: Draggable | null;
     dragStart: MathPoint & { startPositions: MathPoint[] };
-  }) {}
-  protected handleDragEnd(_event: {
+  }): void;
+  protected abstract handleDragEnd(_event: {
     from: MathPoint;
     to: MathPoint;
     ctrlKeyPressed: boolean;
     element: Draggable | null;
-  }) {}
+  }): void;
+  protected abstract handleKeyboardEvent(_event: KeyboardEvent): void;
   protected upadateCursor(_coords: MathPoint): CSSStyleDeclaration['cursor'] {
     return 'default';
   }
-  protected handleKeyboardEvent(_event: KeyboardEvent) {}
 
   protected get selected() {
     return this._selected;
@@ -309,41 +309,5 @@ export default class EventManager extends ChildrenManager {
       this._selected.forEach((shape) => shape.blur());
       this._selected = [];
     }
-  }
-
-  public export() {
-    return {
-      ...super.export(),
-      ...(this.selected.length && {
-        selected: this.selected.map((shape) => shape.id)
-      }),
-      ...(this.mouseDownTarget && {
-        mouseDownTarget: {
-          wasSelected: this.mouseDownTarget.wasSelected,
-          element: this.mouseDownTarget.element.id
-        }
-      })
-    };
-  }
-
-  public import(data: ReturnType<this['export']>) {
-    super.import(data);
-
-    if (data.selected) {
-      const selected = data.selected
-        .map((id) => this.getChildByID(id))
-        .filter(Boolean) as Draggable[];
-      this.select(selected);
-    } else this.blur();
-
-    if (data.mouseDownTarget) {
-      const element = this.getChildByID(data.mouseDownTarget.element);
-      if (element instanceof Draggable) {
-        this.mouseDownTarget = {
-          wasSelected: data.mouseDownTarget.wasSelected,
-          element
-        };
-      }
-    } else this.mouseDownTarget = null;
   }
 }

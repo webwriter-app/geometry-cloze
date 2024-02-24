@@ -4,7 +4,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
-import CanvasManager from './data/CanvasManager/CanvasManager';
+import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
 import Objects from './data/helper/Objects';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
@@ -19,15 +19,20 @@ export class WwGeometryCloze extends LitElementWw {
 
   manager: CanvasManager | null = null;
 
-  @state()
-  mode: InteractionMode = 'select';
-
   @property({
     attribute: true,
     reflect: true,
-    type: Object
+    type: Array
   })
-  value: any;
+  childrens: CanvasData['children'];
+
+  @state()
+  @property({
+    attribute: true,
+    reflect: true,
+    type: String
+  })
+  mode: CanvasData['mode'] = 'select';
 
   render() {
     return html`<div class="wrapper">
@@ -58,18 +63,22 @@ export class WwGeometryCloze extends LitElementWw {
   protected updated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-    if (_changedProperties.has('value')) {
-      if (
-        this.manager &&
-        this.value &&
-        !Objects.deepEqual(this.manager.export(), this.value)
-      )
-        this.manager.import(this.value);
+    if (_changedProperties.has('childrens')) {
+      if (!this.manager || !this.childrens) return;
+
+      const exportData = this.manager.export();
+      if (!Objects.deepEqual(exportData.children, this.childrens))
+        this.manager.import({
+          children: this.childrens
+        });
+    } else if (_changedProperties.has('mode')) {
+      if (this.manager) this.manager.mode = this.mode;
     }
   }
 
-  private onCanvasValueChange(value: any) {
-    this.value = value;
+  private onCanvasValueChange(value: CanvasData) {
+    this.childrens = value.children;
+    this.mode = value.mode;
   }
 
   firstUpdated() {
@@ -82,10 +91,15 @@ export class WwGeometryCloze extends LitElementWw {
       }
       this.manager = new CanvasManager(this.canvas, this.contextMenu);
       this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
-      this.manager.listenForModeChange((mode) => (this.mode = mode));
+      this.manager.listenForModeChange((mode) => {
+        this.mode = mode;
+      });
 
-      if (this.value) {
-        this.manager.import(this.value);
+      if (this.childrens) {
+        this.manager.import({
+          children: this.childrens,
+          mode: this.mode
+        });
       } else {
         const polygon = Shape.createPolygon(this.manager, [
           { x: 200, y: 200, name: 'top left' },

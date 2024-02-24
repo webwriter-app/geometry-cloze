@@ -404,30 +404,13 @@ export default class InteractionManager extends EventManager {
   public export() {
     return {
       ...super.export(),
-      mode: this._mode,
-      ...(this.creatingShape && {
-        creatingShape: {
-          shape: this.creatingShape.shape.id,
-          lastPoint: this.creatingShape.lastPoint.id
-        }
-      }),
-      ...(this.ghostLine && { ghostLine: this.ghostLine?.export() })
+      mode: this._mode
     };
   }
 
-  public import(data: ReturnType<this['export']>) {
-    super.import(data);
-    this.mode = data.mode;
-
-    if (data.creatingShape) {
-      const shape = this.getChildByID(data.creatingShape.shape);
-      const lastPoint = this.getChildByID(data.creatingShape.lastPoint);
-      if (shape instanceof Shape && lastPoint instanceof Point) {
-        this.creatingShape = { shape, lastPoint };
-      } else this.creatingShape = null;
-    } else this.creatingShape = null;
-
-    this.ghostLine = data.ghostLine ? Line.import(data.ghostLine, this) : null;
+  public import(data: Partial<ReturnType<this['export']>>) {
+    if (data.children) super.import(data as ReturnType<this['export']>);
+    if (data.mode) this.mode = data.mode;
   }
 
   public setSnapping(spacing: number | null) {

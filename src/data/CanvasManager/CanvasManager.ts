@@ -17,13 +17,15 @@ export default class CanvasManager extends InteractionManager {
     this.updateListeners.forEach((listener) => listener(exportedData));
   }
 
-  private updateListeners: ((exportedData: any) => void)[] = [];
+  private updateListeners: ((exportedData: CanvasData) => void)[] = [];
   public addUpdateListener(listener: (exportedData: any) => void) {
     this.updateListeners.push(listener);
   }
-  public removeUpdateListener(listener: (exportedData: any) => void) {
+  public removeUpdateListener(listener: (exportedData: CanvasData) => void) {
     const index = this.updateListeners.indexOf(listener);
     if (index < 0) return;
     this.updateListeners.splice(index, 1);
   }
 }
+
+export type CanvasData = ReturnType<CanvasManager['export']>;

@@ -54,9 +54,6 @@ export default class Shape extends Draggable {
     return new Shape(manager, [start, lineElement, end], false);
   }
 
-  protected _x: number = 0;
-  protected _y: number = 0;
-
   protected closed = true;
 
   constructor(
