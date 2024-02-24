@@ -49,11 +49,6 @@ export default class Line extends Draggable {
     this.delete();
   }
 
-  onStartMove() {
-    this._x = this.start.x;
-    this._y = this.start.y;
-  }
-
   draw(ctx: CanvasRenderingContext2D) {
     super.draw(ctx);
     ctx.beginPath();
