@@ -55,7 +55,7 @@ export default abstract class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    document.addEventListener('keydown', this.handleKeyboardEvent.bind(this));
+    document.addEventListener('keydown', this._handleKeyboardEvent.bind(this));
   }
 
   unmount() {
@@ -93,7 +93,7 @@ export default abstract class EventManager extends ChildrenManager {
     );
     document.removeEventListener(
       'keydown',
-      this.handleKeyboardEvent.bind(this)
+      this._handleKeyboardEvent.bind(this)
     );
   }
 
@@ -124,6 +124,7 @@ export default abstract class EventManager extends ChildrenManager {
   private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
     null;
   private onMouseDown(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     this.moved = false;
     const coords = this.getRelativeCoordinates(event);
 
@@ -152,6 +153,7 @@ export default abstract class EventManager extends ChildrenManager {
   }
 
   private onMouseUp(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     const isRightClick = 'button' in event && event.button === 2;
 
     if (this.moved) {
@@ -191,6 +193,7 @@ export default abstract class EventManager extends ChildrenManager {
       })
     | null = null;
   private onMouseMove(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
 
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
@@ -233,6 +236,7 @@ export default abstract class EventManager extends ChildrenManager {
   }
 
   private handleContextMenu(event: MouseEvent) {
+    event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
     const hit = this.getElementAt(coords);
     if (hit) {
@@ -246,6 +250,14 @@ export default abstract class EventManager extends ChildrenManager {
         this.contextMenu.open(localX, localY);
       }
     }
+  }
+  private _handleKeyboardEvent(event: KeyboardEvent) {
+    event.stopPropagation();
+    this.handleKeyboardEvent(event.key, {
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey
+    });
   }
 
   protected abstract handleClick(_event: {
@@ -273,7 +285,10 @@ export default abstract class EventManager extends ChildrenManager {
     ctrlKeyPressed: boolean;
     element: Draggable | null;
   }): void;
-  protected abstract handleKeyboardEvent(_event: KeyboardEvent): void;
+  protected abstract handleKeyboardEvent(
+    key: string,
+    data: { ctrl: boolean; shift: boolean; alt: boolean }
+  ): void;
   protected upadateCursor(_coords: MathPoint): CSSStyleDeclaration['cursor'] {
     return 'default';
   }

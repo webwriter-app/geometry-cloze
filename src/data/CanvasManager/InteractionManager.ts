@@ -351,10 +351,10 @@ export default class InteractionManager extends EventManager {
     }
   }
 
-  protected handleKeyboardEvent(event: KeyboardEvent) {
+  protected handleKeyboardEvent(key: string) {
     switch (this.mode) {
       case 'select':
-        switch (event.key) {
+        switch (key) {
           case 'c':
           case 'C':
             this.mode = 'create';
@@ -370,7 +370,7 @@ export default class InteractionManager extends EventManager {
         }
         break;
       case 'create':
-        switch (event.key) {
+        switch (key) {
           case 's':
           case 'S':
             this.mode = 'select';
