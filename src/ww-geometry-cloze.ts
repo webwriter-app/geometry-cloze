@@ -138,7 +138,7 @@ export class WwGeometryCloze extends LitElementWw {
   static styles = css`
     :host {
       outline: none;
-      z-index: 0;
+      z-index: 100;
     }
     .wrapper {
       margin: 2rem;
