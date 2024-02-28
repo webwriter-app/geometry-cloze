@@ -6,6 +6,7 @@ import InteractionManager from '../CanvasManager/InteractionManager';
 import { StylableData } from './base/Stylable';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import Shape from './Shape';
+import Vector from '../helper/Vector';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -57,7 +58,7 @@ export default class Line extends Draggable {
       x: this._end.x - this._start.x,
       y: this._end.y - this._start.y
     };
-    const normalized = Calc.normalize(vector);
+    const normalized = Vector.normalize(vector);
     const start = {
       x: this._start.x,
       y: this._start.y
@@ -91,21 +92,47 @@ export default class Line extends Draggable {
       const metrics = ctx.measureText(label);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-      // if (this.parent instanceof Shape) {
-      // } else {
-      ctx.clearRect(
-        middlePoint.x - metrics.width / 2 - padding,
-        middlePoint.y - fontHeight / 2 - padding,
-        metrics.width + 2 * padding,
-        fontHeight + 2 * padding
-      );
-      ctx.fillStyle = this.stroke;
-      ctx.fillText(
-        label,
-        middlePoint.x - metrics.width / 2,
-        middlePoint.y + fontHeight / 4
-      );
-      // }
+      if (this.parent instanceof Shape) {
+        const ortho = Vector.orthogonal(normalized);
+        const point1 = Vector.add(
+          middlePoint,
+          Vector.scale(ortho, fontHeight / 2)
+        );
+        const factor = Calc.isPointInPolygon(point1, this.parent.getPoints())
+          ? -1
+          : 1;
+
+        const angleFactor = 1 + Math.min(Math.abs(ortho.x), Math.abs(ortho.y));
+        const startPoint = Vector.add(
+          middlePoint,
+          Vector.scale(ortho, fontHeight * factor * angleFactor)
+        );
+        ctx.clearRect(
+          startPoint.x - metrics.width / 2 - padding,
+          startPoint.y - fontHeight / 2 - padding,
+          metrics.width + 2 * padding,
+          fontHeight + 2 * padding
+        );
+        ctx.fillStyle = this.stroke;
+        ctx.fillText(
+          label,
+          startPoint.x - metrics.width / 2,
+          startPoint.y + fontHeight / 4
+        );
+      } else {
+        ctx.clearRect(
+          middlePoint.x - metrics.width / 2 - padding,
+          middlePoint.y - fontHeight / 2 - padding,
+          metrics.width + 2 * padding,
+          fontHeight + 2 * padding
+        );
+        ctx.fillStyle = this.stroke;
+        ctx.fillText(
+          label,
+          middlePoint.x - metrics.width / 2,
+          middlePoint.y + fontHeight / 4
+        );
+      }
     }
   }
 

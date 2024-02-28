@@ -187,9 +187,4 @@ export default class Calc {
 
     return inside;
   }
-
-  static normalize(point: MathPoint): MathPoint {
-    const length = Math.sqrt(point.x ** 2 + point.y ** 2);
-    return { x: point.x / length, y: point.y / length };
-  }
 }
