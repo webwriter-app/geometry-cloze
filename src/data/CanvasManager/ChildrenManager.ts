@@ -75,7 +75,6 @@ export default class ChildrenManager {
   }
 
   public removeChild(element: Shape) {
-    console.log('removing child from removeChild()', element);
     const index = this.children.indexOf(element);
     if (index < 0) return;
     this.children.splice(index, 1);

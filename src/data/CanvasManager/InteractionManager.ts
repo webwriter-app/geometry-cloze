@@ -8,9 +8,9 @@ import EventManager from './EventManager';
 
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-  protected snapSpacing: number | null = 50;
+  protected _snapSpacing: number | null = 50;
   private snap<Value extends number | MathPoint>(value: Value): Value {
-    if (this.snapSpacing === null) return value;
+    if (this._snapSpacing === null) return value;
     if (typeof value === 'object') {
       return {
         ...value,
@@ -18,24 +18,36 @@ export default class InteractionManager extends EventManager {
         y: this.snap(value.y)
       } as Value;
     } else
-      return (Math.round((value as number) / this.snapSpacing) *
-        this.snapSpacing) as Value;
+      return (Math.round((value as number) / this._snapSpacing) *
+        this._snapSpacing) as Value;
+  }
+  public get snapSpacing() {
+    return this._snapSpacing;
+  }
+
+  protected _scale: number | null = null;
+  public get scale() {
+    return this._scale ?? this._snapSpacing ?? 1;
+  }
+  public setScale(scale: number | null) {
+    this._scale = scale;
+    this.requestRedraw();
   }
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
     this.selectionRect?.draw(ctx);
     this.ghostLine?.draw(ctx);
-    if (this.snapSpacing !== null && this.snapSpacing > 0) {
+    if (this._snapSpacing !== null && this._snapSpacing > 0) {
       ctx.strokeStyle = '#00000050';
       ctx.lineWidth = 1;
       ctx.beginPath();
       const { width, height } = this.getCanvasDimensions();
-      for (let x = 0; x < width; x += this.snapSpacing) {
+      for (let x = 0; x < width; x += this._snapSpacing) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
       }
-      for (let y = 0; y < height; y += this.snapSpacing) {
+      for (let y = 0; y < height; y += this._snapSpacing) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
@@ -414,7 +426,7 @@ export default class InteractionManager extends EventManager {
   }
 
   public setSnapping(spacing: number | null) {
-    this.snapSpacing = spacing;
+    this._snapSpacing = spacing;
     this.requestRedraw();
   }
 }

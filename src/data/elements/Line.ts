@@ -5,6 +5,7 @@ import Point from './Point';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import { StylableData } from './base/Stylable';
 import { ContextMenuItem } from '../../types/ContextMenu';
+import Shape from './Shape';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -77,6 +78,35 @@ export default class Line extends Draggable {
     }
     ctx.lineTo(end.x, end.y);
     ctx.stroke();
+
+    // draw label
+    if (this.isShowingLabel) {
+      const padding = 5;
+      const middlePoint = {
+        x: (start.x + end.x) / 2,
+        y: (start.y + end.y) / 2
+      };
+      const label = this.getLabel();
+      ctx.font = '24px Arial';
+      const metrics = ctx.measureText(label);
+      const fontHeight =
+        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      // if (this.parent instanceof Shape) {
+      // } else {
+      ctx.clearRect(
+        middlePoint.x - metrics.width / 2 - padding,
+        middlePoint.y - fontHeight / 2 - padding,
+        metrics.width + 2 * padding,
+        fontHeight + 2 * padding
+      );
+      ctx.fillStyle = this.stroke;
+      ctx.fillText(
+        label,
+        middlePoint.x - metrics.width / 2,
+        middlePoint.y + fontHeight / 4
+      );
+      // }
+    }
   }
 
   setStart(start: MathPoint) {
@@ -118,6 +148,14 @@ export default class Line extends Draggable {
         return [this];
       return [];
     }
+  }
+
+  protected getLabel() {
+    return (
+      Math.round(
+        (Calc.distance(this.start, this.end) / this.manager.scale) * 100
+      ) / 100
+    ).toLocaleString();
   }
 
   public getContextMenuItems(): ContextMenuItem[] {

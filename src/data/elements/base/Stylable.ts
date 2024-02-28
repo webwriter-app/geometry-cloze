@@ -8,6 +8,7 @@ export interface StylableData {
   stroke?: string;
   fill?: string;
   shadow?: boolean;
+  showLabel?: boolean;
 }
 
 const DEFAULT_STYLE = {
@@ -15,7 +16,8 @@ const DEFAULT_STYLE = {
   size: 10,
   stroke: 'black',
   fill: 'transparent',
-  shadow: false
+  shadow: false,
+  showLabel: false
 } as const;
 
 export default class Stylable extends Element {
@@ -24,6 +26,7 @@ export default class Stylable extends Element {
   private _stroke: string;
   private _fill: string;
   private _shadow: boolean;
+  private _showLabel: boolean;
 
   constructor(
     canvas: InteractionManager,
@@ -35,6 +38,7 @@ export default class Stylable extends Element {
     this._stroke = data.stroke || DEFAULT_STYLE.stroke;
     this._fill = data.fill || DEFAULT_STYLE.fill;
     this._shadow = data.shadow || DEFAULT_STYLE.shadow;
+    this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
@@ -102,10 +106,26 @@ export default class Stylable extends Element {
     return this._shadow;
   }
 
+  showLabel(show: boolean | null) {
+    const newValue = show ?? false;
+    const hasChanges = newValue !== this._showLabel;
+    this._showLabel = newValue;
+    if (hasChanges)
+      this.fireEvent('style-change', { showLabel: this._showLabel });
+  }
+  get isShowingLabel() {
+    return this._showLabel;
+  }
+
+  protected getLabel(): string {
+    return '';
+  }
+
   protected getStyleContextMenuItems(options: {
     stroke?: boolean;
     fill?: boolean;
     lineWidth?: boolean;
+    showLabel?: boolean;
   }): ContextMenuItem[] {
     const res: ContextMenuItem[] = [];
     if (options.stroke) {
@@ -220,6 +240,15 @@ export default class Stylable extends Element {
               key: `line-width_${option.label.toLowerCase()}`
             }) as const
         )
+      });
+    }
+    if (options.showLabel ?? this.getLabel() !== '') {
+      res.push({
+        type: 'checkbox',
+        label: 'Show Label',
+        getChecked: () => this._showLabel,
+        action: () => this.showLabel(!this._showLabel),
+        key: 'show-label'
       });
     }
     return res;
