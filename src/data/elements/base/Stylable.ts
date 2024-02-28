@@ -14,7 +14,7 @@ export interface StylableData {
 const DEFAULT_STYLE = {
   lineWidth: 3,
   size: 10,
-  stroke: 'black',
+  stroke: '#111827',
   fill: 'transparent',
   shadow: false,
   showLabel: false
@@ -127,78 +127,80 @@ export default class Stylable extends Element {
     lineWidth?: boolean;
     showLabel?: boolean;
   }): ContextMenuItem[] {
+    const COLORS = [
+      {
+        label: 'Transparent',
+        color: 'transparent'
+      },
+      {
+        label: 'Black',
+        color: '#111827'
+      },
+      {
+        label: 'Red',
+        color: '#dc2626'
+      },
+      {
+        label: 'Orange',
+        color: '#ea580c'
+      },
+      {
+        label: 'Yellow',
+        color: '#facc15'
+      },
+      {
+        label: 'Lime',
+        color: '#84cc16'
+      },
+      {
+        label: 'Green',
+        color: '#15803d'
+      },
+      {
+        label: 'Cyan',
+        color: '#06b6d4'
+      },
+      {
+        label: 'Blue',
+        color: '#2563eb'
+      },
+      {
+        label: 'Violet',
+        color: '#6d28d9'
+      },
+      {
+        label: 'Pink',
+        color: '#db2777'
+      }
+    ];
     const res: ContextMenuItem[] = [];
     if (options.stroke) {
-      const options = [
-        {
-          label: 'Blue',
-          value: 'blue'
-        },
-        {
-          label: 'Red',
-          value: 'red'
-        },
-        {
-          label: 'Green',
-          value: 'green'
-        },
-        {
-          label: 'Black',
-          value: 'black'
-        },
-        {
-          label: 'Transparent',
-          value: 'transparent'
-        }
-      ];
       res.push({
         type: 'submenu',
         label: 'Stoke',
-        items: options.map(
+        items: COLORS.map(
           (option) =>
             ({
               type: 'checkbox',
               label: option.label,
-              getChecked: () => this._stroke === option.value,
-              action: () => this.setStroke(option.value),
+              getChecked: () => this._stroke === option.color,
+              action: () => this.setStroke(option.color),
               key: `stroke_${option.label.toLowerCase()}`
             }) as const
         )
       });
     }
     if (options.fill) {
-      const options = [
-        {
-          label: 'Blue',
-          value: 'blue'
-        },
-        {
-          label: 'Red',
-          value: 'red'
-        },
-        {
-          label: 'Green',
-          value: 'green'
-        },
-        {
-          label: 'Black',
-          value: 'black'
-        },
-        {
-          label: 'Transparent',
-          value: 'transparent'
-        }
-      ];
       res.push({
         type: 'submenu',
         label: 'Fill',
-        items: options.map(
+        items: COLORS.map(
           (option) =>
             ({
               type: 'checkbox',
-              getChecked: () => this._fill === option.value,
+              getChecked: () => this._fill === option.color,
               label: option.label,
-              action: () => this.setFill(option.value),
+              action: () => this.setFill(option.color),
               key: `fill_${option.label.toLowerCase()}}`
             }) as const
         )
