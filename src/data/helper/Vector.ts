@@ -17,4 +17,12 @@ export default class Vector {
   static add(vector1: MathPoint, vector2: MathPoint): MathPoint {
     return { x: vector1.x + vector2.x, y: vector1.y + vector2.y };
   }
+
+  static subtract(vector1: MathPoint, vector2: MathPoint): MathPoint {
+    return { x: vector1.x - vector2.x, y: vector1.y - vector2.y };
+  }
+
+  static angle(vector1: MathPoint, vector2: MathPoint): number {
+    return Math.atan2(vector2.y, vector2.x) - Math.atan2(vector1.y, vector1.x);
+  }
 }
