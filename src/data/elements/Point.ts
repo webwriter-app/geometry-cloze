@@ -31,28 +31,56 @@ export default class Point extends Draggable {
     ctx.stroke();
 
     if (this.isShowingLabel) {
+      ctx.font = '18px Arial';
+      ctx.fillStyle = 'black';
       const label = this.getLabel();
       const angle = this.getAngle();
       const neighbors = this.getNeighborPoints();
-      ctx.font = '18px Arial';
-      ctx.fillStyle = 'black';
+      const metrics = ctx.measureText(label);
+      const fontHeight =
+        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
-        const radius = 50;
+        const textPadding = 5;
         const vec1 = Vector.normalize(Vector.subtract(neighbors[0], this));
         const vec2 = Vector.normalize(Vector.subtract(neighbors[1], this));
-        const middle = Vector.normalize(Vector.add(vec1, vec2));
+
+        // get vector inwards of polygon
+        let middle = Vector.normalize(Vector.add(vec1, vec2));
+        if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
+        if (
+          !Calc.isPointInPolygon(
+            Vector.add(this, middle),
+            (this.parent as Shape).getPoints()
+          )
+        )
+          middle = Vector.multiply(middle, -1);
+
+        middle = Vector.normalize(middle, this.size + textPadding);
+        const outerRadius = this.size + textPadding + metrics.width + 5;
+
+        ctx.fillText(
+          label,
+          this.x + middle.x + (middle.x > 0 ? 0 : -1) * metrics.width,
+          this.y + middle.y + (middle.y > 0 ? 1 : 0) * fontHeight
+        );
+
         ctx.beginPath();
-        // ctx.moveTo(this.x + vec1.x, this.y + vec1.y);
-        const args = [
+        ctx.arc(
           this.x,
           this.y,
-          radius,
+          outerRadius,
           Vector.angle({ x: 1, y: 0 }, vec2),
           Vector.angle({ x: 1, y: 0 }, vec1)
-        ] as const;
-        console.log(...args, vec1, vec2);
-        ctx.arc(...args);
+        );
         ctx.stroke();
+      } else {
+        // fallback to simple label
+        ctx.clearRect(
+          this.x + 10,
+          this.y - 30,
+          metrics.width + 10,
+          fontHeight + 10
+        );
         ctx.fillText(label, this.x + 10, this.y - 10);
       }
     }

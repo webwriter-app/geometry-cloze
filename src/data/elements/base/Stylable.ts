@@ -17,7 +17,7 @@ const DEFAULT_STYLE = {
   stroke: '#111827',
   fill: 'transparent',
   shadow: false,
-  showLabel: false
+  showLabel: true
 } as const;
 
 export default class Stylable extends Element {

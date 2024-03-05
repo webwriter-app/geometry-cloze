@@ -1,5 +1,6 @@
 # Todolist
 
+- divider lines
 - editor in sidebar
   - fill / stroke color, line width, label
 
