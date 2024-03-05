@@ -24,7 +24,7 @@ export class WwGeometryCloze extends LitElementWw {
     reflect: true,
     type: Array
   })
-  childrens: CanvasData['children'];
+  elements: CanvasData['children'];
 
   @state()
   @property({
@@ -63,13 +63,13 @@ export class WwGeometryCloze extends LitElementWw {
   protected updated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-    if (_changedProperties.has('childrens')) {
-      if (!this.manager || !this.childrens) return;
+    if (_changedProperties.has('elements')) {
+      if (!this.manager || !this.elements) return;
 
       const exportData = this.manager.export();
-      if (!Objects.deepEqual(exportData.children, this.childrens))
+      if (!Objects.deepEqual(exportData.children, this.elements))
         this.manager.import({
-          children: this.childrens
+          children: this.elements
         });
     } else if (_changedProperties.has('mode')) {
       if (this.manager) this.manager.mode = this.mode;
@@ -77,7 +77,7 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   private onCanvasValueChange(value: CanvasData) {
-    this.childrens = value.children;
+    this.elements = value.children;
     this.mode = value.mode;
   }
 
@@ -95,9 +95,9 @@ export class WwGeometryCloze extends LitElementWw {
         this.mode = mode;
       });
 
-      if (this.childrens) {
+      if (this.elements) {
         this.manager.import({
-          children: this.childrens,
+          children: this.elements,
           mode: this.mode
         });
       } else {
@@ -113,7 +113,7 @@ export class WwGeometryCloze extends LitElementWw {
           { x: 200, y: 500, name: 'bottom left' }
         ]);
 
-        this.manager.addShape(polygon);
+        this.manager.addChild(polygon);
       }
     } else console.warn('No canvas context');
   }

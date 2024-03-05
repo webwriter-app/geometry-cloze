@@ -1,7 +1,8 @@
 import { ContextMenuItem } from '../../../types/ContextMenu';
-import ChildrenManager from '../../CanvasManager/ChildrenManager';
-import InteractionManager from '../../CanvasManager/InteractionManager';
 import Shape from '../Shape';
+import InteractionManager from '../../CanvasManager/InteractionManager';
+import IDManager from '../../CanvasManager/IDManager';
+import Manager from '../../CanvasManager/Abstracts';
 
 export interface NamedElement {
   name?: string;
@@ -10,7 +11,7 @@ export interface NamedElement {
 
 export default class Element {
   public name = '[unset]';
-  private _id = ChildrenManager.getID();
+  private _id = IDManager.getID();
   public get id() {
     return this._id;
   }
@@ -22,13 +23,22 @@ export default class Element {
     if (data?.id) this._id = data.id;
   }
 
-  protected parent: Shape | ChildrenManager | null = null;
+  private _hidden = false;
+  public get hidden() {
+    return this._hidden;
+  }
+  public hide(value: boolean = true) {
+    this._hidden = value;
+    this.requestRedraw();
+  }
+
+  protected parent: Shape | Manager | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
-  registerParent(element: Shape | ChildrenManager) {
+  registerParent(element: Shape | Manager) {
     this.parent = element;
   }
   unregisterParent() {
@@ -41,10 +51,10 @@ export default class Element {
     child.registerParent(this);
   }
 
-  protected addChild(this: Shape, ...children: Element[]) {
+  protected addChild(...children: Element[]) {
     this._children.push(...children);
     children.forEach((child) => {
-      child.registerParent(this);
+      if (this instanceof Shape) child.registerParent(this);
       child.addEventListener('request-redraw', this.requestRedraw.bind(this));
     });
   }
@@ -74,6 +84,7 @@ export default class Element {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this._hidden) return;
     this._children.forEach((child) => child.draw(ctx));
   }
 

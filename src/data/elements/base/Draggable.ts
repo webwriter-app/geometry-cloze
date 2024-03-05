@@ -1,6 +1,5 @@
 import { MathPoint } from '../../helper/Calc';
 import Stylable, { StylableData } from './Stylable';
-import Element from './Element';
 import InteractionManager from '../../CanvasManager/InteractionManager';
 
 export interface DraggableData {
@@ -19,9 +18,6 @@ export default class Draggable extends Stylable {
   ) {
     super(canvas, data);
     this._selected = data.selected ?? false;
-
-    this.addEventListener('select', this.select.bind(this));
-    this.addEventListener('unselect', this.blur.bind(this));
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -36,6 +32,7 @@ export default class Draggable extends Stylable {
   }
 
   public getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     return this.children.flatMap((child) => {
       if (child instanceof Draggable) return child.getHit(point, point2);
       return [];
@@ -65,6 +62,7 @@ export default class Draggable extends Stylable {
   select() {
     if (!this.onSelect()) return;
     this._selected = true;
+    this.fireEvent('select', this);
     this.requestRedraw();
   }
 
@@ -79,6 +77,7 @@ export default class Draggable extends Stylable {
   blur() {
     if (!this.onBlur()) return;
     this._selected = false;
+    this.fireEvent('blur', this);
     this.requestRedraw();
   }
 

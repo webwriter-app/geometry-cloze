@@ -1,12 +1,15 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import Draggable, { DraggableData } from './base/Draggable';
-import { NamedElement } from './base/Element';
-import InteractionManager from '../CanvasManager/InteractionManager';
-import { StylableData } from './base/Stylable';
-import { ContextMenuItem } from '../../types/ContextMenu';
-import Shape from './Shape';
 import Vector from '../helper/Vector';
 import Arrays from '../helper/Arrays';
+
+import { NamedElement } from './base/Element';
+import { StylableData } from './base/Stylable';
+import Draggable, { DraggableData } from './base/Draggable';
+
+import Shape from './Shape';
+
+import InteractionManager from '../CanvasManager/InteractionManager';
+import { ContextMenuItem } from '../../types/ContextMenu';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -24,6 +27,7 @@ export default class Point extends Draggable {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
@@ -87,6 +91,7 @@ export default class Point extends Draggable {
   }
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     if (!point2)
       return Calc.distance(this, point) - this.clickTargetSize <
         this.size + this.lineWidth / 2
@@ -108,7 +113,7 @@ export default class Point extends Draggable {
   }
 
   private getNeighborPoints(): [MathPoint, MathPoint] | null {
-    if (!(this.parent instanceof Shape)) return null;
+    if (!this.parent || !('getLines' in this.parent)) return null;
     const lines = this.parent.getLines();
     const neighbors = lines.filter((l) => l.isEndpoint(this));
     if (neighbors.length !== 2) return null;

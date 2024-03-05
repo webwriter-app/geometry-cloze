@@ -1,12 +1,13 @@
-import Draggable, { DraggableData } from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
-import Element, { NamedElement } from './base/Element';
-import Point from './Point';
-import InteractionManager from '../CanvasManager/InteractionManager';
-import { StylableData } from './base/Stylable';
-import { ContextMenuItem } from '../../types/ContextMenu';
-import Shape from './Shape';
 import Vector from '../helper/Vector';
+
+import Element, { NamedElement } from './base/Element';
+import { StylableData } from './base/Stylable';
+import Draggable, { DraggableData } from './base/Draggable';
+import Point from './Point';
+
+import InteractionManager from '../CanvasManager/InteractionManager';
+import { ContextMenuItem } from '../../types/ContextMenu';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -52,6 +53,7 @@ export default class Line extends Draggable {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
     const vector = {
@@ -92,7 +94,7 @@ export default class Line extends Draggable {
       const metrics = ctx.measureText(label);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
-      if (this.parent instanceof Shape) {
+      if (this.parent && 'getPoints' in this.parent) {
         const ortho = Vector.orthogonal(normalized);
         const point1 = Vector.add(
           middlePoint,
@@ -137,12 +139,16 @@ export default class Line extends Draggable {
   }
 
   setStart(start: MathPoint) {
-    this._start = start;
+    if (start instanceof Point || !(this._start instanceof Point))
+      this._start = start;
+    else this._start.move({ ...start, relative: false });
+
     this.requestRedraw();
   }
 
   setEnd(end: MathPoint) {
-    this._end = end;
+    if (end instanceof Point || !(this._end instanceof Point)) this._end = end;
+    else this._end.move({ ...end, relative: false });
     this.requestRedraw();
   }
 
@@ -155,6 +161,7 @@ export default class Line extends Draggable {
   }
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     if (point2) {
       const rect = {
         x1: point.x,

@@ -1,16 +1,17 @@
-import SelectionRect from '../components/SelectionRect';
+import { MathPoint } from '../helper/Calc';
+import Draggable from '../elements/base/Draggable';
 import Line from '../elements/Line';
 import Point from '../elements/Point';
 import Shape from '../elements/Shape';
-import Draggable from '../elements/base/Draggable';
-import { MathPoint } from '../helper/Calc';
+import SelectionRect from '../components/SelectionRect';
 import EventManager from './EventManager';
+import DividerLine from '../elements/DividerLine';
 
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
   protected _snapSpacing: number | null = 50;
   private snap<Value extends number | MathPoint>(value: Value): Value {
-    if (this._snapSpacing === null) return value;
+    if (this._snapSpacing === null || this.keys.alt) return value;
     if (typeof value === 'object') {
       return {
         ...value,
@@ -38,9 +39,11 @@ export default class InteractionManager extends EventManager {
     super.redraw(ctx);
     this.selectionRect?.draw(ctx);
     this.ghostLine?.draw(ctx);
+    this.ghostDividerLine?.draw(ctx);
     if (this._snapSpacing !== null && this._snapSpacing > 0) {
       ctx.strokeStyle = '#00000050';
       ctx.lineWidth = 1;
+      ctx.setLineDash([]);
       ctx.beginPath();
       const { width, height } = this.getCanvasDimensions();
       for (let x = 0; x < width; x += this._snapSpacing) {
@@ -75,6 +78,7 @@ export default class InteractionManager extends EventManager {
     coords = this.snap(coords);
     switch (this._mode) {
       case 'select':
+      case 'divider':
         if (this.selectionRect) {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
@@ -87,6 +91,9 @@ export default class InteractionManager extends EventManager {
 
         // do not unselect on context menu
         if (isRightClick && alreadySelected) break;
+
+        // do not select certain objects
+        if (hit && !this.canSelect(hit)) break;
 
         if (hit) {
           if (alreadySelected) {
@@ -128,7 +135,7 @@ export default class InteractionManager extends EventManager {
             } else {
               // create new point
               const shape = Shape.createPoint(this, coords);
-              this.addShape(shape);
+              this.addChild(shape);
               this.creatingShape = {
                 shape,
                 lastPoint: shape.getPoints()[0]
@@ -142,7 +149,9 @@ export default class InteractionManager extends EventManager {
           }
         } else if (hit instanceof Line) {
           // create new point in line
-          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          const shape = (
+            this.getChildren((s) => s instanceof Shape) as Shape[]
+          ).find((shape) => shape.hasChild(hit));
           if (!shape) break;
           const point = new Point(this, coords);
           shape.addPoint(point);
@@ -166,9 +175,9 @@ export default class InteractionManager extends EventManager {
               this.creatingShape = null;
             } else {
               // when clicking on an endpoint of another shape -> connect
-              const shape = this.getChildren().find((shape) =>
-                shape.hasChild(hit)
-              );
+              const shape = (
+                this.getChildren((s) => s instanceof Shape) as Shape[]
+              ).find((shape) => shape.hasChild(hit));
               if (!shape || !shape.isEndPoint(hit)) break;
               this.creatingShape.shape.connect(
                 shape,
@@ -194,21 +203,20 @@ export default class InteractionManager extends EventManager {
   }
 
   private ghostLine: Line | null = null;
+  private ghostDividerLine: DividerLine | null = null;
   private selectionRect: SelectionRect | null = null;
   protected handleDragStart({
-    ctrlKeyPressed,
     start,
     hit
   }: {
     start: MathPoint;
-    ctrlKeyPressed: boolean;
     hit: Draggable | null;
   }) {
     switch (this._mode) {
       case 'select':
         // only draw selection rect if we're not dragging an element
         if (!hit) {
-          if (!ctrlKeyPressed) this.blur();
+          if (!this.keys.ctrl) this.blur();
           this.selectionRect = new SelectionRect({
             x: start.x,
             y: start.y
@@ -218,7 +226,9 @@ export default class InteractionManager extends EventManager {
       case 'create':
         // if dragging point -> create line starting at point
         if (hit && hit instanceof Point) {
-          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          const shape = (
+            this.getChildren((s) => s instanceof Shape) as Shape[]
+          ).find((shape) => shape.hasChild(hit));
           if (!shape || !shape.isEndPoint(hit)) break;
           this.ghostLine = new Line(this, {
             start: {
@@ -229,6 +239,15 @@ export default class InteractionManager extends EventManager {
           });
           this.ghostLine.setStroke('#000000b0');
         }
+        break;
+      case 'divider':
+        if (!hit || !this.canSelect(hit))
+          // create line from startPoint
+          this.ghostDividerLine = new DividerLine(this, {
+            start: this.snap(start),
+            end: this.snap(start)
+          });
+        break;
     }
   }
 
@@ -245,6 +264,12 @@ export default class InteractionManager extends EventManager {
   }) {
     switch (this._mode) {
       case 'select':
+      case 'divider':
+        if (this.ghostDividerLine) {
+          this.ghostDividerLine.setEnd(this.snap(current));
+          this.requestRedraw();
+        }
+
         if (this.selected.length > 0 && element) {
           // drag currently selected element
           const change = {
@@ -254,8 +279,8 @@ export default class InteractionManager extends EventManager {
 
           this.selected.forEach((shape, index) => {
             const startCoords = dragStart.startPositions[index];
-            const x = this.snap(startCoords.x + change.x);
-            const y = this.snap(startCoords.y + change.y);
+            const x = startCoords.x + this.snap(change.x);
+            const y = startCoords.y + this.snap(change.y);
 
             // prevent moving element twice (move element and its parent)
             if (!this.selected.some((child) => child.hasChild(shape)))
@@ -272,21 +297,20 @@ export default class InteractionManager extends EventManager {
         }
         break;
       case 'create':
-        if (this.ghostLine) this.ghostLine.setEnd(current);
-        this.requestRedraw();
+        if (this.ghostLine) {
+          this.ghostLine.setEnd(current);
+          this.requestRedraw();
+        }
         break;
     }
   }
 
   protected handleDragEnd({
-    from,
     to,
-    ctrlKeyPressed,
     element
   }: {
     from: MathPoint;
     to: MathPoint;
-    ctrlKeyPressed: boolean;
     element: Draggable | null;
   }) {
     switch (this._mode) {
@@ -295,7 +319,7 @@ export default class InteractionManager extends EventManager {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
           );
-          this.select(newSelections, { keepSelection: ctrlKeyPressed });
+          this.select(newSelections, { keepSelection: this.keys.ctrl });
           this.selectionRect = null;
         }
         if (element) {
@@ -315,7 +339,9 @@ export default class InteractionManager extends EventManager {
             const end = hitElement ?? Shape.createPoint(this, to);
             const start = element;
 
-            const children = this.getChildren();
+            const children = this.getChildren(
+              (s) => s instanceof Shape
+            ) as Shape[];
             const shape1 = children.find((shape) => shape.hasChild(start));
             const shape2 =
               end instanceof Shape
@@ -329,6 +355,11 @@ export default class InteractionManager extends EventManager {
         }
         this.ghostLine = null;
         break;
+      case 'divider':
+        if (this.ghostDividerLine) {
+          this.addChild(this.ghostDividerLine);
+          this.ghostDividerLine = null;
+        }
     }
     this.selectionRect = null;
     this.requestRedraw();
@@ -337,58 +368,100 @@ export default class InteractionManager extends EventManager {
   protected upadateCursor(coords: MathPoint): CSSStyleDeclaration['cursor'] {
     // check if we're hovering over a draggable element and change cursor accordingly
     const hit = this.getElementAt(coords);
+    const canSelect = Boolean(hit && this.canSelect(hit));
     switch (this.mode) {
       case 'select':
-        return hit ? 'grab' : 'default';
+        return hit && canSelect ? 'grab' : 'default';
       case 'create':
         if (hit && hit instanceof Point) {
-          const shape = this.getChildren().find((shape) => shape.hasChild(hit));
+          const shape = (
+            this.getChildren((s) => s instanceof Shape) as Shape[]
+          ).find((shape) => shape.hasChild(hit));
           const isEndPoint = shape?.isEndPoint(hit);
           return isEndPoint ? 'crosshair' : 'default';
         } else return 'pointer';
+      case 'divider':
+        return canSelect ? 'grab' : 'pointer';
       default:
         return 'default';
     }
   }
 
   protected handleKeyboardEvent(key: string) {
+    // switch modes
+    if (['d', 's', 'c'].some((k) => key.toLowerCase() === k)) {
+      switch (key.toLowerCase()) {
+        case 'c':
+          this.mode = 'create';
+          break;
+        case 's':
+          this.mode = 'select';
+          break;
+        case 'd':
+          this.mode = 'divider';
+          break;
+      }
+      return;
+    }
+
+    // delete selected elements
+    switch (key) {
+      case 'Delete':
+      case 'Backspace':
+        this.selected.forEach((shape) => shape.delete());
+        this.blur();
+        break;
+    }
+
+    // mode specific keyboard events
     switch (this.mode) {
       case 'select':
         switch (key) {
-          case 'c':
-          case 'C':
-            this.mode = 'create';
-            break;
           case 'Escape':
             this.blur();
             break;
-          case 'Delete':
-          case 'Backspace':
-            this.selected.forEach((shape) => shape.delete());
-            this.blur();
-            break;
+          case 'a':
+          case 'A':
+            if (this.keys.ctrl)
+              this.select(
+                this.getChildren((child) => child instanceof Draggable)
+              );
         }
         break;
       case 'create':
         switch (key) {
-          case 's':
-          case 'S':
-            this.mode = 'select';
-            break;
           case 'Escape':
             this.ghostLine = null;
             this.creatingShape = null;
             this.mode = 'select';
             this.requestRedraw();
             break;
-          case 'Delete':
-          case 'Backspace':
-            this.selected.forEach((shape) => shape.delete());
-            this.blur();
+        }
+        break;
+      case 'divider':
+        switch (key) {
+          case 'Escape':
+            this.ghostDividerLine = null;
+            this.mode = 'select';
+            this.requestRedraw();
             break;
         }
         break;
     }
+  }
+
+  public canSelect(element: Draggable): boolean {
+    if (this.mode === 'divider') {
+      if (element instanceof DividerLine) return true;
+      if (
+        this.getChildren((child) => child instanceof DividerLine).some((line) =>
+          line.hasChild(element)
+        )
+      )
+        return true;
+      return false;
+    }
+    return true;
   }
 
   public get mode() {
@@ -400,6 +473,13 @@ export default class InteractionManager extends EventManager {
     this.modeListeners(this._mode);
     this.ghostLine = null;
     this.creatingShape = null;
+    this.ghostDividerLine = null;
+    if (mode === 'divider') this.blur();
+    else {
+      this.getChildren((child) => child instanceof DividerLine).forEach(
+        (line) => this.blur(line)
+      );
+    }
     this.requestRedraw();
   }
 
@@ -416,7 +496,7 @@ export default class InteractionManager extends EventManager {
   public export() {
     return {
       ...super.export(),
-      mode: this._mode
+      mode: this.mode
     };
   }
 

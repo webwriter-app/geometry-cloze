@@ -9,6 +9,7 @@ export interface StylableData {
   fill?: string;
   shadow?: boolean;
   showLabel?: boolean;
+  dashed?: boolean;
 }
 
 const DEFAULT_STYLE = {
@@ -17,7 +18,8 @@ const DEFAULT_STYLE = {
   stroke: '#111827',
   fill: 'transparent',
   shadow: false,
-  showLabel: false
+  showLabel: false,
+  dashed: false
 } as const;
 
 export default class Stylable extends Element {
@@ -27,6 +29,7 @@ export default class Stylable extends Element {
   private _fill: string;
   private _shadow: boolean;
   private _showLabel: boolean;
+  private _dashed: boolean;
 
   constructor(
     canvas: InteractionManager,
@@ -39,6 +42,7 @@ export default class Stylable extends Element {
     this._fill = data.fill || DEFAULT_STYLE.fill;
     this._shadow = data.shadow || DEFAULT_STYLE.shadow;
     this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
+    this._dashed = data.dashed || DEFAULT_STYLE.dashed;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
@@ -48,6 +52,7 @@ export default class Stylable extends Element {
     ctx.lineWidth = this.lineWidth;
     ctx.strokeStyle = this.stroke;
     ctx.fillStyle = this.fill;
+    ctx.setLineDash(this.dashed ? [10, 10] : []);
 
     ctx.shadowBlur = this.shadow ? 5 : 0;
     ctx.shadowColor = this.shadow ? '#000000b0' : 'transparent';
@@ -106,6 +111,16 @@ export default class Stylable extends Element {
     return this._shadow;
   }
 
+  setDashed(dashed: boolean | null) {
+    const newValue = dashed ?? false;
+    const hasChanges = newValue !== this._dashed;
+    this._dashed = newValue;
+    if (hasChanges) this.fireEvent('style-change', { dashed: this._dashed });
+  }
+  get dashed() {
+    return this._dashed;
+  }
+
   showLabel(show: boolean | null) {
     const newValue = show ?? false;
     const hasChanges = newValue !== this._showLabel;
@@ -126,6 +141,7 @@ export default class Stylable extends Element {
     fill?: boolean;
     lineWidth?: boolean;
     showLabel?: boolean;
+    dashed?: boolean;
   }): ContextMenuItem[] {
     const COLORS = [
       {
@@ -244,6 +260,15 @@ export default class Stylable extends Element {
         )
       });
     }
+    if (options.dashed) {
+      res.push({
+        type: 'checkbox',
+        label: 'Dashed',
+        getChecked: () => this._dashed,
+        action: () => this.setDashed(!this._dashed),
+        key: 'dashed'
+      });
+    }
     if (options.showLabel ?? this.getLabel() !== '') {
       res.push({
         type: 'checkbox',
@@ -269,6 +294,9 @@ export default class Stylable extends Element {
     if (this._stroke !== DEFAULT_STYLE.stroke) res.stroke = this._stroke;
     if (this._fill !== DEFAULT_STYLE.fill) res.fill = this._fill;
     if (this._shadow !== DEFAULT_STYLE.shadow) res.shadow = this._shadow;
+    if (this._showLabel !== DEFAULT_STYLE.showLabel)
+      res.showLabel = this._showLabel;
+    if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
 
     return { ...super.export(), ...res };
   }

@@ -1,10 +1,12 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import Draggable from './base/Draggable';
-import Line, { BaseLine } from './Line';
-import Point, { BasePoint } from './Point';
-import Element from './base/Element';
-import InteractionManager from '../CanvasManager/InteractionManager';
 import Arrays from '../helper/Arrays';
+
+import Element from './base/Element';
+import Draggable from './base/Draggable';
+import Point, { BasePoint } from './Point';
+import Line, { BaseLine } from './Line';
+
+import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
 
 export default class Shape extends Draggable {
@@ -141,6 +143,7 @@ export default class Shape extends Draggable {
   }
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     const res: Draggable[] = [];
     // points should be first, since they have higher priority to be selected
     const hits = super.getHit(point, point2).sort((a, b) => {
@@ -419,13 +422,14 @@ export default class Shape extends Draggable {
 
     for (const newShape of nonEmptyShapes) {
       const shape = new Shape(this.manager, newShape.elements, newShape.closed);
-      this.manager.addShape(shape);
+      this.manager.addChild(shape);
     }
 
     this.requestRedraw();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
+    if (this.hidden) return;
     if (this.closed) {
       ctx.strokeStyle = 'transparent';
       ctx.fillStyle = this.fill;

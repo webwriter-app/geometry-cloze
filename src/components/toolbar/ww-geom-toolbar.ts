@@ -9,6 +9,7 @@ import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.
 import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
 import HandSVG from '../icons/hand-index-thumb.svg';
 import PentagonSVG from '../icons/pentagon.svg';
+import PentagonHalfSVG from '../icons/pentagon-half.svg';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 /**
@@ -44,6 +45,16 @@ export class WwGeomToolbar extends LitElementWw {
           @click=${this.handleModeChange.bind(this, 'create')}
           variant=${this.mode === 'create' ? 'primary' : 'default'}>
           ${unsafeHTML(PentagonSVG.slice('data:image/svg+xml,'.length))}
+        </sl-button>
+      </sl-tooltip>
+      <sl-tooltip>
+        <span slot="content"> Create divider lines <strong>[D]</strong> </span>
+        <sl-button
+          size="large"
+          circle
+          @click=${this.handleModeChange.bind(this, 'divider')}
+          variant=${this.mode === 'divider' ? 'primary' : 'default'}>
+          ${unsafeHTML(PentagonHalfSVG.slice('data:image/svg+xml,'.length))}
         </sl-button>
       </sl-tooltip>
     </div>`;

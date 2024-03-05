@@ -1,7 +1,7 @@
-import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
-import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
+import Draggable from '../elements/base/Draggable';
 import ChildrenManager from './ChildrenManager';
+import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
 
 export default abstract class EventManager extends ChildrenManager {
   private wrapper: HTMLElement;
@@ -56,6 +56,7 @@ export default abstract class EventManager extends ChildrenManager {
       this.handleContextMenu.bind(this)
     );
     document.addEventListener('keydown', this._handleKeyboardEvent.bind(this));
+    document.addEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   unmount() {
@@ -95,6 +96,7 @@ export default abstract class EventManager extends ChildrenManager {
       'keydown',
       this._handleKeyboardEvent.bind(this)
     );
+    document.removeEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   private preventTouchScroll(event: TouchEvent) {
@@ -133,7 +135,8 @@ export default abstract class EventManager extends ChildrenManager {
     if (hit) {
       const wasSelected = this._selected.includes(hit);
 
-      if (!wasSelected) this.select(hit, { keepSelection: event.ctrlKey });
+      if (!wasSelected && this.onSelect(hit))
+        this.select(hit, { keepSelection: event.ctrlKey });
 
       this.mouseDownTarget = {
         element: hit,
@@ -160,7 +163,6 @@ export default abstract class EventManager extends ChildrenManager {
       this.handleDragEnd({
         from: this.dragStart!,
         to: this.getRelativeCoordinates(event),
-        ctrlKeyPressed: event.ctrlKey,
         element: this.mouseDownTarget?.element ?? null
       });
       return;
@@ -203,7 +205,6 @@ export default abstract class EventManager extends ChildrenManager {
         this.handleDragEnd({
           from: this.dragStart!,
           to: coords,
-          ctrlKeyPressed: event.ctrlKey,
           element: this.mouseDownTarget?.element ?? null
         });
         this.moved = false;
@@ -222,7 +223,6 @@ export default abstract class EventManager extends ChildrenManager {
 
       this.handleDragStart({
         start: this.dragStart,
-        ctrlKeyPressed: event.ctrlKey,
         hit: this.getElementAt(this.dragStart!)
       });
     }
@@ -251,13 +251,29 @@ export default abstract class EventManager extends ChildrenManager {
       }
     }
   }
+  protected keys = {
+    alt: false,
+    shift: false,
+    ctrl: false
+  };
   private _handleKeyboardEvent(event: KeyboardEvent) {
+    // ctrl+z is bubbled up to be handle outside this widget
+    if (event.key.toLowerCase() === 'z' && event.ctrlKey) return;
     event.stopPropagation();
-    this.handleKeyboardEvent(event.key, {
+    event.preventDefault();
+    this.keys = {
       ctrl: event.ctrlKey,
       shift: event.shiftKey,
       alt: event.altKey
-    });
+    };
+    this.handleKeyboardEvent(event.key);
+  }
+  private handleKeyUp(event: KeyboardEvent) {
+    this.keys = {
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey
+    };
   }
 
   protected abstract handleClick(_event: {
@@ -270,7 +286,6 @@ export default abstract class EventManager extends ChildrenManager {
   protected abstract handleMouseMove(_event: { current: MathPoint }): void;
   protected abstract handleDragStart(_event: {
     start: MathPoint;
-    ctrlKeyPressed: boolean;
     hit: Draggable | null;
   }): void;
   protected abstract handleDragging(_event: {
@@ -282,15 +297,14 @@ export default abstract class EventManager extends ChildrenManager {
   protected abstract handleDragEnd(_event: {
     from: MathPoint;
     to: MathPoint;
-    ctrlKeyPressed: boolean;
     element: Draggable | null;
   }): void;
-  protected abstract handleKeyboardEvent(
-    key: string,
-    data: { ctrl: boolean; shift: boolean; alt: boolean }
-  ): void;
+  protected abstract handleKeyboardEvent(key: string): void;
   protected upadateCursor(_coords: MathPoint): CSSStyleDeclaration['cursor'] {
     return 'default';
+  }
+  protected onSelect(element: Draggable): boolean {
+    return true;
   }
 
   protected get selected() {
