@@ -8,8 +8,9 @@ import Draggable, { DraggableData } from './base/Draggable';
 
 import Shape from './Shape';
 
-import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
+import Numbers from '../helper/Numbers';
+import Manager from '../CanvasManager/Abstracts';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -18,11 +19,11 @@ export default class Point extends Draggable {
   protected _y: number;
 
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     data: BasePoint &
       Partial<StylableData & DraggableData> & { showOutsideAngle?: boolean }
   ) {
-    super(canvas, data);
+    super(manager, data);
     if (data.showOutsideAngle) this.showOutsideAngle = data.showOutsideAngle;
     this._x = data.x;
     this._y = data.y;
@@ -42,54 +43,65 @@ export default class Point extends Draggable {
       ctx.fillStyle = this.labelColor;
       ctx.strokeStyle = this.labelColor;
       const label = this.getLabel();
-      const angle = this.getAngle();
+      let angle = this.getAngle();
       const neighbors = this.getNeighborPoints();
       const metrics = ctx.measureText(label);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
         const textPadding = 2.5;
-        const vec1 = Vector.normalize(Vector.subtract(neighbors[0], this));
-        const vec2 = Vector.normalize(Vector.subtract(neighbors[1], this));
+        let vec1 = Vector.normalize(Vector.subtract(neighbors[0], this));
+        let vec2 = Vector.normalize(Vector.subtract(neighbors[1], this));
 
-        // get vector inwards of polygon
-        let middle = Vector.normalize(Vector.add(vec1, vec2));
-        if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
-        if (
-          Calc.isPointInPolygon(
-            Vector.add(this, middle),
-            (this.parent as Shape).getPoints()
-          ) === this.showOutsideAngle
-        )
-          middle = Vector.multiply(middle, -1);
+        if (this.showOutsideAngle) angle = 360 - angle;
 
-        middle = Vector.normalize(middle, this.size + textPadding);
-        const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);
-
-        let radius: number, textX: number, textY: number;
-        // outer label
-        if (angle < 45) {
-          textX = (middle.x + (middle.x > 0 ? 0 : -1) * metrics.width) * -1;
-          textY = (middle.y + (middle.y > 0 ? 1 : 0) * fontHeight) * -1;
-          radius = 20;
+        if (angle === 90 && this.manager.abstractRightAngle) {
+          vec1 = Vector.scale(vec1, this.size * 2 + textPadding);
+          vec2 = Vector.scale(vec2, this.size * 2 + textPadding);
+          ctx.moveTo(this.x + vec1.x, this.y + vec2.x);
+          ctx.lineTo(this.x + vec1.x + vec2.x, this.y + vec1.y + vec2.y);
+          ctx.lineTo(this.x + vec2.x, this.y + vec2.y);
+          ctx.stroke();
         } else {
-          // inner label
-          textX = middle.x + (middle.x > 0 ? 0 : -1) * metrics.width;
-          textY = middle.y + (middle.y > 0 ? 1 : 0) * fontHeight;
-          radius = textPadding + textDiagonal + 5;
+          // get vector inwards of polygon
+          let middle = Vector.normalize(Vector.add(vec1, vec2));
+          if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
+          if (
+            Calc.isPointInPolygon(
+              Vector.add(this, middle),
+              (this.parent as Shape).getPoints()
+            ) === this.showOutsideAngle
+          )
+            middle = Vector.multiply(middle, -1);
+
+          middle = Vector.normalize(middle, this.size + textPadding);
+          const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);
+
+          let radius: number, textX: number, textY: number;
+          // outer label
+          if (angle < 45) {
+            textX = (middle.x + (middle.x > 0 ? 0 : -1) * metrics.width) * -1;
+            textY = (middle.y + (middle.y > 0 ? 1 : 0) * fontHeight) * -1;
+            radius = 20;
+          } else {
+            // inner label
+            textX = middle.x + (middle.x > 0 ? 0 : -1) * metrics.width;
+            textY = middle.y + (middle.y > 0 ? 1 : 0) * fontHeight;
+            radius = textPadding + textDiagonal + 5;
+          }
+
+          ctx.fillText(label, this.x + textX, this.y + textY);
+
+          ctx.beginPath();
+          ctx.arc(
+            this.x,
+            this.y,
+            this.size + radius,
+            Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec1 : vec2),
+            Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec2 : vec1)
+          );
+          ctx.stroke();
         }
-
-        ctx.fillText(label, this.x + textX, this.y + textY);
-
-        ctx.beginPath();
-        ctx.arc(
-          this.x,
-          this.y,
-          this.size + radius,
-          Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec1 : vec2),
-          Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec2 : vec1)
-        );
-        ctx.stroke();
       } else {
         // fallback to simple label
         ctx.clearRect(
@@ -153,7 +165,7 @@ export default class Point extends Draggable {
     let angle = this.getAngle();
     if (angle === -1) return '';
     if (this.showOutsideAngle) angle = 360 - angle;
-    return `${angle}°`;
+    return `${Numbers.round(angle)}°`;
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
@@ -195,7 +207,7 @@ export default class Point extends Draggable {
     };
   }
 
-  public static import(data: BasePoint, canvas: InteractionManager) {
-    return new Point(canvas, data);
+  public static import(data: BasePoint, manager: Manager) {
+    return new Point(manager, data);
   }
 }

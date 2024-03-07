@@ -6,8 +6,9 @@ import { StylableData } from './base/Stylable';
 import Draggable, { DraggableData } from './base/Draggable';
 import Point from './Point';
 
-import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
+import Numbers from '../helper/Numbers';
+import Manager from '../CanvasManager/Abstracts';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -19,10 +20,10 @@ export default class Line extends Draggable {
   protected clickTargetSize = 2;
 
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     data: BaseLine & Partial<StylableData & DraggableData>
   ) {
-    super(canvas, data);
+    super(manager, data);
     this._start = data.start;
     this._end = data.end;
     this._x = data.start.x;
@@ -184,11 +185,9 @@ export default class Line extends Draggable {
   }
 
   protected getValueLabel() {
-    return (
-      Math.round(
-        (Calc.distance(this.start, this.end) / this.manager.scale) * 100
-      ) / 100
-    ).toLocaleString();
+    return Numbers.round(
+      Calc.distance(this.start, this.end) / this.manager.scale
+    );
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
@@ -219,7 +218,7 @@ export default class Line extends Draggable {
     };
   }
 
-  public static import(data: BaseLine, canvas: InteractionManager) {
-    return new Line(canvas, data);
+  public static import(data: BaseLine, manager: Manager) {
+    return new Line(manager, data);
   }
 }

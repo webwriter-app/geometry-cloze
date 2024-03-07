@@ -1,5 +1,5 @@
 import { ContextMenuItem } from '../../../types/ContextMenu';
-import InteractionManager from '../../CanvasManager/InteractionManager';
+import Manager from '../../CanvasManager/Abstracts';
 import Element, { NamedElement } from './Element';
 
 export interface StylableData {
@@ -142,11 +142,8 @@ export default class Stylable extends Element {
   private _labelName: string;
   private _dashed: boolean;
 
-  constructor(
-    canvas: InteractionManager,
-    data: StylableData & NamedElement = {}
-  ) {
-    super(canvas, data);
+  constructor(manager: Manager, data: StylableData & NamedElement = {}) {
+    super(manager, data);
     this._lineWidth = data.lineWidth || DEFAULT_STYLE.lineWidth;
     this._size = data.size || DEFAULT_STYLE.size;
     this._stroke = data.stroke || DEFAULT_STYLE.stroke;

@@ -10,15 +10,14 @@ import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
+import Numbers from '../helper/Numbers';
+import Manager from '../CanvasManager/Abstracts';
 
 export default class Shape extends Draggable {
-  static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
+  static createPolygon(manager: Manager, points: BasePoint[]): Shape;
+  static createPolygon(manager: Manager, ...points: BasePoint[]): Shape;
   static createPolygon(
-    manager: InteractionManager,
-    ...points: BasePoint[]
-  ): Shape;
-  static createPolygon(
-    manager: InteractionManager,
+    manager: Manager,
     ...points: [BasePoint[]] | BasePoint[]
   ): Shape {
     let pointsArr: BasePoint[];
@@ -44,13 +43,13 @@ export default class Shape extends Draggable {
     return new Shape(manager, children, { closed: true });
   }
 
-  static createPoint(manager: InteractionManager, point: BasePoint) {
+  static createPoint(manager: Manager, point: BasePoint) {
     const pointElement =
       point instanceof Point ? point : new Point(manager, point);
     return new Shape(manager, [pointElement], { closed: false });
   }
 
-  static createLine(manager: InteractionManager, line: BaseLine) {
+  static createLine(manager: Manager, line: BaseLine) {
     const start = new Point(manager, line.start);
     const end = new Point(manager, line.end);
     const lineElement =
@@ -61,7 +60,7 @@ export default class Shape extends Draggable {
   protected closed = true;
 
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     children: (BasePoint | BaseLine)[],
     data?: DraggableData &
       StylableData & {
@@ -70,7 +69,7 @@ export default class Shape extends Draggable {
         showPerimeter?: boolean;
       }
   ) {
-    super(canvas, data);
+    super(manager, data);
     if (data?.showArea !== undefined) this.showArea = data.showArea;
     if (data?.showPerimeter !== undefined)
       this.showPerimeter = data.showPerimeter;
@@ -513,7 +512,7 @@ export default class Shape extends Draggable {
       const area = Calc.getAreaOfPolygon(
         this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
       );
-      const areaRounded = Math.round(area * 100) / 100;
+      const areaRounded = Numbers.round(area);
       const prefix = this.showPerimeter ? 'Area: ' : '';
       res.push(`${prefix}${areaRounded}`);
     }
@@ -521,7 +520,7 @@ export default class Shape extends Draggable {
       const perimeter = Calc.getPerimeterOfPolygon(
         this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
       );
-      const perimeterRounded = Math.round(perimeter * 100) / 100;
+      const perimeterRounded = Numbers.round(perimeter);
       const prefix = 'Perimeter: ';
       res.push(`${prefix}${perimeterRounded}`);
     }
@@ -622,10 +621,7 @@ export default class Shape extends Draggable {
     };
   }
 
-  public static import(
-    data: ReturnType<Shape['export']>,
-    manager: InteractionManager
-  ) {
+  public static import(data: ReturnType<Shape['export']>, manager: Manager) {
     const points =
       data.children
         ?.filter((child) => child._type === 'point')

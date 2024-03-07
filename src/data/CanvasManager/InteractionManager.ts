@@ -6,10 +6,12 @@ import Shape from '../elements/Shape';
 import SelectionRect from '../components/SelectionRect';
 import EventManager from './EventManager';
 import DividerLine from '../elements/DividerLine';
+import CanvasManager from './CanvasManager';
 
+const SNAP_SPACING = 50;
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-  protected _snapSpacing: number | null = 50;
+  protected _snapSpacing: number | null = SNAP_SPACING;
   private snap<Value extends number | MathPoint>(value: Value): Value {
     if (this._snapSpacing === null || this.keys.alt) return value;
     if (typeof value === 'object') {
@@ -22,8 +24,20 @@ export default class InteractionManager extends EventManager {
       return (Math.round((value as number) / this._snapSpacing) *
         this._snapSpacing) as Value;
   }
-  public get snapSpacing() {
-    return this._snapSpacing;
+  public get snapping() {
+    return this._snapSpacing !== null;
+  }
+  public toggleSnapping(snapping = !this.snapping) {
+    this._snapSpacing = snapping ? SNAP_SPACING * (this.scale ?? 1) : null;
+  }
+
+  private _showGrid = true;
+  public get showGrid() {
+    return this._showGrid;
+  }
+  public toggleGrid(show = !this.showGrid) {
+    this._showGrid = show;
+    this.requestRedraw();
   }
 
   protected _scale: number | null = null;
@@ -40,17 +54,18 @@ export default class InteractionManager extends EventManager {
     this.selectionRect?.draw(ctx);
     this.ghostLine?.draw(ctx);
     this.ghostDividerLine?.draw(ctx);
-    if (this._snapSpacing !== null && this._snapSpacing > 0) {
+    if (this.showGrid) {
+      const spacing = this._snapSpacing ?? SNAP_SPACING;
       ctx.strokeStyle = '#00000050';
       ctx.lineWidth = 1;
       ctx.setLineDash([]);
       ctx.beginPath();
       const { width, height } = this.getCanvasDimensions();
-      for (let x = 0; x < width; x += this._snapSpacing) {
+      for (let x = 0; x < width; x += spacing) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
       }
-      for (let y = 0; y < height; y += this._snapSpacing) {
+      for (let y = 0; y < height; y += spacing) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
@@ -62,19 +77,22 @@ export default class InteractionManager extends EventManager {
    * When creating a shape in create mode
    */
   private creatingShape: { shape: Shape; lastPoint: Point } | null = null;
-  protected handleClick({
-    hit,
-    ctrlPressed,
-    alreadySelected,
-    isRightClick,
-    coords
-  }: {
-    coords: MathPoint;
-    hit: Draggable | null;
-    alreadySelected: boolean;
-    ctrlPressed: boolean;
-    isRightClick: boolean;
-  }) {
+  protected handleClick(
+    this: CanvasManager,
+    {
+      hit,
+      ctrlPressed,
+      alreadySelected,
+      isRightClick,
+      coords
+    }: {
+      coords: MathPoint;
+      hit: Draggable | null;
+      alreadySelected: boolean;
+      ctrlPressed: boolean;
+      isRightClick: boolean;
+    }
+  ) {
     coords = this.snap(coords);
     switch (this._mode) {
       case 'select':
@@ -205,13 +223,16 @@ export default class InteractionManager extends EventManager {
   private ghostLine: Line | null = null;
   private ghostDividerLine: DividerLine | null = null;
   private selectionRect: SelectionRect | null = null;
-  protected handleDragStart({
-    start,
-    hit
-  }: {
-    start: MathPoint;
-    hit: Draggable | null;
-  }) {
+  protected handleDragStart(
+    this: CanvasManager,
+    {
+      start,
+      hit
+    }: {
+      start: MathPoint;
+      hit: Draggable | null;
+    }
+  ) {
     switch (this._mode) {
       case 'select':
         // only draw selection rect if we're not dragging an element
@@ -279,8 +300,8 @@ export default class InteractionManager extends EventManager {
 
           this.selected.forEach((shape, index) => {
             const startCoords = dragStart.startPositions[index];
-            const x = startCoords.x + this.snap(change.x);
-            const y = startCoords.y + this.snap(change.y);
+            const x = this.snap(startCoords.x + change.x);
+            const y = this.snap(startCoords.y + change.y);
 
             // prevent moving element twice (move element and its parent)
             if (!this.selected.some((child) => child.hasChild(shape)))
@@ -305,14 +326,17 @@ export default class InteractionManager extends EventManager {
     }
   }
 
-  protected handleDragEnd({
-    to,
-    element
-  }: {
-    from: MathPoint;
-    to: MathPoint;
-    element: Draggable | null;
-  }) {
+  protected handleDragEnd(
+    this: CanvasManager,
+    {
+      to,
+      element
+    }: {
+      from: MathPoint;
+      to: MathPoint;
+      element: Draggable | null;
+    }
+  ) {
     switch (this._mode) {
       case 'select':
         if (this.selectionRect) {
@@ -472,7 +496,6 @@ export default class InteractionManager extends EventManager {
 
   public set mode(mode: typeof this._mode) {
     this._mode = mode;
-    this.modeListeners(this._mode);
     this.ghostLine = null;
     this.creatingShape = null;
     this.ghostDividerLine = null;
@@ -485,30 +508,19 @@ export default class InteractionManager extends EventManager {
     this.requestRedraw();
   }
 
-  private modeListeners: (mode: InteractionMode) => void = () => {};
-  public listenForModeChange(
-    listener: (mode: InteractionMode) => void
-  ): () => void {
-    this.modeListeners = listener;
-    return () => {
-      this.modeListeners = () => {};
-    };
-  }
-
   public export() {
     return {
       ...super.export(),
-      mode: this.mode
+      mode: this.mode,
+      showGrid: this.showGrid,
+      snapping: this.snapping
     };
   }
 
   public import(data: Partial<ReturnType<this['export']>>) {
-    if (data.children) super.import(data as ReturnType<this['export']>);
+    super.import(data);
     if (data.mode) this.mode = data.mode;
-  }
-
-  public setSnapping(spacing: number | null) {
-    this._snapSpacing = spacing;
-    this.requestRedraw();
+    if (data.showGrid !== undefined) this._showGrid = data.showGrid;
+    if (data.snapping !== undefined) this.toggleSnapping(data.snapping);
   }
 }

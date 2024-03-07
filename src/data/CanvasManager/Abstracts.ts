@@ -8,4 +8,5 @@ export default interface Manager {
   import(data: any): void;
   mode: InteractionMode;
   scale: number;
+  abstractRightAngle: boolean;
 }

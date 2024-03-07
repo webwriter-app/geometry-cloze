@@ -121,7 +121,7 @@ export default abstract class ChildrenManager {
     return {};
   }
 
-  public import(data: ReturnType<this['export']>) {
+  public import(data: Partial<ReturnType<this['export']>>) {
     const children =
       data.children?.map((child) =>
         child._type === 'line'

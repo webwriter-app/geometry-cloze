@@ -1,6 +1,6 @@
 import { MathPoint } from '../../helper/Calc';
 import Stylable, { StylableData } from './Stylable';
-import InteractionManager from '../../CanvasManager/InteractionManager';
+import Manager from '../../CanvasManager/Abstracts';
 
 export interface DraggableData {
   selected?: boolean;
@@ -12,11 +12,8 @@ export default class Draggable extends Stylable {
   protected _x: number = 0;
   protected _y: number = 0;
 
-  constructor(
-    canvas: InteractionManager,
-    data: DraggableData & StylableData = {}
-  ) {
-    super(canvas, data);
+  constructor(manager: Manager, data: DraggableData & StylableData = {}) {
+    super(manager, data);
     this._selected = data.selected ?? false;
   }
 

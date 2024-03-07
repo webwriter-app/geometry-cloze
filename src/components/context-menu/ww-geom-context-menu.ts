@@ -10,7 +10,6 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuItem from '@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js';
 import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
 import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.component.js';
-import Debouncer from '../../data/helper/Debouncer';
 
 /**
  *

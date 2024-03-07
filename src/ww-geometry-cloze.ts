@@ -9,6 +9,7 @@ import Objects from './data/helper/Objects';
 import { LitElement } from 'lit';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
+import { WwGeometryOptions } from './components/options/ww-geom-options';
 
 /**
  * A widget to create and view geometry exercises.
@@ -27,13 +28,30 @@ export class WwGeometryCloze extends LitElementWw {
   })
   elements: CanvasData['children'];
 
-  @state()
   @property({
     attribute: true,
     reflect: true,
     type: String
   })
   mode: CanvasData['mode'] = 'select';
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  abstractRightAngle: CanvasData['abstractRightAngle'] = false;
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  showGrid: CanvasData['showGrid'] = true;
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  snap: CanvasData['snapping'] = true;
 
   render() {
     return html`<div class="wrapper">
@@ -51,7 +69,10 @@ export class WwGeometryCloze extends LitElementWw {
         <canvas width="1000" height="700"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
-    </div>`;
+    </div>
+    <ww-geom-options part="options" .manager=${
+      this.manager
+    }></ww-geom-options>`;
   }
 
   private onBlur() {
@@ -62,24 +83,39 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   protected updated(
-    _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+    changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-    if (_changedProperties.has('elements')) {
+    if (changedProperties.has('elements')) {
       if (!this.manager || !this.elements) return;
-
       const exportData = this.manager.export();
       if (!Objects.deepEqual(exportData.children, this.elements))
         this.manager.import({
           children: this.elements
         });
-    } else if (_changedProperties.has('mode')) {
+    } else if (changedProperties.has('mode')) {
       if (this.manager) this.manager.mode = this.mode;
+    } else if (changedProperties.has('abstractRightAngle'.toLowerCase())) {
+      if (this.manager)
+        this.manager.abstractRightAngle = this.abstractRightAngle;
+    } else if (changedProperties.has('showGrid'.toLowerCase())) {
+      if (this.manager) this.manager.toggleGrid(this.showGrid);
+    } else if (changedProperties.has('snap')) {
+      if (this.manager) this.manager.toggleSnapping(this.snap);
     }
   }
 
   private onCanvasValueChange(value: CanvasData) {
+    console.log('setting values', {
+      mode: value.mode,
+      abstractRightAngle: value.abstractRightAngle,
+      showGrid: value.showGrid,
+      snapping: value.snapping
+    });
     this.elements = value.children;
     this.mode = value.mode;
+    this.abstractRightAngle = value.abstractRightAngle;
+    this.showGrid = value.showGrid;
+    this.snap = value.snapping;
   }
 
   firstUpdated() {
@@ -96,9 +132,6 @@ export class WwGeometryCloze extends LitElementWw {
         this.contextMenu
       );
       this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
-      this.manager.listenForModeChange((mode) => {
-        this.mode = mode;
-      });
 
       if (this.elements) {
         this.manager.import({
@@ -141,7 +174,8 @@ export class WwGeometryCloze extends LitElementWw {
   public static get scopedElements() {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
-      'ww-geom-context-menu': WwGeomContextMenu
+      'ww-geom-context-menu': WwGeomContextMenu,
+      'ww-geom-options': WwGeometryOptions
     };
   }
 

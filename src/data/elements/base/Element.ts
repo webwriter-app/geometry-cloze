@@ -1,6 +1,5 @@
 import { ContextMenuItem } from '../../../types/ContextMenu';
 import Shape from '../Shape';
-import InteractionManager from '../../CanvasManager/InteractionManager';
 import IDManager from '../../CanvasManager/IDManager';
 import Manager from '../../CanvasManager/Abstracts';
 
@@ -16,7 +15,7 @@ export default class Element {
     return this._id;
   }
   constructor(
-    protected manager: InteractionManager,
+    protected manager: Manager,
     data?: NamedElement
   ) {
     if (data?.name) this.name = data.name;
