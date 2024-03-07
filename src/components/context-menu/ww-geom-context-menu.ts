@@ -125,6 +125,12 @@ export class WwGeomContextMenu extends LitElementWw {
     .menu:not(.open) {
       display: none;
     }
+    sl-menu:not(.menu) {
+      top: 0;
+      bottom: 0;
+      overflow: auto;
+      max-height: 50vh;
+    }
   `;
 
   public static get scopedElements() {
