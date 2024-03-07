@@ -187,4 +187,31 @@ export default class Calc {
 
     return inside;
   }
+
+  static getAreaOfPolygon(polygon: MathPoint[]): number {
+    // calculate area of all subtriangles
+    const rootPoint = polygon.shift();
+    if (!rootPoint) return 0;
+    let lastPoint = polygon.shift();
+    if (!lastPoint) return 0;
+    let area = 0;
+    for (const point of polygon) {
+      area += this.getAreaOfTriangle(rootPoint, lastPoint, point);
+      lastPoint = point;
+    }
+
+    return area;
+  }
+
+  static getAreaOfTriangle(
+    p1: MathPoint,
+    p2: MathPoint,
+    p3: MathPoint
+  ): number {
+    return (
+      Math.abs(
+        (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y)) / 2
+      ) || 0
+    );
+  }
 }

@@ -2,12 +2,14 @@ import Calc, { MathPoint } from '../helper/Calc';
 import Arrays from '../helper/Arrays';
 
 import Element from './base/Element';
-import Draggable from './base/Draggable';
+import Draggable, { DraggableData } from './base/Draggable';
 import Point, { BasePoint } from './Point';
 import Line, { BaseLine } from './Line';
 
 import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
+import Vector from '../helper/Vector';
+import { StylableData } from './base/Stylable';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
@@ -39,13 +41,13 @@ export default class Shape extends Draggable {
       new Line(manager, { start: lastPoint!, end: children[0] as Point })
     );
 
-    return new Shape(manager, children, true);
+    return new Shape(manager, children, { closed: true });
   }
 
   static createPoint(manager: InteractionManager, point: BasePoint) {
     const pointElement =
       point instanceof Point ? point : new Point(manager, point);
-    return new Shape(manager, [pointElement], false);
+    return new Shape(manager, [pointElement], { closed: false });
   }
 
   static createLine(manager: InteractionManager, line: BaseLine) {
@@ -53,7 +55,7 @@ export default class Shape extends Draggable {
     const end = new Point(manager, line.end);
     const lineElement =
       line instanceof Line ? line : new Line(manager, { start, end });
-    return new Shape(manager, [start, lineElement, end], false);
+    return new Shape(manager, [start, lineElement, end], { closed: false });
   }
 
   protected closed = true;
@@ -61,10 +63,10 @@ export default class Shape extends Draggable {
   constructor(
     canvas: InteractionManager,
     children: (BasePoint | BaseLine)[],
-    closed = true
+    data?: DraggableData & StylableData & { closed?: boolean }
   ) {
-    super(canvas, {});
-    this.closed = children.length >= 3 && closed;
+    super(canvas, data);
+    this.closed = children.length >= 3 && (data?.closed ?? true);
     const childrenElements = children.map((child) => {
       if (child instanceof Line || child instanceof Point) return child;
       if ('start' in child && 'end' in child)
@@ -421,7 +423,10 @@ export default class Shape extends Draggable {
     for (const element of removedElements) this.removeChildUnsafe(element);
 
     for (const newShape of nonEmptyShapes) {
-      const shape = new Shape(this.manager, newShape.elements, newShape.closed);
+      const shape = new Shape(this.manager, newShape.elements, {
+        ...this.export(),
+        closed: newShape.closed
+      });
       this.manager.addChild(shape);
     }
 
@@ -465,12 +470,43 @@ export default class Shape extends Draggable {
     }
 
     super.draw(ctx);
+
+    if (this.isShowingLabel) {
+      const label = this.getLabel();
+      ctx.font = '24px Arial';
+      ctx.fillStyle = this.labelColor;
+      const metrics = ctx.measureText(label);
+      const fontHeight =
+        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      const points = this.getPoints();
+      let middle = points.reduce((acc, point) => Vector.add(acc, point), {
+        x: 0,
+        y: 0
+      });
+      middle = Vector.scale(middle, 1 / points.length);
+      ctx.fillText(
+        label,
+        middle.x - metrics.width / 2,
+        middle.y + fontHeight / 4
+      );
+    }
+  }
+
+  protected getValueLabel(): string {
+    const area = Calc.getAreaOfPolygon(
+      this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
+    );
+    return (Math.round(area * 100) / 100).toString();
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ fill: true })
+      ...this.getStyleContextMenuItems({
+        fill: true,
+        showLabel: true,
+        nameList: 'uppercase'
+      })
     ];
   }
 
@@ -538,6 +574,6 @@ export default class Shape extends Draggable {
           throw new Error('Invalid child type');
         })
         .filter(Boolean) as (Point | Line)[]) ?? [];
-    return new Shape(manager, children, data.closed);
+    return new Shape(manager, children, data);
   }
 }

@@ -453,13 +453,13 @@ export default class Stylable extends Element {
     if (this._shadow !== DEFAULT_STYLE.shadow) res.shadow = this._shadow;
     if (this._showLabel !== DEFAULT_STYLE.showLabel)
       res.showLabel = this._showLabel;
-    if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
     if (this._labelColor !== DEFAULT_STYLE.labelColor)
       res.labelColor = this._labelColor;
     if (this._labelStyle !== DEFAULT_STYLE.labelStyle)
       res.labelStyle = this._labelStyle;
     if (this._labelName !== DEFAULT_STYLE.labelName)
       res.labelName = this._labelName;
+    if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
 
     return { ...super.export(), ...res };
   }
