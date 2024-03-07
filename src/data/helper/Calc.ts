@@ -214,4 +214,15 @@ export default class Calc {
       ) || 0
     );
   }
+
+  static getPerimeterOfPolygon(polygon: MathPoint[]): number {
+    let perimeter = 0;
+    let lastPoint = polygon.shift();
+    if (!lastPoint) return 0;
+    for (const point of polygon) {
+      perimeter += Calc.distance(lastPoint, point);
+      lastPoint = point;
+    }
+    return perimeter;
+  }
 }

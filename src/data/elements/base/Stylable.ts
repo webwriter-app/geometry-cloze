@@ -29,6 +29,108 @@ const DEFAULT_STYLE = {
 } as const;
 
 export default class Stylable extends Element {
+  public static COLORS = [
+    {
+      label: 'Transparent',
+      color: 'transparent'
+    },
+    {
+      label: 'Black',
+      color: '#111827'
+    },
+    {
+      label: 'Red',
+      color: '#dc2626'
+    },
+    {
+      label: 'Orange',
+      color: '#ea580c'
+    },
+    {
+      label: 'Yellow',
+      color: '#facc15'
+    },
+    {
+      label: 'Lime',
+      color: '#84cc16'
+    },
+    {
+      label: 'Green',
+      color: '#15803d'
+    },
+    {
+      label: 'Cyan',
+      color: '#06b6d4'
+    },
+    {
+      label: 'Blue',
+      color: '#2563eb'
+    },
+    {
+      label: 'Violet',
+      color: '#6d28d9'
+    },
+    {
+      label: 'Pink',
+      color: '#db2777'
+    }
+  ];
+  public static LETTERS = [
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
+  ];
+  public static GREEK = [
+    'α',
+    'β',
+    'γ',
+    'δ',
+    'ε',
+    'ζ',
+    'η',
+    'θ',
+    'ι',
+    'κ',
+    'λ',
+    'μ',
+    'ν',
+    'ξ',
+    'ο',
+    'π',
+    'ρ',
+    'σ',
+    'τ',
+    'υ',
+    'φ',
+    'χ',
+    'ω',
+    'ϡ',
+    'ͳ',
+    'ϸ'
+  ];
   private _lineWidth: number;
   private _size: number;
   private _stroke: string;
@@ -194,114 +296,13 @@ export default class Stylable extends Element {
     dashed?: boolean;
     nameList?: 'lowercase' | 'uppercase' | 'greek';
   }): ContextMenuItem[] {
-    const COLORS = [
-      {
-        label: 'Transparent',
-        color: 'transparent'
-      },
-      {
-        label: 'Black',
-        color: '#111827'
-      },
-      {
-        label: 'Red',
-        color: '#dc2626'
-      },
-      {
-        label: 'Orange',
-        color: '#ea580c'
-      },
-      {
-        label: 'Yellow',
-        color: '#facc15'
-      },
-      {
-        label: 'Lime',
-        color: '#84cc16'
-      },
-      {
-        label: 'Green',
-        color: '#15803d'
-      },
-      {
-        label: 'Cyan',
-        color: '#06b6d4'
-      },
-      {
-        label: 'Blue',
-        color: '#2563eb'
-      },
-      {
-        label: 'Violet',
-        color: '#6d28d9'
-      },
-      {
-        label: 'Pink',
-        color: '#db2777'
-      }
-    ];
-    const LETTERS = [
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
-      'g',
-      'h',
-      'i',
-      'j',
-      'k',
-      'l',
-      'm',
-      'n',
-      'o',
-      'p',
-      'q',
-      'r',
-      's',
-      't',
-      'u',
-      'v',
-      'w',
-      'x',
-      'y',
-      'z'
-    ];
-    const GREEK = [
-      'α',
-      'β',
-      'γ',
-      'δ',
-      'ε',
-      'ζ',
-      'η',
-      'θ',
-      'ι',
-      'κ',
-      'λ',
-      'μ',
-      'ν',
-      'ξ',
-      'ο',
-      'π',
-      'ρ',
-      'σ',
-      'τ',
-      'υ',
-      'φ',
-      'χ',
-      'ω',
-      'ϡ',
-      'ͳ',
-      'ϸ'
-    ];
     const res: ContextMenuItem[] = [];
     if (options.stroke) {
       res.push({
         type: 'submenu',
         label: 'Stoke',
-        items: COLORS.map(
+        key: 'stroke',
+        items: Stylable.COLORS.map(
           (option) =>
             ({
               type: 'checkbox',
@@ -317,7 +318,8 @@ export default class Stylable extends Element {
       res.push({
         type: 'submenu',
         label: 'Fill',
-        items: COLORS.map(
+        key: 'fill',
+        items: Stylable.COLORS.map(
           (option) =>
             ({
               type: 'checkbox',
@@ -355,6 +357,7 @@ export default class Stylable extends Element {
       res.push({
         type: 'submenu',
         label: 'Line Width',
+        key: 'line_width',
         items: options.map(
           (option) =>
             ({
@@ -380,6 +383,7 @@ export default class Stylable extends Element {
       res.push({
         type: 'submenu',
         label: 'Label',
+        key: 'label',
         items: [
           {
             type: 'checkbox',
@@ -391,7 +395,8 @@ export default class Stylable extends Element {
           {
             type: 'submenu',
             label: 'Color',
-            items: COLORS.map(
+            key: 'label_color',
+            items: Stylable.COLORS.map(
               (option) =>
                 ({
                   type: 'checkbox',
@@ -405,6 +410,7 @@ export default class Stylable extends Element {
           {
             type: 'submenu',
             label: 'Name',
+            key: 'label_name',
             items: [
               {
                 type: 'checkbox',
@@ -413,23 +419,24 @@ export default class Stylable extends Element {
                 action: () => this.setLabelStyle('value'),
                 getChecked: () => this._labelStyle === 'value'
               },
-              ...(options.nameList === 'greek' ? GREEK : LETTERS).map(
-                (letter) => {
-                  if (options.nameList === 'uppercase')
-                    letter = letter.toUpperCase();
-                  return {
-                    type: 'checkbox',
-                    getChecked: () =>
-                      this._labelStyle === 'name' && this._labelName === letter,
-                    label: letter,
-                    action: () => {
-                      this.showLabel(true);
-                      this.setLabelName(letter);
-                    },
-                    key: `label_color_${letter}`
-                  } as const;
-                }
-              )
+              ...(options.nameList === 'greek'
+                ? Stylable.GREEK
+                : Stylable.LETTERS
+              ).map((letter) => {
+                if (options.nameList === 'uppercase')
+                  letter = letter.toUpperCase();
+                return {
+                  type: 'checkbox',
+                  getChecked: () =>
+                    this._labelStyle === 'name' && this._labelName === letter,
+                  label: letter,
+                  action: () => {
+                    this.showLabel(true);
+                    this.setLabelName(letter);
+                  },
+                  key: `label_color_${letter}`
+                } as const;
+              })
             ]
           }
         ]

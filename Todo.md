@@ -7,10 +7,6 @@ ctrl+a
 Todo
 innen/außenwinkel
 
-- rechte winkel andere anzeige (globale option)
-  umfang
-  Flächeninhalt - in selber Farbe
-
 - editor in sidebar
   - 90° Winkel alternative Darstellung
 

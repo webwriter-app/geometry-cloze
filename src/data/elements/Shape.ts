@@ -9,7 +9,7 @@ import Line, { BaseLine } from './Line';
 import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import Vector from '../helper/Vector';
-import { StylableData } from './base/Stylable';
+import Stylable, { StylableData } from './base/Stylable';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
@@ -472,31 +472,52 @@ export default class Shape extends Draggable {
     super.draw(ctx);
 
     if (this.isShowingLabel) {
-      const label = this.getLabel();
+      const labels = this.getLabel().split('|');
       ctx.font = '24px Arial';
       ctx.fillStyle = this.labelColor;
-      const metrics = ctx.measureText(label);
-      const fontHeight =
-        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      const metrics = labels.map((label) => ctx.measureText(label));
+      const fontHeight = metrics.map(
+        (metric) => metric.fontBoundingBoxAscent + metric.fontBoundingBoxDescent
+      );
       const points = this.getPoints();
       let middle = points.reduce((acc, point) => Vector.add(acc, point), {
         x: 0,
         y: 0
       });
       middle = Vector.scale(middle, 1 / points.length);
-      ctx.fillText(
-        label,
-        middle.x - metrics.width / 2,
-        middle.y + fontHeight / 4
-      );
+      let offset = 0;
+      labels.forEach((label, index) => {
+        ctx.fillText(
+          label,
+          middle.x - metrics[index].width / 2,
+          middle.y + fontHeight[index] / 4 + offset
+        );
+        offset += fontHeight[index];
+      });
     }
   }
 
+  protected showArea = false;
+  protected showPerimeter = false;
   protected getValueLabel(): string {
-    const area = Calc.getAreaOfPolygon(
-      this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
-    );
-    return (Math.round(area * 100) / 100).toString();
+    const res: (string | number)[] = [];
+    if (this.showArea) {
+      const area = Calc.getAreaOfPolygon(
+        this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
+      );
+      const areaRounded = Math.round(area * 100) / 100;
+      const prefix = this.showPerimeter ? 'Area: ' : '';
+      res.push(`${prefix}${areaRounded}`);
+    }
+    if (this.showPerimeter) {
+      const perimeter = Calc.getPerimeterOfPolygon(
+        this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
+      );
+      const perimeterRounded = Math.round(perimeter * 100) / 100;
+      const prefix = 'Perimeter: ';
+      res.push(`${prefix}${perimeterRounded}`);
+    }
+    return res.join('|');
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
@@ -504,9 +525,52 @@ export default class Shape extends Draggable {
       ...super.getContextMenuItems(),
       ...this.getStyleContextMenuItems({
         fill: true,
-        showLabel: true,
-        nameList: 'uppercase'
-      })
+        showLabel: false
+      }),
+      {
+        type: 'submenu',
+        label: 'Label',
+        key: 'label',
+        items: [
+          {
+            type: 'checkbox',
+            label: 'Show Area',
+            getChecked: () => this.showArea,
+            action: (checked) => {
+              this.showArea = checked;
+              this.showLabel(this.showArea || this.showPerimeter);
+              this.requestRedraw();
+            },
+            key: 'show-area-label'
+          },
+          {
+            type: 'checkbox',
+            label: 'Show Perimeter',
+            getChecked: () => this.showPerimeter,
+            action: (checked) => {
+              this.showPerimeter = checked;
+              this.showLabel(this.showArea || this.showPerimeter);
+              this.requestRedraw();
+            },
+            key: 'show-perimeter-label'
+          },
+          {
+            type: 'submenu',
+            label: 'Color',
+            key: 'label_color',
+            items: Stylable.COLORS.map(
+              (option) =>
+                ({
+                  type: 'checkbox',
+                  getChecked: () => this.labelColor === option.color,
+                  label: option.label,
+                  action: () => this.setLabelColor(option.color),
+                  key: `label_color_${option.label.toLowerCase()}`
+                }) as const
+            )
+          }
+        ]
+      }
     ];
   }
 
