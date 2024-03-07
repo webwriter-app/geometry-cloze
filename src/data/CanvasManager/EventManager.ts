@@ -55,8 +55,11 @@ export default abstract class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    document.addEventListener('keydown', this._handleKeyboardEvent.bind(this));
-    document.addEventListener('keyup', this.handleKeyUp.bind(this));
+    this.clickTargetEle.addEventListener(
+      'keydown',
+      this._handleKeyboardEvent.bind(this)
+    );
+    this.clickTargetEle.addEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   unmount() {
@@ -92,11 +95,14 @@ export default abstract class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    document.removeEventListener(
+    this.clickTargetEle.removeEventListener(
       'keydown',
       this._handleKeyboardEvent.bind(this)
     );
-    document.removeEventListener('keyup', this.handleKeyUp.bind(this));
+    this.clickTargetEle.removeEventListener(
+      'keyup',
+      this.handleKeyUp.bind(this)
+    );
   }
 
   private preventTouchScroll(event: TouchEvent) {

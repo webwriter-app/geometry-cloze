@@ -3,7 +3,6 @@ export type ContextMenuItemType = 'button' | 'checkbox' | 'submenu' | 'divider';
 interface GeneralContextMenuItem<Type extends ContextMenuItemType> {
   type: Type;
   label: string;
-  keepOpenAfterClick?: boolean;
 }
 
 export interface ContextMenuButton extends GeneralContextMenuItem<'button'> {
@@ -27,10 +26,7 @@ export interface ContextMenuSubmenu extends GeneralContextMenuItem<'submenu'> {
 }
 
 export interface ContextMenuDivider
-  extends Omit<
-    GeneralContextMenuItem<'divider'>,
-    'label' | 'keepOpenAfterClick'
-  > {}
+  extends Omit<GeneralContextMenuItem<'divider'>, 'label'> {}
 
 export type ContextMenuItem =
   | ContextMenuButton

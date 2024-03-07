@@ -8,7 +8,9 @@ export interface StylableData {
   stroke?: string;
   fill?: string;
   shadow?: boolean;
+  labelColor?: string;
   showLabel?: boolean;
+  labelStyle?: 'value' | 'name';
   dashed?: boolean;
 }
 
@@ -19,6 +21,8 @@ const DEFAULT_STYLE = {
   fill: 'transparent',
   shadow: false,
   showLabel: false,
+  labelColor: '#111827',
+  labelStyle: 'value',
   dashed: false
 } as const;
 
@@ -29,6 +33,7 @@ export default class Stylable extends Element {
   private _fill: string;
   private _shadow: boolean;
   private _showLabel: boolean;
+  private _labelColor: string;
   private _dashed: boolean;
 
   constructor(
@@ -42,6 +47,7 @@ export default class Stylable extends Element {
     this._fill = data.fill || DEFAULT_STYLE.fill;
     this._shadow = data.shadow || DEFAULT_STYLE.shadow;
     this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
+    this._labelColor = data.labelColor || DEFAULT_STYLE.labelColor;
     this._dashed = data.dashed || DEFAULT_STYLE.dashed;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
@@ -132,6 +138,17 @@ export default class Stylable extends Element {
     return this._showLabel;
   }
 
+  setLabelColor(color: string | null) {
+    const newValue = color ?? '#111827';
+    const hasChanges = newValue !== this._labelColor;
+    this._labelColor = newValue;
+    if (hasChanges)
+      this.fireEvent('style-change', { labelColor: this._labelColor });
+  }
+  get labelColor() {
+    return this._labelColor;
+  }
+
   protected getLabel(): string {
     return '';
   }
@@ -214,9 +231,9 @@ export default class Stylable extends Element {
           (option) =>
             ({
               type: 'checkbox',
-              getChecked: () => this._fill === option.color,
+              getChecked: () => this._fill === option.color + '50',
               label: option.label,
-              action: () => this.setFill(option.color),
+              action: () => this.setFill(option.color + '50'),
               key: `fill_${option.label.toLowerCase()}}`
             }) as const
         )
@@ -271,11 +288,31 @@ export default class Stylable extends Element {
     }
     if (options.showLabel ?? this.getLabel() !== '') {
       res.push({
-        type: 'checkbox',
-        label: 'Show Label',
-        getChecked: () => this._showLabel,
-        action: () => this.showLabel(!this._showLabel),
-        key: 'show-label'
+        type: 'submenu',
+        label: 'Label',
+        items: [
+          {
+            type: 'checkbox',
+            label: 'Show Label',
+            getChecked: () => this._showLabel,
+            action: () => this.showLabel(!this._showLabel),
+            key: 'show-label'
+          },
+          {
+            type: 'submenu',
+            label: 'Color',
+            items: COLORS.map(
+              (option) =>
+                ({
+                  type: 'checkbox',
+                  getChecked: () => this._labelColor === option.color,
+                  label: option.label,
+                  action: () => this.setLabelColor(option.color),
+                  key: `label_color_${option.label.toLowerCase()}}`
+                }) as const
+            )
+          }
+        ]
       });
     }
     return res;

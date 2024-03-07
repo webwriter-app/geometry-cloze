@@ -6,6 +6,7 @@ import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
 import Objects from './data/helper/Objects';
+import { LitElement } from 'lit';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -127,6 +128,11 @@ export class WwGeometryCloze extends LitElementWw {
     }
     super.disconnectedCallback();
   }
+
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true
+  };
 
   public static get scopedElements() {
     return {

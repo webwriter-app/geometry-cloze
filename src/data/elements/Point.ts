@@ -36,7 +36,8 @@ export default class Point extends Draggable {
 
     if (this.isShowingLabel) {
       ctx.font = '18px Arial';
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = this.labelColor;
+      ctx.strokeStyle = this.labelColor;
       const label = this.getLabel();
       const angle = this.getAngle();
       const neighbors = this.getNeighborPoints();

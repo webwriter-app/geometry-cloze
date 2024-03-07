@@ -91,6 +91,7 @@ export default class Line extends Draggable {
       };
       const label = this.getLabel();
       ctx.font = '24px Arial';
+      ctx.fillStyle = this.labelColor;
       const metrics = ctx.measureText(label);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
@@ -115,7 +116,6 @@ export default class Line extends Draggable {
           metrics.width + 2 * padding,
           fontHeight + 2 * padding
         );
-        ctx.fillStyle = this.stroke;
         ctx.fillText(
           label,
           startPoint.x - metrics.width / 2,
@@ -128,7 +128,6 @@ export default class Line extends Draggable {
           metrics.width + 2 * padding,
           fontHeight + 2 * padding
         );
-        ctx.fillStyle = this.stroke;
         ctx.fillText(
           label,
           middlePoint.x - metrics.width / 2,

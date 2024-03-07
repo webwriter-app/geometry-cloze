@@ -7,10 +7,9 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
 import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
-import HandSVG from '../icons/hand-index-thumb.svg';
-import PentagonSVG from '../icons/pentagon.svg';
-import PentagonHalfSVG from '../icons/pentagon-half.svg';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import HandIndexThumb from '../icons/hand-index-thumb';
+import Pentagon from '../icons/pentagon';
+import PentagonHalf from '../icons/pentagon-half';
 
 /**
  *
@@ -31,7 +30,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'select')}
           variant=${this.mode === 'select' ? 'primary' : 'default'}>
-          ${unsafeHTML(HandSVG.slice('data:image/svg+xml,'.length))}
+          ${HandIndexThumb}
         </sl-button>
       </sl-tooltip>
 
@@ -44,7 +43,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'create')}
           variant=${this.mode === 'create' ? 'primary' : 'default'}>
-          ${unsafeHTML(PentagonSVG.slice('data:image/svg+xml,'.length))}
+          ${Pentagon}
         </sl-button>
       </sl-tooltip>
       <sl-tooltip>
@@ -54,7 +53,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'divider')}
           variant=${this.mode === 'divider' ? 'primary' : 'default'}>
-          ${unsafeHTML(PentagonHalfSVG.slice('data:image/svg+xml,'.length))}
+          ${PentagonHalf}
         </sl-button>
       </sl-tooltip>
     </div>`;

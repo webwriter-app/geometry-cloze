@@ -10,6 +10,7 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuItem from '@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js';
 import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
 import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.component.js';
+import Debouncer from '../../data/helper/Debouncer';
 
 /**
  *
@@ -42,9 +43,9 @@ export class WwGeomContextMenu extends LitElementWw {
           .disabled=${item.disabled ?? false}>
           ${item.label}
           ${item.badge
-            ? html`<sl-badge slot="suffix" variant="neutral"
-                >${item.badge}</sl-badge
-              >`
+            ? html`<sl-badge slot="suffix" variant="neutral">
+                ${item.badge}
+              </sl-badge>`
             : ''}
         </sl-menu-item>`;
       case 'checkbox':
@@ -69,8 +70,13 @@ export class WwGeomContextMenu extends LitElementWw {
     }
   }
 
+  private lastTimestamp = -1;
   private handleClick(e: SlSelectEvent, items = this.items) {
+    // prevent double fired events
+    if (items === this.items && e.timeStamp - this.lastTimestamp < 50) return;
+    this.lastTimestamp = e.timeStamp;
     e.stopPropagation();
+    e.preventDefault();
     const key = e.detail.item.value;
     if (!key) return;
     const item = items.find((item) => 'key' in item && item.key === key);
@@ -106,7 +112,7 @@ export class WwGeomContextMenu extends LitElementWw {
     return html`<sl-menu
       class="menu${this._open ? ' open' : ''}"
       style="left: ${this.x}px; top: ${this.y}px"
-      @sl-select="${this.handleClick}">
+      @sl-select="${this.handleClick.bind(this)}">
       ${this.items.map((item) => this.getContextMenuItem(item))}
     </sl-menu> `;
   }

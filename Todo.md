@@ -1,8 +1,20 @@
 # Todolist
 
-- divider lines
+Shortcuts
+ctrl+z
+ctrl+a
+
+Todo
+innen/außenwinkel
+
+- rechte winkel andere anzeige (globale option)
+  text außen
+  variablen
+  umfang
+  Flächeninhalt - in selber Farbe
+
 - editor in sidebar
-  - fill / stroke color, line width, label
+  - 90° Winkel alternative Darstellung
 
 # Bugs
 
