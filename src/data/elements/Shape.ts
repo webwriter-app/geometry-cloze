@@ -479,7 +479,7 @@ export default class Shape extends Draggable {
 
     super.draw(ctx);
 
-    if (this.isShowingLabel) {
+    if (this.showLabel) {
       const labels = this.getLabel().split('|');
       ctx.font = '24px Arial';
       ctx.fillStyle = this.labelColor;
@@ -546,7 +546,7 @@ export default class Shape extends Draggable {
             getChecked: () => this.showArea,
             action: (checked) => {
               this.showArea = checked;
-              this.showLabel(this.showArea || this.showPerimeter);
+              this.shouldShowLabel(this.showArea || this.showPerimeter);
               this.requestRedraw();
             },
             key: 'show-area-label'
@@ -557,7 +557,7 @@ export default class Shape extends Draggable {
             getChecked: () => this.showPerimeter,
             action: (checked) => {
               this.showPerimeter = checked;
-              this.showLabel(this.showArea || this.showPerimeter);
+              this.shouldShowLabel(this.showArea || this.showPerimeter);
               this.requestRedraw();
             },
             key: 'show-perimeter-label'

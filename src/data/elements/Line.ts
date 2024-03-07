@@ -83,7 +83,7 @@ export default class Line extends Draggable {
     ctx.stroke();
 
     // draw label
-    if (this.isShowingLabel) {
+    if (this.showLabel) {
       const padding = 5;
       const middlePoint = {
         x: (start.x + end.x) / 2,

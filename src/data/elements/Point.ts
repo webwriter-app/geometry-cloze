@@ -9,7 +9,7 @@ import Draggable, { DraggableData } from './base/Draggable';
 import Shape from './Shape';
 
 import InteractionManager from '../CanvasManager/InteractionManager';
-import { ContextMenuItem } from '../../types/ContextMenu';
+import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -19,13 +19,16 @@ export default class Point extends Draggable {
 
   constructor(
     canvas: InteractionManager,
-    data: BasePoint & Partial<StylableData & DraggableData>
+    data: BasePoint &
+      Partial<StylableData & DraggableData> & { showOutsideAngle?: boolean }
   ) {
     super(canvas, data);
+    if (data.showOutsideAngle) this.showOutsideAngle = data.showOutsideAngle;
     this._x = data.x;
     this._y = data.y;
   }
 
+  protected showOutsideAngle = false;
   draw(ctx: CanvasRenderingContext2D) {
     if (this.hidden) return;
     super.draw(ctx);
@@ -34,7 +37,7 @@ export default class Point extends Draggable {
     ctx.fill();
     ctx.stroke();
 
-    if (this.isShowingLabel) {
+    if (this.showLabel) {
       ctx.font = '18px Arial';
       ctx.fillStyle = this.labelColor;
       ctx.strokeStyle = this.labelColor;
@@ -53,10 +56,10 @@ export default class Point extends Draggable {
         let middle = Vector.normalize(Vector.add(vec1, vec2));
         if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
         if (
-          !Calc.isPointInPolygon(
+          Calc.isPointInPolygon(
             Vector.add(this, middle),
             (this.parent as Shape).getPoints()
-          )
+          ) === this.showOutsideAngle
         )
           middle = Vector.multiply(middle, -1);
 
@@ -83,8 +86,8 @@ export default class Point extends Draggable {
           this.x,
           this.y,
           this.size + radius,
-          Vector.angle({ x: 1, y: 0 }, vec2),
-          Vector.angle({ x: 1, y: 0 }, vec1)
+          Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec1 : vec2),
+          Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec2 : vec1)
         );
         ctx.stroke();
       } else {
@@ -147,13 +150,14 @@ export default class Point extends Draggable {
   }
 
   protected getValueLabel(): string {
-    const angle = this.getAngle();
+    let angle = this.getAngle();
     if (angle === -1) return '';
+    if (this.showOutsideAngle) angle = 360 - angle;
     return `${angle}°`;
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
-    return [
+    const res = [
       ...super.getContextMenuItems(),
       ...this.getStyleContextMenuItems({
         stroke: true,
@@ -162,6 +166,23 @@ export default class Point extends Draggable {
         nameList: 'greek'
       })
     ];
+
+    (
+      res.find((i) => i.type === 'submenu' && i.key === 'label') as
+        | ContextMenuSubmenu
+        | undefined
+    )?.items.splice(1, 0, {
+      key: 'showOutsideAngle',
+      type: 'checkbox',
+      label: 'Switch angle',
+      getChecked: () => this.showOutsideAngle,
+      action: (value: boolean) => {
+        this.showOutsideAngle = value;
+        this.requestRedraw();
+      }
+    });
+
+    return res;
   }
 
   public export() {
@@ -169,7 +190,8 @@ export default class Point extends Draggable {
       ...super.export(),
       _type: 'point' as const,
       x: this.x,
-      y: this.y
+      y: this.y,
+      ...(this.showOutsideAngle && { showOutsideAngle: this.showOutsideAngle })
     };
   }
 

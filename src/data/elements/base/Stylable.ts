@@ -235,14 +235,14 @@ export default class Stylable extends Element {
     return this._dashed;
   }
 
-  showLabel(show: boolean | null) {
+  shouldShowLabel(show: boolean | null) {
     const newValue = show ?? false;
     const hasChanges = newValue !== this._showLabel;
     this._showLabel = newValue;
     if (hasChanges)
       this.fireEvent('style-change', { showLabel: this._showLabel });
   }
-  get isShowingLabel() {
+  get showLabel() {
     return this._showLabel;
   }
 
@@ -388,8 +388,8 @@ export default class Stylable extends Element {
           {
             type: 'checkbox',
             label: 'Show Label',
-            getChecked: () => this._showLabel,
-            action: () => this.showLabel(!this._showLabel),
+            getChecked: () => this.showLabel,
+            action: () => this.shouldShowLabel(!this.showLabel),
             key: 'show-label'
           },
           {
@@ -431,7 +431,7 @@ export default class Stylable extends Element {
                     this._labelStyle === 'name' && this._labelName === letter,
                   label: letter,
                   action: () => {
-                    this.showLabel(true);
+                    this.shouldShowLabel(true);
                     this.setLabelName(letter);
                   },
                   key: `label_color_${letter}`
