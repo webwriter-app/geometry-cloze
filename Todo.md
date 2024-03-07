@@ -8,8 +8,6 @@ Todo
 innen/außenwinkel
 
 - rechte winkel andere anzeige (globale option)
-  text außen
-  variablen
   umfang
   Flächeninhalt - in selber Farbe
 
