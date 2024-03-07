@@ -11,6 +11,7 @@ export interface StylableData {
   labelColor?: string;
   showLabel?: boolean;
   labelStyle?: 'value' | 'name';
+  labelName?: string;
   dashed?: boolean;
 }
 
@@ -23,6 +24,7 @@ const DEFAULT_STYLE = {
   showLabel: false,
   labelColor: '#111827',
   labelStyle: 'value',
+  labelName: 'α',
   dashed: false
 } as const;
 
@@ -34,6 +36,8 @@ export default class Stylable extends Element {
   private _shadow: boolean;
   private _showLabel: boolean;
   private _labelColor: string;
+  private _labelStyle: 'value' | 'name';
+  private _labelName: string;
   private _dashed: boolean;
 
   constructor(
@@ -48,6 +52,8 @@ export default class Stylable extends Element {
     this._shadow = data.shadow || DEFAULT_STYLE.shadow;
     this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
     this._labelColor = data.labelColor || DEFAULT_STYLE.labelColor;
+    this._labelStyle = data.labelStyle || DEFAULT_STYLE.labelStyle;
+    this._labelName = data.labelName || DEFAULT_STYLE.labelName;
     this._dashed = data.dashed || DEFAULT_STYLE.dashed;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
@@ -61,7 +67,7 @@ export default class Stylable extends Element {
     ctx.setLineDash(this.dashed ? [10, 10] : []);
 
     ctx.shadowBlur = this.shadow ? 5 : 0;
-    ctx.shadowColor = this.shadow ? '#000000b0' : 'transparent';
+    ctx.shadowColor = this.shadow ? '#00000050' : 'transparent';
     ctx.shadowOffsetX = this.shadow ? 5 : 0;
     ctx.shadowOffsetY = this.shadow ? 5 : 0;
   }
@@ -149,8 +155,35 @@ export default class Stylable extends Element {
     return this._labelColor;
   }
 
-  protected getLabel(): string {
+  setLabelStyle(style: 'value' | 'name' | null) {
+    const newValue = style ?? 'value';
+    const hasChanges = newValue !== this._labelStyle;
+    this._labelStyle = newValue;
+    if (hasChanges)
+      this.fireEvent('style-change', { labelStyle: this._labelStyle });
+  }
+  get labelStyle() {
+    return this._labelStyle;
+  }
+
+  setLabelName(name: string | null) {
+    const newValue = name ?? 'α';
+    const hasChanges = newValue !== this._labelName;
+    this._labelName = newValue;
+    this.setLabelStyle('name');
+    if (hasChanges)
+      this.fireEvent('style-change', { labelName: this._labelName });
+  }
+  get labelName() {
+    return this._labelName;
+  }
+
+  protected getValueLabel(): string {
     return '';
+  }
+  protected getLabel(): string {
+    if (this.labelStyle === 'value') return this.getValueLabel();
+    return this.labelName;
   }
 
   protected getStyleContextMenuItems(options: {
@@ -159,6 +192,7 @@ export default class Stylable extends Element {
     lineWidth?: boolean;
     showLabel?: boolean;
     dashed?: boolean;
+    nameList?: 'lowercase' | 'uppercase' | 'greek';
   }): ContextMenuItem[] {
     const COLORS = [
       {
@@ -206,6 +240,62 @@ export default class Stylable extends Element {
         color: '#db2777'
       }
     ];
+    const LETTERS = [
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ];
+    const GREEK = [
+      'α',
+      'β',
+      'γ',
+      'δ',
+      'ε',
+      'ζ',
+      'η',
+      'θ',
+      'ι',
+      'κ',
+      'λ',
+      'μ',
+      'ν',
+      'ξ',
+      'ο',
+      'π',
+      'ρ',
+      'σ',
+      'τ',
+      'υ',
+      'φ',
+      'χ',
+      'ω',
+      'ϡ',
+      'ͳ',
+      'ϸ'
+    ];
     const res: ContextMenuItem[] = [];
     if (options.stroke) {
       res.push({
@@ -234,7 +324,7 @@ export default class Stylable extends Element {
               getChecked: () => this._fill === option.color + '50',
               label: option.label,
               action: () => this.setFill(option.color + '50'),
-              key: `fill_${option.label.toLowerCase()}}`
+              key: `fill_${option.label.toLowerCase()}`
             }) as const
         )
       });
@@ -286,7 +376,7 @@ export default class Stylable extends Element {
         key: 'dashed'
       });
     }
-    if (options.showLabel ?? this.getLabel() !== '') {
+    if (options.showLabel ?? this.getValueLabel() !== '') {
       res.push({
         type: 'submenu',
         label: 'Label',
@@ -308,9 +398,39 @@ export default class Stylable extends Element {
                   getChecked: () => this._labelColor === option.color,
                   label: option.label,
                   action: () => this.setLabelColor(option.color),
-                  key: `label_color_${option.label.toLowerCase()}}`
+                  key: `label_color_${option.label.toLowerCase()}`
                 }) as const
             )
+          },
+          {
+            type: 'submenu',
+            label: 'Name',
+            items: [
+              {
+                type: 'checkbox',
+                key: 'label_name_value',
+                label: 'Value',
+                action: () => this.setLabelStyle('value'),
+                getChecked: () => this._labelStyle === 'value'
+              },
+              ...(options.nameList === 'greek' ? GREEK : LETTERS).map(
+                (letter) => {
+                  if (options.nameList === 'uppercase')
+                    letter = letter.toUpperCase();
+                  return {
+                    type: 'checkbox',
+                    getChecked: () =>
+                      this._labelStyle === 'name' && this._labelName === letter,
+                    label: letter,
+                    action: () => {
+                      this.showLabel(true);
+                      this.setLabelName(letter);
+                    },
+                    key: `label_color_${letter}`
+                  } as const;
+                }
+              )
+            ]
           }
         ]
       });
@@ -334,6 +454,12 @@ export default class Stylable extends Element {
     if (this._showLabel !== DEFAULT_STYLE.showLabel)
       res.showLabel = this._showLabel;
     if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
+    if (this._labelColor !== DEFAULT_STYLE.labelColor)
+      res.labelColor = this._labelColor;
+    if (this._labelStyle !== DEFAULT_STYLE.labelStyle)
+      res.labelStyle = this._labelStyle;
+    if (this._labelName !== DEFAULT_STYLE.labelName)
+      res.labelName = this._labelName;
 
     return { ...super.export(), ...res };
   }

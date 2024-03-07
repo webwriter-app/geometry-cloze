@@ -23,9 +23,9 @@ export default class Draggable extends Stylable {
   draw(ctx: CanvasRenderingContext2D) {
     super.draw(ctx);
     if (this.selected) {
-      ctx.lineWidth = this.lineWidth + 2;
+      ctx.lineWidth = this.lineWidth + 1;
       ctx.shadowBlur = 5;
-      ctx.shadowColor = '#000000b0';
+      ctx.shadowColor = '#00000050';
       ctx.shadowOffsetX = 5;
       ctx.shadowOffsetY = 5;
     }

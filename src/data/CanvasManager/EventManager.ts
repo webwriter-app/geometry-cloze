@@ -7,18 +7,24 @@ export default abstract class EventManager extends ChildrenManager {
   private wrapper: HTMLElement;
 
   private clickTargetEle: HTMLElement;
+  private rootEle: HTMLElement;
   private contextMenu: WwGeomContextMenu;
   /**
    * Currently selected element
    */
   private _selected: Draggable[] = [];
 
-  constructor(canvas: HTMLCanvasElement, contextMenu: WwGeomContextMenu) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    rootEle: HTMLElement,
+    contextMenu: WwGeomContextMenu
+  ) {
     super(canvas);
     this.wrapper = canvas;
     this.contextMenu = contextMenu;
 
     this.clickTargetEle = canvas;
+    this.rootEle = rootEle;
 
     this.clickTargetEle.addEventListener(
       'mousedown',
@@ -55,11 +61,11 @@ export default abstract class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    this.clickTargetEle.addEventListener(
+    this.rootEle.addEventListener(
       'keydown',
       this._handleKeyboardEvent.bind(this)
     );
-    this.clickTargetEle.addEventListener('keyup', this.handleKeyUp.bind(this));
+    this.rootEle.addEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   unmount() {
@@ -95,14 +101,11 @@ export default abstract class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    this.clickTargetEle.removeEventListener(
+    this.rootEle.removeEventListener(
       'keydown',
       this._handleKeyboardEvent.bind(this)
     );
-    this.clickTargetEle.removeEventListener(
-      'keyup',
-      this.handleKeyUp.bind(this)
-    );
+    this.rootEle.removeEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   private preventTouchScroll(event: TouchEvent) {
@@ -332,6 +335,7 @@ export default abstract class EventManager extends ChildrenManager {
         shape.select();
       }
     }
+    this.requestRedraw();
   }
 
   blur(element?: Draggable | null) {
@@ -344,5 +348,6 @@ export default abstract class EventManager extends ChildrenManager {
       this._selected.forEach((shape) => shape.blur());
       this._selected = [];
     }
+    this.requestRedraw();
   }
 }

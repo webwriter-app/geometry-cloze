@@ -183,7 +183,7 @@ export default class Line extends Draggable {
     }
   }
 
-  protected getLabel() {
+  protected getValueLabel() {
     return (
       Math.round(
         (Calc.distance(this.start, this.end) / this.manager.scale) * 100

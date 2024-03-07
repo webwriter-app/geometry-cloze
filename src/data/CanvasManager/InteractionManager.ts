@@ -422,10 +422,12 @@ export default class InteractionManager extends EventManager {
             break;
           case 'a':
           case 'A':
-            if (this.keys.ctrl)
-              this.select(
-                this.getChildren((child) => child instanceof Draggable)
+            if (this.keys.ctrl) {
+              const toSelect = this.getChildren((child) =>
+                this.canSelect(child)
               );
+              this.select(toSelect);
+            }
         }
         break;
       case 'create':

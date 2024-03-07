@@ -430,9 +430,16 @@ export default class Shape extends Draggable {
 
   draw(ctx: CanvasRenderingContext2D): void {
     if (this.hidden) return;
+    if (this.selected) {
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#000000b0';
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+    }
     if (this.closed) {
       ctx.strokeStyle = 'transparent';
-      ctx.fillStyle = this.fill;
+      ctx.fillStyle =
+        this.selected && this.fill === 'transparent' ? '#ffffff50' : this.fill;
       ctx.beginPath();
       const points = this.getPoints();
       const lastPoint = points.slice(-1)[0] as Point | undefined;
@@ -440,9 +447,21 @@ export default class Shape extends Draggable {
       ctx.moveTo(lastPoint.x, lastPoint.y);
       for (const point of points) {
         ctx.lineTo(point.x, point.y);
+        ctx.stroke();
       }
       ctx.closePath();
       ctx.fill();
+    } else if (this.selected) {
+      ctx.strokeStyle = 'transparent';
+      ctx.beginPath();
+      const points = this.getPoints();
+      const lastPoint = points.slice(-1)[0] as Point | undefined;
+      if (!lastPoint) return;
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      for (const point of points) {
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+      }
     }
 
     super.draw(ctx);

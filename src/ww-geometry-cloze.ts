@@ -90,7 +90,11 @@ export class WwGeometryCloze extends LitElementWw {
         console.warn('Prevented creating multiple CanvasManager');
         return;
       }
-      this.manager = new CanvasManager(this.canvas, this.contextMenu);
+      this.manager = new CanvasManager(
+        this.canvas,
+        this.renderRoot as HTMLElement,
+        this.contextMenu
+      );
       this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
       this.manager.listenForModeChange((mode) => {
         this.mode = mode;
@@ -144,7 +148,8 @@ export class WwGeometryCloze extends LitElementWw {
   static styles = css`
     :host {
       outline: none;
-      z-index: 100;
+      z-index: 10000000;
+      position: relative;
     }
     .wrapper {
       margin: 2rem;

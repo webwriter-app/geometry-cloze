@@ -45,7 +45,7 @@ export default class Point extends Draggable {
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
-        const textPadding = 5;
+        const textPadding = 2.5;
         const vec1 = Vector.normalize(Vector.subtract(neighbors[0], this));
         const vec2 = Vector.normalize(Vector.subtract(neighbors[1], this));
 
@@ -61,19 +61,28 @@ export default class Point extends Draggable {
           middle = Vector.multiply(middle, -1);
 
         middle = Vector.normalize(middle, this.size + textPadding);
-        const outerRadius = this.size + textPadding + metrics.width + 5;
+        const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);
 
-        ctx.fillText(
-          label,
-          this.x + middle.x + (middle.x > 0 ? 0 : -1) * metrics.width,
-          this.y + middle.y + (middle.y > 0 ? 1 : 0) * fontHeight
-        );
+        let radius: number, textX: number, textY: number;
+        // outer label
+        if (angle < 45) {
+          textX = (middle.x + (middle.x > 0 ? 0 : -1) * metrics.width) * -1;
+          textY = (middle.y + (middle.y > 0 ? 1 : 0) * fontHeight) * -1;
+          radius = 20;
+        } else {
+          // inner label
+          textX = middle.x + (middle.x > 0 ? 0 : -1) * metrics.width;
+          textY = middle.y + (middle.y > 0 ? 1 : 0) * fontHeight;
+          radius = textPadding + textDiagonal + 5;
+        }
+
+        ctx.fillText(label, this.x + textX, this.y + textY);
 
         ctx.beginPath();
         ctx.arc(
           this.x,
           this.y,
-          outerRadius,
+          this.size + radius,
           Vector.angle({ x: 1, y: 0 }, vec2),
           Vector.angle({ x: 1, y: 0 }, vec1)
         );
@@ -137,7 +146,7 @@ export default class Point extends Draggable {
     return rounded;
   }
 
-  public getLabel(): string {
+  protected getValueLabel(): string {
     const angle = this.getAngle();
     if (angle === -1) return '';
     return `${angle}°`;
@@ -149,7 +158,8 @@ export default class Point extends Draggable {
       ...this.getStyleContextMenuItems({
         stroke: true,
         fill: true,
-        lineWidth: true
+        lineWidth: true,
+        nameList: 'greek'
       })
     ];
   }
