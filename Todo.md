@@ -2,7 +2,6 @@
 
 Shortcuts
 ctrl+z
-ctrl+a
 
 Todo
 innen/außenwinkel

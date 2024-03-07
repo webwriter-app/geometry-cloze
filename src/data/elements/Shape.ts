@@ -63,9 +63,17 @@ export default class Shape extends Draggable {
   constructor(
     canvas: InteractionManager,
     children: (BasePoint | BaseLine)[],
-    data?: DraggableData & StylableData & { closed?: boolean }
+    data?: DraggableData &
+      StylableData & {
+        closed?: boolean;
+        showArea?: boolean;
+        showPerimeter?: boolean;
+      }
   ) {
     super(canvas, data);
+    if (data?.showArea !== undefined) this.showArea = data.showArea;
+    if (data?.showPerimeter !== undefined)
+      this.showPerimeter = data.showPerimeter;
     this.closed = children.length >= 3 && (data?.closed ?? true);
     const childrenElements = children.map((child) => {
       if (child instanceof Line || child instanceof Point) return child;
@@ -608,7 +616,9 @@ export default class Shape extends Draggable {
   public export() {
     return {
       ...super.export(),
-      closed: this.closed
+      closed: this.closed,
+      ...(this.showArea && { showArea: true }),
+      ...(this.showPerimeter && { showPerimeter: true })
     };
   }
 
