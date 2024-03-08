@@ -1,4 +1,4 @@
-import InteractionManager from '../CanvasManager/InteractionManager';
+import Manager from '../CanvasManager/Abstracts';
 import { MathPoint } from '../helper/Calc';
 import Line, { BaseLine } from './Line';
 import Point from './Point';
@@ -7,12 +7,12 @@ import { StylableData } from './base/Stylable';
 
 export default class DividerLine extends Line {
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     data: BaseLine & Partial<StylableData & DraggableData>
   ) {
-    const start = new Point(canvas, data.start);
-    const end = new Point(canvas, data.end);
-    super(canvas, { ...data, start, end });
+    const start = new Point(manager, data.start);
+    const end = new Point(manager, data.end);
+    super(manager, { ...data, start, end });
     for (const point of [start, end]) {
       point.hide();
       point.setFill('#00000050');
@@ -80,7 +80,7 @@ export default class DividerLine extends Line {
     super.blur();
   }
 
-  public static import(data: BaseLine, canvas: InteractionManager) {
-    return new DividerLine(canvas, data);
+  public static import(data: BaseLine, manager: Manager) {
+    return new DividerLine(manager, data);
   }
 }

@@ -6,7 +6,6 @@ import Draggable, { DraggableData } from './base/Draggable';
 import Point, { BasePoint } from './Point';
 import Line, { BaseLine } from './Line';
 
-import InteractionManager from '../CanvasManager/InteractionManager';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
