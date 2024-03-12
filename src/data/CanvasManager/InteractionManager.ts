@@ -42,12 +42,13 @@ export default class InteractionManager extends EventManager {
     this.requestRedraw();
   }
 
-  protected _scale: number | null = null;
+  protected baseScale = 1 / 50;
+  protected _scale: number = 1;
   public get scale() {
-    return this._scale ?? this._snapSpacing ?? 1;
+    return this._scale * this.baseScale;
   }
   public setScale(scale: number | null) {
-    this._scale = scale;
+    this._scale = scale || 1;
     this.requestRedraw();
   }
 

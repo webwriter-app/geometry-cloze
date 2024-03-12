@@ -508,16 +508,15 @@ export default class Shape extends Draggable {
   protected getValueLabel(): string {
     const res: (string | number)[] = [];
     if (this.showArea) {
-      const area = Calc.getAreaOfPolygon(
-        this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
-      );
-      const areaRounded = Numbers.round(area);
+      const area = Calc.getAreaOfPolygon(this.getPoints());
+      const scaledArea = area * this.manager.scale ** 2;
+      const areaRounded = Numbers.round(scaledArea);
       const prefix = this.showPerimeter ? 'Area: ' : '';
       res.push(`${prefix}${areaRounded}`);
     }
     if (this.showPerimeter) {
       const perimeter = Calc.getPerimeterOfPolygon(
-        this.getPoints().map((p) => Vector.scale(p, 1 / this.manager.scale))
+        this.getPoints().map((p) => Vector.scale(p, this.manager.scale))
       );
       const perimeterRounded = Numbers.round(perimeter);
       const prefix = 'Perimeter: ';
