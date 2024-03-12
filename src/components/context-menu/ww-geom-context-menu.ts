@@ -117,6 +117,9 @@ export class WwGeomContextMenu extends LitElementWw {
   }
 
   static styles = css`
+    :host {
+      user-select: none;
+    }
     .menu {
       position: absolute;
       z-index: 1000;

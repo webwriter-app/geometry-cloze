@@ -52,7 +52,7 @@ export class WwGeometryOptions extends LitElementWw {
           </span>
         </sl-tooltip>
       </sl-checkbox>
-    </div> `;
+    </div>`;
   }
 
   public static get scopedElements() {
@@ -71,6 +71,7 @@ export class WwGeometryOptions extends LitElementWw {
       gap: 1rem;
     }
     .options h6 {
+      user-select: none;
       margin: 0;
     }
   `;
