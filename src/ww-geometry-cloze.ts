@@ -105,12 +105,6 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   private onCanvasValueChange(value: CanvasData) {
-    console.log('setting values', {
-      mode: value.mode,
-      abstractRightAngle: value.abstractRightAngle,
-      showGrid: value.showGrid,
-      snapping: value.snapping
-    });
     this.elements = value.children;
     this.mode = value.mode;
     this.abstractRightAngle = value.abstractRightAngle;
