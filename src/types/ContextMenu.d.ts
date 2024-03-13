@@ -3,11 +3,10 @@ export type ContextMenuItemType = 'button' | 'checkbox' | 'submenu' | 'divider';
 interface GeneralContextMenuItem<Type extends ContextMenuItemType> {
   type: Type;
   label: string;
-  keepOpenAfterClick?: boolean;
+  key: string;
 }
 
 export interface ContextMenuButton extends GeneralContextMenuItem<'button'> {
-  key: string;
   badge?: string;
   isDisabled?: () => boolean;
   disabled?: boolean;
@@ -16,7 +15,6 @@ export interface ContextMenuButton extends GeneralContextMenuItem<'button'> {
 
 export interface ContextMenuCheckbox
   extends GeneralContextMenuItem<'checkbox'> {
-  key: string;
   disabled?: boolean;
   getChecked: () => boolean;
   action: (checked: boolean) => void;
@@ -27,10 +25,7 @@ export interface ContextMenuSubmenu extends GeneralContextMenuItem<'submenu'> {
 }
 
 export interface ContextMenuDivider
-  extends Omit<
-    GeneralContextMenuItem<'divider'>,
-    'label' | 'keepOpenAfterClick'
-  > {}
+  extends Omit<GeneralContextMenuItem<'divider'>, 'label' | 'key'> {}
 
 export type ContextMenuItem =
   | ContextMenuButton

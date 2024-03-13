@@ -1,10 +1,14 @@
-import Draggable, { DraggableData } from './base/Draggable';
 import Calc, { MathLine, MathPoint } from '../helper/Calc';
+import Vector from '../helper/Vector';
+
 import Element, { NamedElement } from './base/Element';
-import { ContextMenuItem } from '/types/ContextMenu';
-import Point from './Point';
-import InteractionManager from '../CanvasManager/InteractionManager';
 import { StylableData } from './base/Stylable';
+import Draggable, { DraggableData } from './base/Draggable';
+import Point from './Point';
+
+import { ContextMenuItem } from '../../types/ContextMenu';
+import Numbers from '../helper/Numbers';
+import Manager from '../CanvasManager/Abstracts';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -16,11 +20,10 @@ export default class Line extends Draggable {
   protected clickTargetSize = 2;
 
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     data: BaseLine & Partial<StylableData & DraggableData>
   ) {
-    super(canvas, data);
-    if (data.name !== undefined) this.name = data.name;
+    super(manager, data);
     this._start = data.start;
     this._end = data.end;
     this._x = data.start.x;
@@ -50,19 +53,15 @@ export default class Line extends Draggable {
     this.delete();
   }
 
-  onStartMove() {
-    this._x = this.start.x;
-    this._y = this.start.y;
-  }
-
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
     const vector = {
       x: this._end.x - this._start.x,
       y: this._end.y - this._start.y
     };
-    const normalized = Calc.normalize(vector);
+    const normalized = Vector.normalize(vector);
     const start = {
       x: this._start.x,
       y: this._start.y
@@ -83,15 +82,73 @@ export default class Line extends Draggable {
     }
     ctx.lineTo(end.x, end.y);
     ctx.stroke();
+
+    // draw label
+    if (this.showLabel) {
+      const padding = 5;
+      const middlePoint = {
+        x: (start.x + end.x) / 2,
+        y: (start.y + end.y) / 2
+      };
+      const label = this.getLabel();
+      ctx.font = '24px Arial';
+      ctx.fillStyle = this.labelColor;
+      const metrics = ctx.measureText(label);
+      const fontHeight =
+        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      if (this.parent && 'getPoints' in this.parent) {
+        const ortho = Vector.orthogonal(normalized);
+        const point1 = Vector.add(
+          middlePoint,
+          Vector.scale(ortho, fontHeight / 2)
+        );
+        const factor = Calc.isPointInPolygon(point1, this.parent.getPoints())
+          ? -1
+          : 1;
+
+        const angleFactor = 1 + Math.min(Math.abs(ortho.x), Math.abs(ortho.y));
+        const startPoint = Vector.add(
+          middlePoint,
+          Vector.scale(ortho, fontHeight * factor * angleFactor)
+        );
+        ctx.clearRect(
+          startPoint.x - metrics.width / 2 - padding,
+          startPoint.y - fontHeight / 2 - padding,
+          metrics.width + 2 * padding,
+          fontHeight + 2 * padding
+        );
+        ctx.fillText(
+          label,
+          startPoint.x - metrics.width / 2,
+          startPoint.y + fontHeight / 4
+        );
+      } else {
+        ctx.clearRect(
+          middlePoint.x - metrics.width / 2 - padding,
+          middlePoint.y - fontHeight / 2 - padding,
+          metrics.width + 2 * padding,
+          fontHeight + 2 * padding
+        );
+        ctx.fillText(
+          label,
+          middlePoint.x - metrics.width / 2,
+          middlePoint.y + fontHeight / 4
+        );
+      }
+    }
   }
 
   setStart(start: MathPoint) {
-    this._start = start;
+    if (start instanceof Point || !(this._start instanceof Point))
+      this._start = start;
+    else this._start.move({ ...start, relative: false });
+
     this.requestRedraw();
   }
 
   setEnd(end: MathPoint) {
-    this._end = end;
+    if (end instanceof Point || !(this._end instanceof Point)) this._end = end;
+    else this._end.move({ ...end, relative: false });
     this.requestRedraw();
   }
 
@@ -104,6 +161,7 @@ export default class Line extends Draggable {
   }
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     if (point2) {
       const rect = {
         x1: point.x,
@@ -126,6 +184,12 @@ export default class Line extends Draggable {
     }
   }
 
+  protected getValueLabel() {
+    return Numbers.round(
+      Calc.distance(this.start, this.end) * this.manager.scale
+    );
+  }
+
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
@@ -141,12 +205,20 @@ export default class Line extends Draggable {
     return {
       ...super.export(),
       _type: 'line' as const,
-      start: this._start,
-      end: this._end
+      start: {
+        x: this._start.x,
+        y: this._start.y,
+        ...(this._start instanceof Point && { id: this._start.id })
+      },
+      end: {
+        x: this._end.x,
+        y: this._end.y,
+        ...(this._end instanceof Point && { id: this._end.id })
+      }
     };
   }
 
-  public static import(data: BaseLine, canvas: InteractionManager) {
-    return new Line(canvas, data);
+  public static import(data: BaseLine, manager: Manager) {
+    return new Line(manager, data);
   }
 }

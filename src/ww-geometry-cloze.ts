@@ -1,46 +1,116 @@
-import { LitElement, css, html } from 'lit';
+import '@webcomponents/scoped-custom-element-registry';
+import { LitElementWw } from '@webwriter/lit';
+import { PropertyValueMap, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import './components/toolbar/ww-geom-toolbar';
-// init shoelace
-import './misc/shoelaceSetup';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
+import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
-import CanvasManager from './data/CanvasManager/CanvasManager';
+import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
+import Objects from './data/helper/Objects';
+import { LitElement } from 'lit';
+
+import '@shoelace-style/shoelace/dist/themes/light.css';
+import { WwGeomOptions } from './components/options/ww-geom-options';
 
 /**
  * A widget to create and view geometry exercises.
  */
 @customElement('ww-geometry-cloze')
-export class WwGeometryCloze extends LitElement {
+export class WwGeometryCloze extends LitElementWw {
   @query('canvas') canvas!: HTMLCanvasElement;
   @query('ww-geom-context-menu') contextMenu!: WwGeomContextMenu;
 
   manager: CanvasManager | null = null;
 
-  @property({ attribute: true })
-  mode: InteractionMode = 'select';
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Array
+  })
+  elements: CanvasData['children'];
+
+  @property({
+    attribute: true,
+    reflect: true,
+    type: String
+  })
+  mode: CanvasData['mode'] = 'select';
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  abstractRightAngle: CanvasData['abstractRightAngle'] = false;
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  showGrid: CanvasData['showGrid'] = true;
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Boolean
+  })
+  snap: CanvasData['snapping'] = true;
 
   render() {
     return html`<div class="wrapper">
-      <ww-geom-toolbar
-        mode=${this.mode}
-        @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-          this.mode = e.detail.mode;
-          if (!this.manager) return;
-          this.manager.mode = e.detail.mode;
-        }}></ww-geom-toolbar>
-      <div class="canvas-wrapper">
-        <canvas width="2000" height="1000"></canvas>
+      ${
+        this.isContentEditable
+          ? html`<ww-geom-toolbar
+              mode=${this.mode}
+              @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
+                this.mode = e.detail.mode;
+                if (!this.manager) return;
+                this.manager.mode = e.detail.mode;
+              }}></ww-geom-toolbar>`
+          : ''
+      }
+        <canvas width="1000" height="700"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
-    </div>`;
+    </div>
+    <ww-geom-options part="options" .manager=${
+      this.manager
+    }></ww-geom-options>`;
   }
+
   private onBlur() {
     this.contextMenu?.close();
   }
-
   private onClick() {
     this.contextMenu?.close();
+  }
+
+  protected updated(
+    changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+  ): void {
+    if (changedProperties.has('elements')) {
+      if (!this.manager || !this.elements) return;
+      const exportData = this.manager.export();
+      if (!Objects.deepEqual(exportData.children, this.elements))
+        this.manager.import({
+          children: this.elements
+        });
+    } else if (changedProperties.has('mode')) {
+      if (this.manager) this.manager.mode = this.mode;
+    } else if (changedProperties.has('abstractRightAngle'.toLowerCase())) {
+      if (this.manager)
+        this.manager.abstractRightAngle = this.abstractRightAngle;
+    } else if (changedProperties.has('showGrid'.toLowerCase())) {
+      if (this.manager) this.manager.toggleGrid(this.showGrid);
+    } else if (changedProperties.has('snap')) {
+      if (this.manager) this.manager.toggleSnapping(this.snap);
+    }
+  }
+
+  private onCanvasValueChange(value: CanvasData) {
+    this.elements = value.children;
+    this.mode = value.mode;
+    this.abstractRightAngle = value.abstractRightAngle;
+    this.showGrid = value.showGrid;
+    this.snap = value.snapping;
   }
 
   firstUpdated() {
@@ -51,62 +121,83 @@ export class WwGeometryCloze extends LitElement {
         console.warn('Prevented creating multiple CanvasManager');
         return;
       }
-      this.manager = new CanvasManager(this.canvas, this.contextMenu);
-      this.manager.listenForModeChange((mode) => (this.mode = mode));
+      this.manager = new CanvasManager(
+        this.canvas,
+        this.renderRoot as HTMLElement,
+        this.contextMenu
+      );
+      this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
 
-      const polygon = Shape.createPolygon(this.manager, [
-        { x: 200, y: 200, name: 'top left' },
-        { x: 500, y: 200, name: 'top right' },
-        { x: 500, y: 500, name: 'bottom right' },
-        { x: 200, y: 500, name: 'bottom left' }
-      ]);
-      polygon.addPoint({
-        x: 600,
-        y: 300,
-        name: 'middle right'
-      });
+      if (this.elements) {
+        this.manager.import({
+          children: this.elements,
+          mode: this.mode
+        });
+      } else {
+        const polygon = Shape.createPolygon(this.manager, [
+          { x: 200, y: 200, name: 'top left' },
+          { x: 500, y: 200, name: 'top right' },
+          {
+            x: 600,
+            y: 300,
+            name: 'middle right'
+          },
+          { x: 500, y: 500, name: 'bottom right' },
+          { x: 200, y: 500, name: 'bottom left' }
+        ]);
 
-      const line = Shape.createLine(this.manager, {
-        // @ts-ignore
-        start: { x: 800, y: 100, name: 'top right' },
-        // @ts-ignore
-        end: { x: 300, y: 900, name: 'bottom left' },
-        name: 'standalone line'
-      });
-
-      const point7 = Shape.createPoint(this.manager, {
-        x: 100,
-        y: 100,
-        name: 'standalone top left'
-      });
-
-      this.manager.addShape(polygon);
-      this.manager.addShape(line);
-      this.manager.addShape(point7);
-
-      //@ts-ignore
-      window.manager = this.manager;
+        this.manager.addChild(polygon);
+      }
     } else console.warn('No canvas context');
   }
 
   disconnectedCallback(): void {
     this.removeEventListener('blur', this.onBlur);
     this.removeEventListener('click', this.onClick);
+    if (this.manager) {
+      this.manager.removeUpdateListener(this.onCanvasValueChange);
+      this.manager.unmount();
+    }
     super.disconnectedCallback();
   }
 
+  static shadowRootOptions = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true
+  };
+
+  public static get scopedElements() {
+    return {
+      'ww-geom-toolbar': WwGeomToolbar,
+      'ww-geom-context-menu': WwGeomContextMenu,
+      'ww-geom-options': WwGeomOptions
+    };
+  }
+
   static styles = css`
-    .wrapper {
-      margin: 2rem;
-    }
-    .canvas-wrapper {
+    :host {
+      outline: none;
+      z-index: 10000000;
       position: relative;
     }
+    .wrapper {
+      margin: 2rem;
+      margin-top: 0;
+      position: relative;
+      outline: none;
+    }
     canvas {
-      aspect-ratio: 2 / 1;
+      aspect-ratio: 10 / 7;
       width: calc(100% - 2px);
       border: solid 1px black;
       box-sizing: border-box;
+    }
+    :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
+      pointer-events: none;
+    }
+    :host(:not([contenteditable='true']):not([contenteditable='']))
+      ww-geom-options {
+      display: none;
     }
   `;
 }

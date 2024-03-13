@@ -1,24 +1,43 @@
+import { ContextMenuItem } from '../../../types/ContextMenu';
 import Shape from '../Shape';
-import ChildrenManager from '/data/CanvasManager/ChildrenManager';
-import InteractionManager from '/data/CanvasManager/InteractionManager';
-import { ContextMenuItem } from '/types/ContextMenu';
+import IDManager from '../../CanvasManager/IDManager';
+import Manager from '../../CanvasManager/Abstracts';
 
 export interface NamedElement {
   name?: string;
+  id?: number;
 }
 
 export default class Element {
   public name = '[unset]';
-  public readonly id = ChildrenManager.getID();
-  constructor(protected manager: InteractionManager) {}
+  private _id = IDManager.getID();
+  public get id() {
+    return this._id;
+  }
+  constructor(
+    protected manager: Manager,
+    data?: NamedElement
+  ) {
+    if (data?.name) this.name = data.name;
+    if (data?.id) this._id = data.id;
+  }
 
-  protected parent: Shape | ChildrenManager | null = null;
+  private _hidden = false;
+  public get hidden() {
+    return this._hidden;
+  }
+  public hide(value: boolean = true) {
+    this._hidden = value;
+    this.requestRedraw();
+  }
+
+  protected parent: Shape | Manager | null = null;
   private _children: Element[] = [];
   protected get children(): readonly Element[] {
     return this._children;
   }
 
-  registerParent(element: Shape | ChildrenManager) {
+  registerParent(element: Shape | Manager) {
     this.parent = element;
   }
   unregisterParent() {
@@ -31,10 +50,10 @@ export default class Element {
     child.registerParent(this);
   }
 
-  protected addChild(this: Shape, ...children: Element[]) {
+  protected addChild(...children: Element[]) {
     this._children.push(...children);
     children.forEach((child) => {
-      child.registerParent(this);
+      if (this instanceof Shape) child.registerParent(this);
       child.addEventListener('request-redraw', this.requestRedraw.bind(this));
     });
   }
@@ -64,6 +83,7 @@ export default class Element {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this._hidden) return;
     this._children.forEach((child) => child.draw(ctx));
   }
 
@@ -112,7 +132,7 @@ export default class Element {
   }
 
   public getChildByID(id: number): Element | null {
-    if (this.id === id) return this;
+    if (this._id === id) return this;
     for (const child of this._children) {
       const found = child.getChildByID(id);
       if (found) return found;
@@ -123,12 +143,17 @@ export default class Element {
   public export(): {
     _type: 'element' | 'point' | 'line';
     id: number;
-    children: ({ _type: 'point' | 'line' | 'element' } & Object)[];
+    children?: ({ _type: 'point' | 'line' | 'element' } & Object)[];
   } {
+    if (this.children.length)
+      return {
+        _type: 'element',
+        id: this.id,
+        children: this._children.map((child) => child.export())
+      };
     return {
       _type: 'element',
-      id: this.id,
-      children: this._children.map((child) => child.export())
+      id: this.id
     };
   }
 }

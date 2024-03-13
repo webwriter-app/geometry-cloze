@@ -8,7 +8,18 @@
     <link rel="stylesheet" href="/index.css" />
     <script type="module" src="/ww-geometry-cloze.ts"></script>
   </head>
-  <body>
-    <ww-geometry-cloze></ww-geometry-cloze>
+  <body style="margin: 0">
+    <div
+      id="wrapper"
+      style="
+        max-width: 1000px;
+        margin: auto;
+        padding: 2.5vmin;
+        box-sizing: border-box;
+      ">
+      <ww-geometry-cloze
+        contenteditable
+        value='{"children":[{"_type":"element","id":11,"children":[{"_type":"point","id":1,"selected":false,"x":200,"y":200},{"_type":"line","id":3,"selected":false,"start":{"x":200,"y":200,"id":1},"end":{"x":500,"y":200,"id":2}},{"_type":"point","id":2,"selected":false,"x":500,"y":200},{"_type":"line","id":5,"selected":false,"start":{"x":500,"y":200,"id":2},"end":{"x":600,"y":300,"id":4}},{"_type":"point","id":4,"selected":false,"x":600,"y":300},{"_type":"line","id":7,"selected":false,"start":{"x":600,"y":300,"id":4},"end":{"x":500,"y":500,"id":6}},{"_type":"point","id":6,"selected":false,"x":500,"y":500},{"_type":"line","id":9,"selected":false,"start":{"x":500,"y":500,"id":6},"end":{"x":200,"y":500,"id":8}},{"_type":"point","id":8,"selected":false,"x":200,"y":500},{"_type":"line","id":10,"selected":false,"start":{"x":200,"y":500,"id":8},"end":{"x":200,"y":200,"id":1}}],"selected":false,"closed":true}],"selected":[],"mode":"select"}'></ww-geometry-cloze>
+    </div>
   </body>
 </html>

@@ -1,31 +1,35 @@
 import { MathPoint } from '../../helper/Calc';
 import Stylable, { StylableData } from './Stylable';
-import Element from './Element';
-import InteractionManager from '/data/CanvasManager/InteractionManager';
+import Manager from '../../CanvasManager/Abstracts';
 
 export interface DraggableData {
   selected?: boolean;
 }
 
-export default abstract class Draggable extends Stylable {
+export default class Draggable extends Stylable {
   private _selected: boolean;
   protected clickTargetSize = 0;
-  protected abstract _x: number;
-  protected abstract _y: number;
+  protected _x: number = 0;
+  protected _y: number = 0;
 
-  constructor(
-    canvas: InteractionManager,
-    data: DraggableData & StylableData = {}
-  ) {
-    super(canvas, data);
+  constructor(manager: Manager, data: DraggableData & StylableData = {}) {
+    super(manager, data);
     this._selected = data.selected ?? false;
+  }
 
-    this.addEventListener('select', this.select.bind(this));
-    this.addEventListener('unselect', this.blur.bind(this));
-    this.addEventListener('style-change', this.styleChangeListener.bind(this));
+  draw(ctx: CanvasRenderingContext2D) {
+    super.draw(ctx);
+    if (this.selected) {
+      ctx.lineWidth = this.lineWidth + 1;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#00000050';
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+    }
   }
 
   public getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     return this.children.flatMap((child) => {
       if (child instanceof Draggable) return child.getHit(point, point2);
       return [];
@@ -52,34 +56,11 @@ export default abstract class Draggable extends Stylable {
     this.requestRedraw();
   }
 
-  private overwrittenStyle: Partial<StylableData> = {};
-
-  // boolean to not store style changes when setting the style for signaling that the element is selected
-  private isSettingStyle = false;
-  private setSelectedStyle() {
-    this.isSettingStyle = true;
-    this.setShadow(true);
-    // this.setFill('blue');
-    this.isSettingStyle = false;
-  }
-
-  private styleChangeListener(_: Element, style: Partial<StylableData>) {
-    if (this.isSettingStyle || !this.selected) return;
-    this.overwrittenStyle = {
-      ...this.overwrittenStyle,
-      ...style
-    };
-    this.setSelectedStyle();
-  }
-
   select() {
     if (!this.onSelect()) return;
     this._selected = true;
-    this.overwrittenStyle = {
-      fill: this.fill,
-      shadow: this.shadow
-    };
-    this.setSelectedStyle();
+    this.fireEvent('select', this);
+    this.requestRedraw();
   }
 
   /**
@@ -93,11 +74,8 @@ export default abstract class Draggable extends Stylable {
   blur() {
     if (!this.onBlur()) return;
     this._selected = false;
-    this.isSettingStyle = true;
-    this.setShadow(this.overwrittenStyle.shadow ?? null);
-    // this.setFill(this.overwrittenStyle.fill ?? null);
-    this.isSettingStyle = false;
-    this.overwrittenStyle = {};
+    this.fireEvent('blur', this);
+    this.requestRedraw();
   }
 
   /**
@@ -124,12 +102,5 @@ export default abstract class Draggable extends Stylable {
   }
   get y() {
     return this._y;
-  }
-
-  public export() {
-    return {
-      ...super.export(),
-      selected: this.selected
-    };
   }
 }

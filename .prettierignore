@@ -1,2 +1,4 @@
 .vite
 dist
+src/components/icons
+pnpm-lock.yaml

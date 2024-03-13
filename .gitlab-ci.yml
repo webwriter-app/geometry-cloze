@@ -6,12 +6,16 @@ stages:
 cache:
   paths:
     - node_modules/
+    - .pnpm-store/
 
 npm-install:
   stage: install
   image: node:18
+  before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
   script:
-    - yarn install
+    - pnpm install --frozen-lockfile
   cache:
     policy: pull-push
     untracked: false
@@ -23,9 +27,12 @@ npm-install:
 prettier-check-styling:
   stage: test
   image: node:18
+  before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
   script:
-    - yarn install
-    - yarn check-prettier
+    - pnpm install --frozen-lockfile
+    - pnpm check-prettier
   cache:
     policy: pull
     untracked: false
@@ -37,9 +44,12 @@ prettier-check-styling:
 typescript:
   stage: build
   image: node:18
+  before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
   script:
-    - yarn install
-    - yarn build
+    - pnpm install --frozen-lockfile
+    - pnpm build
   cache:
     policy: pull
     untracked: false
@@ -51,11 +61,14 @@ typescript:
 deploy-webpage:
   stage: build
   image: node:18
+  before_script:
+    - npm install -g pnpm
+    - pnpm config set store-dir .pnpm-store
   only:
     - main
   script:
-    - yarn
-    - yarn build
+    - pnpm install --frozen-lockfile
+    - pnpm build
     - npx netlify-cli deploy --dir=dist --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
   cache:
     policy: pull

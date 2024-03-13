@@ -19,11 +19,9 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Build options */
-    "baseUrl": "./",
     "outDir": "dist",
-    "paths": {
-      "/*": ["src/*"]
-    }
+    "types": []
   },
-  "include": ["src"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "./node_modules", "./node_modules/**/*"]
 }

@@ -1,20 +1,22 @@
 import Calc, { MathPoint } from '../helper/Calc';
-import Draggable from './base/Draggable';
-import Line, { BaseLine } from './Line';
-import Point, { BasePoint } from './Point';
-import { ContextMenuItem } from '/types/ContextMenu';
-import Element from './base/Element';
-import InteractionManager from '../CanvasManager/InteractionManager';
 import Arrays from '../helper/Arrays';
 
+import Element from './base/Element';
+import Draggable, { DraggableData } from './base/Draggable';
+import Point, { BasePoint } from './Point';
+import Line, { BaseLine } from './Line';
+
+import { ContextMenuItem } from '../../types/ContextMenu';
+import Vector from '../helper/Vector';
+import Stylable, { StylableData } from './base/Stylable';
+import Numbers from '../helper/Numbers';
+import Manager from '../CanvasManager/Abstracts';
+
 export default class Shape extends Draggable {
-  static createPolygon(manager: InteractionManager, points: BasePoint[]): Shape;
+  static createPolygon(manager: Manager, points: BasePoint[]): Shape;
+  static createPolygon(manager: Manager, ...points: BasePoint[]): Shape;
   static createPolygon(
-    manager: InteractionManager,
-    ...points: BasePoint[]
-  ): Shape;
-  static createPolygon(
-    manager: InteractionManager,
+    manager: Manager,
     ...points: [BasePoint[]] | BasePoint[]
   ): Shape {
     let pointsArr: BasePoint[];
@@ -37,35 +39,40 @@ export default class Shape extends Draggable {
       new Line(manager, { start: lastPoint!, end: children[0] as Point })
     );
 
-    return new Shape(manager, children, true);
+    return new Shape(manager, children, { closed: true });
   }
 
-  static createPoint(manager: InteractionManager, point: BasePoint) {
+  static createPoint(manager: Manager, point: BasePoint) {
     const pointElement =
       point instanceof Point ? point : new Point(manager, point);
-    return new Shape(manager, [pointElement], false);
+    return new Shape(manager, [pointElement], { closed: false });
   }
 
-  static createLine(manager: InteractionManager, line: BaseLine) {
+  static createLine(manager: Manager, line: BaseLine) {
     const start = new Point(manager, line.start);
     const end = new Point(manager, line.end);
     const lineElement =
       line instanceof Line ? line : new Line(manager, { start, end });
-    return new Shape(manager, [start, lineElement, end], false);
+    return new Shape(manager, [start, lineElement, end], { closed: false });
   }
-
-  protected _x: number = 0;
-  protected _y: number = 0;
 
   protected closed = true;
 
   constructor(
-    canvas: InteractionManager,
+    manager: Manager,
     children: (BasePoint | BaseLine)[],
-    closed = true
+    data?: DraggableData &
+      StylableData & {
+        closed?: boolean;
+        showArea?: boolean;
+        showPerimeter?: boolean;
+      }
   ) {
-    super(canvas, {});
-    this.closed = children.length >= 3 && closed;
+    super(manager, data);
+    if (data?.showArea !== undefined) this.showArea = data.showArea;
+    if (data?.showPerimeter !== undefined)
+      this.showPerimeter = data.showPerimeter;
+    this.closed = children.length >= 3 && (data?.closed ?? true);
     const childrenElements = children.map((child) => {
       if (child instanceof Line || child instanceof Point) return child;
       if ('start' in child && 'end' in child)
@@ -144,6 +151,7 @@ export default class Shape extends Draggable {
   }
 
   getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
     const res: Draggable[] = [];
     // points should be first, since they have higher priority to be selected
     const hits = super.getHit(point, point2).sort((a, b) => {
@@ -421,17 +429,28 @@ export default class Shape extends Draggable {
     for (const element of removedElements) this.removeChildUnsafe(element);
 
     for (const newShape of nonEmptyShapes) {
-      const shape = new Shape(this.manager, newShape.elements, newShape.closed);
-      this.manager.addShape(shape);
+      const shape = new Shape(this.manager, newShape.elements, {
+        ...this.export(),
+        closed: newShape.closed
+      });
+      this.manager.addChild(shape);
     }
 
     this.requestRedraw();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
+    if (this.hidden) return;
+    if (this.selected) {
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#000000b0';
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+    }
     if (this.closed) {
       ctx.strokeStyle = 'transparent';
-      ctx.fillStyle = this.fill;
+      ctx.fillStyle =
+        this.selected && this.fill === 'transparent' ? '#ffffff50' : this.fill;
       ctx.beginPath();
       const points = this.getPoints();
       const lastPoint = points.slice(-1)[0] as Point | undefined;
@@ -439,18 +458,124 @@ export default class Shape extends Draggable {
       ctx.moveTo(lastPoint.x, lastPoint.y);
       for (const point of points) {
         ctx.lineTo(point.x, point.y);
+        ctx.stroke();
       }
       ctx.closePath();
       ctx.fill();
+    } else if (this.selected) {
+      ctx.strokeStyle = 'transparent';
+      ctx.beginPath();
+      const points = this.getPoints();
+      const lastPoint = points.slice(-1)[0] as Point | undefined;
+      if (!lastPoint) return;
+      ctx.moveTo(lastPoint.x, lastPoint.y);
+      for (const point of points) {
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+      }
     }
 
     super.draw(ctx);
+
+    if (this.showLabel) {
+      const labels = this.getLabel().split('|');
+      ctx.font = '24px Arial';
+      ctx.fillStyle = this.labelColor;
+      const metrics = labels.map((label) => ctx.measureText(label));
+      const fontHeight = metrics.map(
+        (metric) => metric.fontBoundingBoxAscent + metric.fontBoundingBoxDescent
+      );
+      const points = this.getPoints();
+      let middle = points.reduce((acc, point) => Vector.add(acc, point), {
+        x: 0,
+        y: 0
+      });
+      middle = Vector.scale(middle, 1 / points.length);
+      let offset = 0;
+      labels.forEach((label, index) => {
+        ctx.fillText(
+          label,
+          middle.x - metrics[index].width / 2,
+          middle.y + fontHeight[index] / 4 + offset
+        );
+        offset += fontHeight[index];
+      });
+    }
+  }
+
+  protected showArea = false;
+  protected showPerimeter = false;
+  protected getValueLabel(): string {
+    const res: (string | number)[] = [];
+    if (this.showArea) {
+      const area = Calc.getAreaOfPolygon(this.getPoints());
+      const scaledArea = area * this.manager.scale ** 2;
+      const areaRounded = Numbers.round(scaledArea);
+      const prefix = this.showPerimeter ? 'Area: ' : '';
+      res.push(`${prefix}${areaRounded}`);
+    }
+    if (this.showPerimeter) {
+      const perimeter = Calc.getPerimeterOfPolygon(
+        this.getPoints().map((p) => Vector.scale(p, this.manager.scale))
+      );
+      const perimeterRounded = Numbers.round(perimeter);
+      const prefix = 'Perimeter: ';
+      res.push(`${prefix}${perimeterRounded}`);
+    }
+    return res.join('|');
   }
 
   public getContextMenuItems(): ContextMenuItem[] {
     return [
       ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ fill: true })
+      ...this.getStyleContextMenuItems({
+        fill: true,
+        showLabel: false
+      }),
+      {
+        type: 'submenu',
+        label: 'Label',
+        key: 'label',
+        items: [
+          {
+            type: 'checkbox',
+            label: 'Show Area',
+            getChecked: () => this.showArea,
+            action: (checked) => {
+              this.showArea = checked;
+              this.shouldShowLabel(this.showArea || this.showPerimeter);
+              this.requestRedraw();
+            },
+            key: 'show-area-label'
+          },
+          {
+            type: 'checkbox',
+            label: 'Show Perimeter',
+            getChecked: () => this.showPerimeter,
+            action: (checked) => {
+              this.showPerimeter = checked;
+              this.shouldShowLabel(this.showArea || this.showPerimeter);
+              this.requestRedraw();
+            },
+            key: 'show-perimeter-label'
+          },
+          {
+            type: 'submenu',
+            label: 'Color',
+            key: 'label_color',
+            items: Stylable.COLORS.map(
+              (option) =>
+                ({
+                  type: 'checkbox',
+                  getChecked: () => this.labelColor === option.color,
+                  label: option.label,
+                  action: () => this.setLabelColor(option.color),
+                  key: `label_color_${option.label.toLowerCase()}`
+                }) as const
+            )
+          }
+        ]
+      }
     ];
   }
 
@@ -488,22 +613,35 @@ export default class Shape extends Draggable {
   public export() {
     return {
       ...super.export(),
-      closed: this.closed
+      closed: this.closed,
+      ...(this.showArea && { showArea: true }),
+      ...(this.showPerimeter && { showPerimeter: true })
     };
   }
 
-  public static import(
-    data: ReturnType<Shape['export']>,
-    manager: InteractionManager
-  ) {
-    const children = data.children
-      .map((child) => {
-        if (child._type === 'point') return Point.import(child as any, manager);
-        if (child._type === 'line') return Line.import(child as any, manager);
-        if (child._type === 'element') return null;
-        throw new Error('Invalid child type');
-      })
-      .filter(Boolean) as (Point | Line)[];
-    return new Shape(manager, children, data.closed);
+  public static import(data: ReturnType<Shape['export']>, manager: Manager) {
+    const points =
+      data.children
+        ?.filter((child) => child._type === 'point')
+        .map((child) => Point.import(child as any, manager)) ?? [];
+    const children =
+      (data.children
+        ?.map((child: any) => {
+          if (child._type === 'point')
+            return points.find((point) => point.id === child.id);
+          if (child._type === 'line')
+            return Line.import(
+              {
+                ...child,
+                start: points.find((point) => point.id === child.start.id),
+                end: points.find((point) => point.id === child.end.id)
+              },
+              manager
+            );
+          if (child._type === 'element') return null;
+          throw new Error('Invalid child type');
+        })
+        .filter(Boolean) as (Point | Line)[]) ?? [];
+    return new Shape(manager, children, data);
   }
 }

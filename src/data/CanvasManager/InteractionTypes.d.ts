@@ -1,1 +1,1 @@
-type InteractionMode = 'select' | 'create';
+type InteractionMode = 'select' | 'create' | 'divider';

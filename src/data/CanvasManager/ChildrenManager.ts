@@ -1,14 +1,17 @@
-import Shape from '../elements/Shape';
-import Draggable from '../elements/base/Draggable';
 import Element from '../elements/base/Element';
+import Draggable from '../elements/base/Draggable';
+import DividerLine from '../elements/DividerLine';
+import Shape from '../elements/Shape';
+import { Child } from './ChildrenTypes';
+import InteractionManager from './InteractionManager';
 
-export default class ChildrenManager {
+export default abstract class ChildrenManager {
   private static FRAME_RATE = 60;
 
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
-  private children: Shape[] = [];
+  private children: Child[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
@@ -22,19 +25,22 @@ export default class ChildrenManager {
 
     // reverse order so that the first shape is on top
     for (const shape of this.children.map((s) => s).reverse()) {
+      if (shape.hidden) continue;
       shape.draw(ctx);
     }
   }
 
   protected getElementAt(point: { x: number; y: number }): Draggable | null {
-    const hit = this.children.reduce(
-      (cur, shape) => {
-        if (cur) return cur;
-        if (shape instanceof Draggable) return shape.getHit(point)[0] ?? null;
-        return null;
-      },
-      null as Draggable | null
-    );
+    const hit = this.children.reduce<Draggable | null>((cur, shape) => {
+      if (cur) return cur;
+      if (shape instanceof Draggable) {
+        const hit = shape.getHit(point)[0] ?? null;
+        if (this instanceof InteractionManager) {
+          if (this.canSelect(hit)) return hit;
+        } else return hit;
+      }
+      return null;
+    }, null);
     return hit;
   }
 
@@ -66,30 +72,31 @@ export default class ChildrenManager {
       );
   }
 
-  public addShape(shape: Shape) {
-    this.children.push(shape);
+  public addChild(ele: Child) {
+    this.children.push(ele);
     this.requestRedraw();
 
-    shape.registerParent(this);
-    shape.addEventListener('request-redraw', this.redraw.bind(this, this._ctx));
+    ele.registerParent(this as any);
+    ele.addEventListener('request-redraw', this.redraw.bind(this, this._ctx));
   }
 
-  public removeChild(element: Shape) {
+  public removeChild(element: Child) {
     const index = this.children.indexOf(element);
     if (index < 0) return;
     this.children.splice(index, 1);
     this.requestRedraw();
   }
 
-  public moveToTop(shape: Shape) {
+  public moveToTop(shape: Child) {
     const index = this.children.indexOf(shape);
     if (index < 0) return;
     const ele = this.children.splice(index, 1);
     this.children.push(...ele);
   }
 
-  public getChildren() {
-    return this.children;
+  public getChildren(filter?: (child: Child) => boolean) {
+    if (filter) return this.children.filter(filter);
+    return this.children.slice(0);
   }
 
   public getCanvasDimensions(): { width: number; height: number } {
@@ -107,21 +114,21 @@ export default class ChildrenManager {
   }
 
   public export() {
-    return {
-      children: this.children.map((child) => child.export())
-    };
+    if (this.children.length)
+      return {
+        children: this.children.map((child) => child.export())
+      };
+    return {};
   }
 
-  public import(data: ReturnType<this['export']>) {
-    const children = data.children.map((child) =>
-      Shape.import(child, this as any)
-    );
-    this.getChildren().forEach((child) => this.removeChild(child));
-    children.forEach((child) => this.addShape(child));
-  }
-
-  private static idCounter = 0;
-  public static getID() {
-    return ChildrenManager.idCounter++;
+  public import(data: Partial<ReturnType<this['export']>>) {
+    const children =
+      data.children?.map((child) =>
+        child._type === 'line'
+          ? DividerLine.import(child as any, this as any)
+          : Shape.import(child, this as any)
+      ) ?? [];
+    this.children = [];
+    children.forEach((child) => this.addChild(child));
   }
 }

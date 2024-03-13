@@ -1,24 +1,30 @@
-import Draggable from '../elements/base/Draggable';
 import Calc, { MathPoint } from '../helper/Calc';
+import Draggable from '../elements/base/Draggable';
 import ChildrenManager from './ChildrenManager';
-import { WwGeomContextMenu } from '/components/context-menu/ww-geom-context-menu';
+import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
 
-export default class EventManager extends ChildrenManager {
+export default abstract class EventManager extends ChildrenManager {
   private wrapper: HTMLElement;
 
   private clickTargetEle: HTMLElement;
+  private rootEle: HTMLElement;
   private contextMenu: WwGeomContextMenu;
   /**
    * Currently selected element
    */
   private _selected: Draggable[] = [];
 
-  constructor(canvas: HTMLCanvasElement, contextMenu: WwGeomContextMenu) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    rootEle: HTMLElement,
+    contextMenu: WwGeomContextMenu
+  ) {
     super(canvas);
     this.wrapper = canvas;
     this.contextMenu = contextMenu;
 
     this.clickTargetEle = canvas;
+    this.rootEle = rootEle;
 
     this.clickTargetEle.addEventListener(
       'mousedown',
@@ -55,7 +61,11 @@ export default class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    document.addEventListener('keydown', this.handleKeyboardEvent.bind(this));
+    this.rootEle.addEventListener(
+      'keydown',
+      this._handleKeyboardEvent.bind(this)
+    );
+    this.rootEle.addEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   unmount() {
@@ -91,10 +101,11 @@ export default class EventManager extends ChildrenManager {
       'contextmenu',
       this.handleContextMenu.bind(this)
     );
-    document.removeEventListener(
+    this.rootEle.removeEventListener(
       'keydown',
-      this.handleKeyboardEvent.bind(this)
+      this._handleKeyboardEvent.bind(this)
     );
+    this.rootEle.removeEventListener('keyup', this.handleKeyUp.bind(this));
   }
 
   private preventTouchScroll(event: TouchEvent) {
@@ -124,6 +135,7 @@ export default class EventManager extends ChildrenManager {
   private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
     null;
   private onMouseDown(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     this.moved = false;
     const coords = this.getRelativeCoordinates(event);
 
@@ -132,7 +144,8 @@ export default class EventManager extends ChildrenManager {
     if (hit) {
       const wasSelected = this._selected.includes(hit);
 
-      if (!wasSelected) this.select(hit, { keepSelection: event.ctrlKey });
+      if (!wasSelected && this.onSelect(hit))
+        this.select(hit, { keepSelection: event.ctrlKey });
 
       this.mouseDownTarget = {
         element: hit,
@@ -152,13 +165,13 @@ export default class EventManager extends ChildrenManager {
   }
 
   private onMouseUp(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     const isRightClick = 'button' in event && event.button === 2;
 
     if (this.moved) {
       this.handleDragEnd({
         from: this.dragStart!,
         to: this.getRelativeCoordinates(event),
-        ctrlKeyPressed: event.ctrlKey,
         element: this.mouseDownTarget?.element ?? null
       });
       return;
@@ -191,6 +204,7 @@ export default class EventManager extends ChildrenManager {
       })
     | null = null;
   private onMouseMove(event: MouseEvent | TouchEvent) {
+    event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
 
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
@@ -200,7 +214,6 @@ export default class EventManager extends ChildrenManager {
         this.handleDragEnd({
           from: this.dragStart!,
           to: coords,
-          ctrlKeyPressed: event.ctrlKey,
           element: this.mouseDownTarget?.element ?? null
         });
         this.moved = false;
@@ -219,7 +232,6 @@ export default class EventManager extends ChildrenManager {
 
       this.handleDragStart({
         start: this.dragStart,
-        ctrlKeyPressed: event.ctrlKey,
         hit: this.getElementAt(this.dragStart!)
       });
     }
@@ -233,6 +245,7 @@ export default class EventManager extends ChildrenManager {
   }
 
   private handleContextMenu(event: MouseEvent) {
+    event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
     const hit = this.getElementAt(coords);
     if (hit) {
@@ -247,36 +260,61 @@ export default class EventManager extends ChildrenManager {
       }
     }
   }
+  protected keys = {
+    alt: false,
+    shift: false,
+    ctrl: false
+  };
+  private _handleKeyboardEvent(event: KeyboardEvent) {
+    // ctrl+z is bubbled up to be handle outside this widget
+    if (event.key.toLowerCase() === 'z' && event.ctrlKey) return;
+    event.stopPropagation();
+    event.preventDefault();
+    this.keys = {
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey
+    };
+    this.handleKeyboardEvent(event.key);
+  }
+  private handleKeyUp(event: KeyboardEvent) {
+    this.keys = {
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      alt: event.altKey
+    };
+  }
 
-  protected handleClick(_event: {
+  protected abstract handleClick(_event: {
     coords: MathPoint;
     hit: Draggable | null;
     alreadySelected: boolean;
     ctrlPressed: boolean;
     isRightClick: boolean;
-  }) {}
-  protected handleMouseMove(_event: { current: MathPoint }) {}
-  protected handleDragStart(_event: {
+  }): void;
+  protected abstract handleMouseMove(_event: { current: MathPoint }): void;
+  protected abstract handleDragStart(_event: {
     start: MathPoint;
-    ctrlKeyPressed: boolean;
     hit: Draggable | null;
-  }) {}
-  protected handleDragging(_event: {
+  }): void;
+  protected abstract handleDragging(_event: {
     start: MathPoint;
     current: MathPoint;
     element: Draggable | null;
     dragStart: MathPoint & { startPositions: MathPoint[] };
-  }) {}
-  protected handleDragEnd(_event: {
+  }): void;
+  protected abstract handleDragEnd(_event: {
     from: MathPoint;
     to: MathPoint;
-    ctrlKeyPressed: boolean;
     element: Draggable | null;
-  }) {}
+  }): void;
+  protected abstract handleKeyboardEvent(key: string): void;
   protected upadateCursor(_coords: MathPoint): CSSStyleDeclaration['cursor'] {
     return 'default';
   }
-  protected handleKeyboardEvent(_event: KeyboardEvent) {}
+  protected onSelect(element: Draggable): boolean {
+    return true;
+  }
 
   protected get selected() {
     return this._selected;
@@ -297,6 +335,7 @@ export default class EventManager extends ChildrenManager {
         shape.select();
       }
     }
+    this.requestRedraw();
   }
 
   blur(element?: Draggable | null) {
@@ -309,39 +348,6 @@ export default class EventManager extends ChildrenManager {
       this._selected.forEach((shape) => shape.blur());
       this._selected = [];
     }
-  }
-
-  public export() {
-    return {
-      ...super.export(),
-      selected: this.selected.map((shape) => shape.id),
-      mouseDownTarget: this.mouseDownTarget
-        ? {
-            wasSelected: this.mouseDownTarget.wasSelected,
-            element: this.mouseDownTarget.element.id
-          }
-        : null
-    };
-  }
-
-  public import(data: ReturnType<this['export']>) {
-    super.import(data);
-
-    if (data.selected) {
-      const selected = data.selected
-        .map((id) => this.getChildByID(id))
-        .filter(Boolean) as Draggable[];
-      this.select(selected);
-    }
-
-    if (data.mouseDownTarget) {
-      const element = this.getChildByID(data.mouseDownTarget.element);
-      if (element instanceof Draggable) {
-        this.mouseDownTarget = {
-          wasSelected: data.mouseDownTarget.wasSelected,
-          element
-        };
-      }
-    } else this.mouseDownTarget = null;
+    this.requestRedraw();
   }
 }
