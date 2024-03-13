@@ -31,10 +31,6 @@ const DEFAULT_STYLE = {
 export default class Stylable extends Element {
   public static COLORS = [
     {
-      label: 'Transparent',
-      color: 'transparent'
-    },
-    {
       label: 'Black',
       color: '#111827'
     },
@@ -74,6 +70,13 @@ export default class Stylable extends Element {
       label: 'Pink',
       color: '#db2777'
     }
+  ];
+  public static COLORS_WITH_TRANSPARENT = [
+    {
+      label: 'Transparent',
+      color: 'transparent'
+    },
+    ...Stylable.COLORS
   ];
   public static LETTERS = [
     'a',
@@ -316,16 +319,17 @@ export default class Stylable extends Element {
         type: 'submenu',
         label: 'Fill',
         key: 'fill',
-        items: Stylable.COLORS.map(
-          (option) =>
-            ({
-              type: 'checkbox',
-              getChecked: () => this._fill === option.color + '50',
-              label: option.label,
-              action: () => this.setFill(option.color + '50'),
-              key: `fill_${option.label.toLowerCase()}`
-            }) as const
-        )
+        items: Stylable.COLORS_WITH_TRANSPARENT.map((option) => {
+          const color =
+            option.color === 'transparent' ? option.color : option.color + '50';
+          return {
+            type: 'checkbox',
+            getChecked: () => this._fill === color,
+            label: option.label,
+            action: () => this.setFill(color),
+            key: `fill_${option.label.toLowerCase()}`
+          } as const;
+        })
       });
     }
     if (options.lineWidth) {
