@@ -15,7 +15,7 @@ npm-install:
     - npm install -g pnpm
     - pnpm config set store-dir .pnpm-store
   script:
-    - pnpm install --forzen-lockfile
+    - pnpm install --frozen-lockfile
   cache:
     policy: pull-push
     untracked: false
