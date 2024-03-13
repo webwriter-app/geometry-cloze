@@ -8,6 +8,9 @@ dependencies:
   '@shoelace-style/shoelace':
     specifier: ^2.14.0
     version: 2.14.0(@types/react@18.2.65)
+  '@webcomponents/scoped-custom-element-registry':
+    specifier: ^0.0.9
+    version: 0.0.9
   '@webwriter/lit':
     specifier: ^1.5.2
     version: 1.6.3
@@ -319,6 +322,10 @@ packages:
 
   /@types/trusted-types@2.0.7:
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
+    dev: false
+
+  /@webcomponents/scoped-custom-element-registry@0.0.9:
+    resolution: {integrity: sha512-4RVHwN9oIp23mhrxeDbP9/0wvdcrB0d/MFMqIStShIgfzsqXZXf1OdU5kvqjgdMYavQ5Zm8C6BuBcAjzNwAetQ==}
     dev: false
 
   /@webwriter/lit@1.6.3:

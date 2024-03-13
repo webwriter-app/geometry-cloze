@@ -1,6 +1,7 @@
+import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
@@ -181,6 +182,7 @@ export class WwGeometryCloze extends LitElementWw {
     }
     .wrapper {
       margin: 2rem;
+      margin-top: 0;
       position: relative;
       outline: none;
     }

@@ -5,16 +5,17 @@
     "webwriter-widget"
   ],
   "license": "MIT",
-  "author": " <accounts@der-grosse.de> (Florin Große)",
+  "author": "<accounts@der-grosse.de> (Florin Große)",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "check-prettier": "prettier --check .",
     "run-prettier": "prettier --write ."
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.14.0",
+    "@webcomponents/scoped-custom-element-registry": "^0.0.9",
     "@webwriter/lit": "^1.5.2",
     "lit": "^3.1.1"
   },

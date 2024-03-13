@@ -75,6 +75,7 @@ export class WwGeomToolbar extends LitElementWw {
       position: absolute;
       top: 0.5rem;
       left: 0.5rem;
+      user-select: none;
     }
     sl-button::part(label) {
       padding: 0.5rem;

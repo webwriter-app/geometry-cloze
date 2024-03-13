@@ -10,8 +10,12 @@ cache:
 npm-install:
   stage: install
   image: node:18
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - pnpm install
+    - pnpm install --forzen-lockfile
   cache:
     policy: pull-push
     untracked: false
@@ -23,8 +27,12 @@ npm-install:
 prettier-check-styling:
   stage: test
   image: node:18
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - pnpm install
+    - pnpm install --frozen-lockfile
     - pnpm check-prettier
   cache:
     policy: pull
@@ -37,8 +45,12 @@ prettier-check-styling:
 typescript:
   stage: build
   image: node:18
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
-    - pnpm install
+    - pnpm install --frozen-lockfile
     - pnpm build
   cache:
     policy: pull
@@ -51,10 +63,14 @@ typescript:
 deploy-webpage:
   stage: build
   image: node:18
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   only:
     - main
   script:
-    - pnpm install
+    - pnpm install --frozen-lockfile
     - pnpm build
     - npx netlify-cli deploy --dir=dist --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
   cache:
