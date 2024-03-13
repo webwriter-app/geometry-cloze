@@ -83,4 +83,15 @@ export default class DividerLine extends Line {
   public static import(data: BaseLine, manager: Manager) {
     return new DividerLine(manager, data);
   }
+
+  //@ts-ignore
+  public export(): { _type: 'divider-line' } & Omit<
+    ReturnType<Line['export']>,
+    '_type'
+  > {
+    return {
+      ...super.export(),
+      _type: 'divider-line' as const
+    };
+  }
 }

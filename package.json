@@ -27,12 +27,24 @@
   "packageManager": "pnpm@8.0.0+",
   "exports": {
     "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
-    "./snippets/ww-geometry-cloze": "./src/snippets/polygon.html"
+    "./snippets/geometry-cloze": "./src/snippets/polygon.html",
+    "./snippets/polygon": "./src/snippets/polygon2.html",
+    "./snippets/right-triangle": "./src/snippets/triangle.html"
   },
   "editingConfig": {
-    "./snippets/ww-geometry-cloze": {
+    "./snippets/geometry-cloze": {
       "label": {
         "en": "Polygon"
+      }
+    },
+    "./snippets/polygon": {
+      "label": {
+        "en": "Polygon"
+      }
+    },
+    "./snippets/right-triangle": {
+      "label": {
+        "en": "Right Triangle"
       }
     },
     "./widgets/ww-geometry-cloze": {
