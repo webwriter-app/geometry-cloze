@@ -15,8 +15,8 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
 /**
  * A widget to create and view geometry exercises.
  */
-@customElement('ww-geometry-options')
-export class WwGeometryOptions extends LitElementWw {
+@customElement('ww-geom-options')
+export class WwGeomOptions extends LitElementWw {
   @state()
   manager: CanvasManager | null = null;
   @query('sl-range') sizeRange!: SlRange;
@@ -125,6 +125,6 @@ export class WwGeometryOptions extends LitElementWw {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'ww-geometry-options': WwGeometryOptions;
+    'ww-geom-options': WwGeomOptions;
   }
 }

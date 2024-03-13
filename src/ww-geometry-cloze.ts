@@ -10,7 +10,7 @@ import Objects from './data/helper/Objects';
 import { LitElement } from 'lit';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
-import { WwGeometryOptions } from './components/options/ww-geom-options';
+import { WwGeomOptions } from './components/options/ww-geom-options';
 
 /**
  * A widget to create and view geometry exercises.
@@ -170,7 +170,7 @@ export class WwGeometryCloze extends LitElementWw {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
       'ww-geom-context-menu': WwGeomContextMenu,
-      'ww-geom-options': WwGeometryOptions
+      'ww-geom-options': WwGeomOptions
     };
   }
 
@@ -194,6 +194,10 @@ export class WwGeometryCloze extends LitElementWw {
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;
+    }
+    :host(:not([contenteditable='true']):not([contenteditable='']))
+      ww-geom-options {
+      display: none;
     }
   `;
 }
