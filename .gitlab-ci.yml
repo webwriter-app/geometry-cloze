@@ -12,8 +12,7 @@ npm-install:
   stage: install
   image: node:18
   before_script:
-    - corepack enable
-    - corepack enable pnpm@latest-8 --activate
+    - npm install -g pnpm
     - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --forzen-lockfile
@@ -29,8 +28,7 @@ prettier-check-styling:
   stage: test
   image: node:18
   before_script:
-    - corepack enable
-    - corepack enable pnpm@latest-8 --activate
+    - npm install -g pnpm
     - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --frozen-lockfile
@@ -47,8 +45,7 @@ typescript:
   stage: build
   image: node:18
   before_script:
-    - corepack enable
-    - corepack enable pnpm@latest-8 --activate
+    - npm install -g pnpm
     - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --frozen-lockfile
@@ -65,8 +62,7 @@ deploy-webpage:
   stage: build
   image: node:18
   before_script:
-    - corepack enable
-    - corepack enable pnpm@latest-8 --activate
+    - npm install -g pnpm
     - pnpm config set store-dir .pnpm-store
   only:
     - main
