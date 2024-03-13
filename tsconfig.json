@@ -19,6 +19,9 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Build options */
-    "outDir": "dist"
-  }
+    "outDir": "dist",
+    "types": []
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "./node_modules", "./node_modules/**/*"]
 }

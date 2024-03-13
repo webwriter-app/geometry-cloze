@@ -11,7 +11,7 @@ npm-install:
   stage: install
   image: node:18
   script:
-    - yarn install
+    - pnpm install
   cache:
     policy: pull-push
     untracked: false
@@ -24,8 +24,8 @@ prettier-check-styling:
   stage: test
   image: node:18
   script:
-    - yarn install
-    - yarn check-prettier
+    - pnpm install
+    - pnpm check-prettier
   cache:
     policy: pull
     untracked: false
@@ -38,8 +38,8 @@ typescript:
   stage: build
   image: node:18
   script:
-    - yarn install
-    - yarn build
+    - pnpm install
+    - pnpm build
   cache:
     policy: pull
     untracked: false
@@ -54,8 +54,8 @@ deploy-webpage:
   only:
     - main
   script:
-    - yarn
-    - yarn build
+    - pnpm install
+    - pnpm build
     - npx netlify-cli deploy --dir=dist --site 8673dfdb-86f5-4084-8b67-6c5d0df04964 --auth $NETLIFY_TOKEN --prod
   cache:
     policy: pull

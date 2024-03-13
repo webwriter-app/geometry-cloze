@@ -16,15 +16,15 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.14.0",
     "@webwriter/lit": "^1.5.2",
-    "lit": "^3.1.2"
+    "lit": "^3.1.1"
   },
   "devDependencies": {
     "prettier": "^3.1.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-static-copy": "^0.17.1"
+    "vite": "^4.4.5"
   },
   "type": "module",
+  "packageManager": "pnpm@8.15.4+",
   "exports": {
     "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
     "./snippets/ww-geometry-cloze": "./src/snippets/polygon.html"

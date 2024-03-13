@@ -363,7 +363,7 @@ export default class InteractionManager extends EventManager {
           // create new line from point -> check if lands on point -> end on point + merge shapes
           const hitElement = this.getElementAt(to);
           if (hitElement instanceof Point) {
-            const end = hitElement ?? Shape.createPoint(this, to);
+            const end = hitElement;
             const start = element;
 
             const children = this.getChildren(

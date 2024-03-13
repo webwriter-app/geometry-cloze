@@ -25,7 +25,7 @@ export interface ContextMenuSubmenu extends GeneralContextMenuItem<'submenu'> {
 }
 
 export interface ContextMenuDivider
-  extends Omit<GeneralContextMenuItem<'divider' | 'key'>, 'label'> {}
+  extends Omit<GeneralContextMenuItem<'divider'>, 'label' | 'key'> {}
 
 export type ContextMenuItem =
   | ContextMenuButton
