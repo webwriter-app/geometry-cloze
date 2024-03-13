@@ -7,9 +7,8 @@
   "license": "MIT",
   "author": "<accounts@der-grosse.de> (Florin Große)",
   "scripts": {
-    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite build && vite preview",
     "check-prettier": "prettier --check .",
     "run-prettier": "prettier --write ."
   },
