@@ -6,6 +6,7 @@ stages:
 cache:
   paths:
     - node_modules/
+    - .pnpm-store/
 
 npm-install:
   stage: install
@@ -13,6 +14,7 @@ npm-install:
   before_script:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --forzen-lockfile
   cache:
@@ -29,6 +31,7 @@ prettier-check-styling:
   before_script:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --frozen-lockfile
     - pnpm check-prettier
@@ -46,6 +49,7 @@ typescript:
   before_script:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   script:
     - pnpm install --frozen-lockfile
     - pnpm build
@@ -63,6 +67,7 @@ deploy-webpage:
   before_script:
     - corepack enable
     - corepack prepare pnpm@latest-8 --activate
+    - pnpm config set store-dir .pnpm-store
   only:
     - main
   script:
