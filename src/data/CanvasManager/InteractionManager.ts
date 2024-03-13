@@ -58,7 +58,7 @@ export default class InteractionManager extends EventManager {
     this.ghostLine?.draw(ctx);
     this.ghostDividerLine?.draw(ctx);
     if (this.showGrid) {
-      const spacing = this._snapSpacing ?? SNAP_SPACING;
+      const spacing = SNAP_SPACING;
       ctx.strokeStyle = '#00000050';
       ctx.lineWidth = 1;
       ctx.setLineDash([]);
