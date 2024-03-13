@@ -30,7 +30,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'select')}
           variant=${this.mode === 'select' ? 'primary' : 'default'}>
-          ${HandIndexThumb}
+          <div class="iconWrapper">${HandIndexThumb}</div>
         </sl-button>
       </sl-tooltip>
 
@@ -43,7 +43,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'create')}
           variant=${this.mode === 'create' ? 'primary' : 'default'}>
-          ${Pentagon}
+          <div class="iconWrapper">${Pentagon}</div>
         </sl-button>
       </sl-tooltip>
       <sl-tooltip>
@@ -53,7 +53,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'divider')}
           variant=${this.mode === 'divider' ? 'primary' : 'default'}>
-          ${PentagonHalf}
+          <div class="iconWrapper">${PentagonHalf}</div>
         </sl-button>
       </sl-tooltip>
     </div>`;
@@ -77,8 +77,14 @@ export class WwGeomToolbar extends LitElementWw {
       left: 0.5rem;
       user-select: none;
     }
-    sl-button::part(label) {
-      padding: 0.5rem;
+    .iconWrapper {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 0.3rem;
+      box-sizing: border-box;
     }
   `;
 

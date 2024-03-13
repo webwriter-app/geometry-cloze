@@ -8,7 +8,7 @@
   "author": "<accounts@der-grosse.de> (Florin Große)",
   "scripts": {
     "build": "vite build",
-    "preview": "vite build && vite preview",
+    "preview": "vite build && vite preview --open",
     "check-prettier": "prettier --check .",
     "run-prettier": "prettier --write ."
   },
