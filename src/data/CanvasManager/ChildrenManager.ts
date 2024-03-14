@@ -72,9 +72,9 @@ export default abstract class ChildrenManager {
       );
   }
 
-  public addChild(ele: Child) {
+  public addChild(ele: Child, preventRedraw?: boolean) {
     this.children.push(ele);
-    this.requestRedraw();
+    if (!preventRedraw) this.requestRedraw();
 
     ele.registerParent(this as any);
     ele.addEventListener('request-redraw', this.redraw.bind(this, this._ctx));
@@ -124,11 +124,12 @@ export default abstract class ChildrenManager {
   public import(data: Partial<ReturnType<this['export']>>) {
     const children =
       data.children?.map((child) =>
-        child._type === 'line'
+        child._type === 'divider-line'
           ? DividerLine.import(child as any, this as any)
           : Shape.import(child, this as any)
       ) ?? [];
     this.children = [];
-    children.forEach((child) => this.addChild(child));
+    children.forEach((child) => this.addChild(child, true));
+    this.requestRedraw();
   }
 }

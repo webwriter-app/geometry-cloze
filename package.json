@@ -1,6 +1,6 @@
 {
-  "name": "@der-grosse/ww-geometry-cloze",
-  "version": "0.0.0",
+  "name": "ww-geometry-cloze",
+  "version": "0.1.0",
   "keywords": [
     "webwriter-widget"
   ],
@@ -8,7 +8,7 @@
   "author": "<accounts@der-grosse.de> (Florin Große)",
   "scripts": {
     "build": "vite build",
-    "preview": "vite build && vite preview",
+    "preview": "vite build && vite preview --open",
     "check-prettier": "prettier --check .",
     "run-prettier": "prettier --write ."
   },
@@ -27,12 +27,24 @@
   "packageManager": "pnpm@8.0.0+",
   "exports": {
     "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
-    "./snippets/ww-geometry-cloze": "./src/snippets/polygon.html"
+    "./snippets/geometry-cloze": "./src/snippets/polygon.html",
+    "./snippets/polygon": "./src/snippets/polygon2.html",
+    "./snippets/right-triangle": "./src/snippets/triangle.html"
   },
   "editingConfig": {
-    "./snippets/ww-geometry-cloze": {
+    "./snippets/geometry-cloze": {
       "label": {
         "en": "Polygon"
+      }
+    },
+    "./snippets/polygon": {
+      "label": {
+        "en": "Polygon"
+      }
+    },
+    "./snippets/right-triangle": {
+      "label": {
+        "en": "Right Triangle"
       }
     },
     "./widgets/ww-geometry-cloze": {
