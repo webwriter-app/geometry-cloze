@@ -1,11 +1,14 @@
 {
   "name": "ww-geometry-cloze",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "keywords": [
     "webwriter-widget"
   ],
   "license": "MIT",
-  "author": "<accounts@der-grosse.de> (Florin Große)",
+  "author": {
+    "name": "Florin Große",
+    "url": "https://der-grosse.de"
+  },
   "scripts": {
     "build": "vite build",
     "preview": "vite build && vite preview --open",
