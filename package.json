@@ -1,6 +1,6 @@
 {
-  "name": "ww-geometry-cloze",
-  "version": "0.1.1",
+  "name": "@webwriter/geometry-cloze",
+  "version": "0.1.2",
   "keywords": [
     "webwriter-widget"
   ],
@@ -9,6 +9,7 @@
     "name": "Florin Große",
     "url": "https://der-grosse.de"
   },
+  "description": "widget to create and view closed 2D shapes with coloring, styling and labeling options. Usefull for geometry exercises.",
   "scripts": {
     "build": "vite build",
     "preview": "vite build && vite preview --open",
@@ -18,7 +19,7 @@
   "dependencies": {
     "@shoelace-style/shoelace": "^2.14.0",
     "@webcomponents/scoped-custom-element-registry": "^0.0.9",
-    "@webwriter/lit": "^1.5.2",
+    "@webwriter/lit": "^2.0.0",
     "lit": "^3.1.1"
   },
   "devDependencies": {

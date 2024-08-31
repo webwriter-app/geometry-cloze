@@ -17,8 +17,8 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
  */
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
-  @query('canvas') canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu') contextMenu!: WwGeomContextMenu;
+  @query('canvas') accessor  canvas!: HTMLCanvasElement;
+  @query('ww-geom-context-menu') accessor contextMenu!: WwGeomContextMenu;
 
   manager: CanvasManager | null = null;
 
@@ -27,32 +27,32 @@ export class WwGeometryCloze extends LitElementWw {
     reflect: true,
     type: Array
   })
-  elements: CanvasData['children'];
+  accessor elements: CanvasData['children'];
 
   @property({
     attribute: true,
     reflect: true,
     type: String
   })
-  mode: CanvasData['mode'] = 'select';
+  accessor mode: CanvasData['mode'] = 'select';
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  abstractRightAngle: CanvasData['abstractRightAngle'] = false;
+  accessor abstractRightAngle: CanvasData['abstractRightAngle'] = false;
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  showGrid: CanvasData['showGrid'] = true;
+  accessor showGrid: CanvasData['showGrid'] = true;
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  snap: CanvasData['snapping'] = true;
+  accessor snap: CanvasData['snapping'] = true;
 
   render() {
     return html`<div class="wrapper">

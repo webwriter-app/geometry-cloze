@@ -18,8 +18,8 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
 @customElement('ww-geom-options')
 export class WwGeomOptions extends LitElementWw {
   @state()
-  manager: CanvasManager | null = null;
-  @query('sl-range') sizeRange!: SlRange;
+  accessor manager: CanvasManager | null = null;
+  @query('sl-range') accessor sizeRange!: SlRange;
 
   render() {
     return html`<div class="options">

@@ -16,12 +16,12 @@ import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.compon
  */
 @customElement('ww-geom-context-menu')
 export class WwGeomContextMenu extends LitElementWw {
-  @property({ type: Array, attribute: true }) items: ContextMenuItem[] = [];
-  @property({ type: Boolean, attribute: 'open' }) _open = false;
-  @property({ type: Number, attribute: true }) x = 0;
-  @property({ type: Number, attribute: true }) y = 0;
+  @property({ type: Array, attribute: true }) accessor items: ContextMenuItem[] = [];
+  @property({ type: Boolean, attribute: 'open' }) accessor _open = false;
+  @property({ type: Number, attribute: true }) accessor x = 0;
+  @property({ type: Number, attribute: true }) accessor y = 0;
 
-  @query('sl-menu.menu') menu!: SlMenu;
+  @query('sl-menu.menu') accessor menu!: SlMenu;
 
   public open(x: number, y: number) {
     this._open = true;

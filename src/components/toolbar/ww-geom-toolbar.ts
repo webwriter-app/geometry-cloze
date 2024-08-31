@@ -17,7 +17,7 @@ import PentagonHalf from '../icons/pentagon-half';
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
   @property({ attribute: true })
-  mode: InteractionMode = 'select';
+  accessor mode: InteractionMode = 'select';
 
   render() {
     return html`<div class="wrapper">
