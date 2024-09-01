@@ -33,7 +33,8 @@
     "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
     "./snippets/geometry-cloze": "./src/snippets/polygon.html",
     "./snippets/polygon": "./src/snippets/polygon2.html",
-    "./snippets/right-triangle": "./src/snippets/triangle.html"
+    "./snippets/right-triangle": "./src/snippets/triangle.html",
+    "./*": {"source": "./*", "default": null}
   },
   "editingConfig": {
     "./snippets/geometry-cloze": {
