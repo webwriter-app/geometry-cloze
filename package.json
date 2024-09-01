@@ -9,7 +9,7 @@
     "name": "Florin Große",
     "url": "https://der-grosse.de"
   },
-  "description": "widget to create and view closed 2D shapes with coloring, styling and labeling options. Usefull for geometry exercises.",
+  "description": "Create and view geometry exercises with coloring, styling and labeling options.",
   "scripts": {
     "build": "vite build",
     "preview": "vite build && vite preview --open",
