@@ -1,6 +1,6 @@
 {
   "name": "@webwriter/geometry-cloze",
-  "version": "0.1.2",
+  "version": "2.0.0",
   "keywords": [
     "webwriter-widget"
   ],
@@ -11,10 +11,7 @@
   },
   "description": "Create and view geometry exercises with coloring, styling and labeling options.",
   "scripts": {
-    "build": "vite build",
-    "preview": "vite build && vite preview --open",
-    "check-prettier": "prettier --check .",
-    "run-prettier": "prettier --write ."
+    "prepublishOnly": "npx @webwriter/build"
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.14.0",
@@ -30,11 +27,14 @@
   "type": "module",
   "packageManager": "pnpm@8.0.0+",
   "exports": {
-    "./widgets/ww-geometry-cloze": "./src/ww-geometry-cloze.ts",
-    "./snippets/geometry-cloze": "./src/snippets/polygon.html",
-    "./snippets/polygon": "./src/snippets/polygon2.html",
-    "./snippets/right-triangle": "./src/snippets/triangle.html",
-    "./*": {"source": "./*", "default": null}
+    "./widgets/ww-geometry-cloze.*": {
+      "source": "./src/ww-geometry-cloze.ts",
+      "default": "./dist/widgets/ww-geometry-cloze.*"
+    },
+    "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
+    "./snippets/polygon.html": "./src/snippets/polygon2.html",
+    "./snippets/right-triangle.html": "./src/snippets/triangle.html",
+    "./package.json": "./package.json"
   },
   "editingConfig": {
     "./snippets/geometry-cloze": {
