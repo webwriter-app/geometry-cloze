@@ -1,6 +1,6 @@
 {
   "name": "@webwriter/geometry-cloze",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "keywords": [
     "webwriter-widget"
   ],
@@ -34,7 +34,8 @@
     "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
     "./snippets/polygon.html": "./src/snippets/polygon2.html",
     "./snippets/right-triangle.html": "./src/snippets/triangle.html",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./icon": "./icon.svg"
   },
   "editingConfig": {
     "./snippets/geometry-cloze": {
