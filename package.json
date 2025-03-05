@@ -1,62 +1,64 @@
 {
-  "name": "@webwriter/geometry-cloze",
-  "version": "2.0.2",
-  "keywords": [
-    "webwriter-widget"
-  ],
-  "license": "MIT",
-  "author": {
-    "name": "Florin Große",
-    "url": "https://der-grosse.de"
-  },
-  "description": "Create and view geometry exercises with coloring, styling and labeling options.",
-  "scripts": {
-    "prepublishOnly": "npx @webwriter/build"
-  },
-  "dependencies": {
-    "@shoelace-style/shoelace": "^2.14.0",
-    "@webcomponents/scoped-custom-element-registry": "^0.0.9",
-    "@webwriter/lit": "^2.0.0",
-    "lit": "^3.1.1"
-  },
-  "devDependencies": {
-    "prettier": "^3.1.0",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
-  },
-  "type": "module",
-  "packageManager": "pnpm@8.0.0+",
-  "exports": {
-    "./widgets/ww-geometry-cloze.*": {
-      "source": "./src/ww-geometry-cloze.ts",
-      "default": "./dist/widgets/ww-geometry-cloze.*"
+    "name": "@webwriter/geometry-cloze",
+    "version": "2.0.3",
+    "description": "Create and view geometry exercises with coloring, styling and labeling options.",
+    "keywords": [
+        "webwriter-widget",
+        "widget-lang-en",
+        "iscedf2013-05",
+        "isced2011-2",
+        "geometry",
+        "shapes",
+        "angles"
+    ],
+    "license": "MIT",
+    "author": "Florin Große (https://der-grosse.de)",
+    "scripts": {
+        "prepublishOnly": "npx @webwriter/build"
     },
-    "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
-    "./snippets/polygon.html": "./src/snippets/polygon2.html",
-    "./snippets/right-triangle.html": "./src/snippets/triangle.html",
-    "./package.json": "./package.json",
-    "./icon": "./icon.svg"
-  },
-  "editingConfig": {
-    "./snippets/geometry-cloze": {
-      "label": {
-        "en": "Polygon"
-      }
+    "dependencies": {
+        "@shoelace-style/shoelace": "^2.14.0",
+        "@webcomponents/scoped-custom-element-registry": "^0.0.9",
+        "@webwriter/lit": "^2.0.0",
+        "lit": "^3.1.1"
     },
-    "./snippets/polygon": {
-      "label": {
-        "en": "Polygon"
-      }
+    "devDependencies": {
+        "prettier": "^3.1.0",
+        "typescript": "^5.0.2",
+        "vite": "^4.4.5"
     },
-    "./snippets/right-triangle": {
-      "label": {
-        "en": "Right Triangle"
-      }
+    "type": "module",
+    "exports": {
+        "./widgets/ww-geometry-cloze.*": {
+            "source": "./src/ww-geometry-cloze.ts",
+            "default": "./dist/widgets/ww-geometry-cloze.*"
+        },
+        "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
+        "./snippets/polygon.html": "./src/snippets/polygon2.html",
+        "./snippets/right-triangle.html": "./src/snippets/triangle.html",
+        "./package.json": "./package.json",
+        "./icon": "./icon.svg"
     },
-    "./widgets/ww-geometry-cloze": {
-      "label": {
-        "en": "Geometry Cloze"
-      }
+    "editingConfig": {
+        "./snippets/geometry-cloze": {
+            "label": {
+                "en": "Polygon"
+            }
+        },
+        "./snippets/polygon": {
+            "label": {
+                "en": "Polygon"
+            }
+        },
+        "./snippets/right-triangle": {
+            "label": {
+                "en": "Right Triangle"
+            }
+        },
+        "./widgets/ww-geometry-cloze": {
+            "label": {
+                "en": "Geometry Cloze"
+            }
+        }
     }
-  }
 }

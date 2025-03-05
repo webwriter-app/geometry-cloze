@@ -33,7 +33,7 @@ export class WwGeomOptions extends LitElementWw {
         .checked=${this.manager?.snapping ?? false}
         @sl-change=${() => this.manager?.toggleSnapping()}>
         Snap to grid
-        <sl-tooltip placement="right">
+        <sl-tooltip placement="left" hoist>
           <sl-icon src=${InfoSVG}></sl-icon>
           <span slot="content">
             You can also temporarily disable snapping by pressing
@@ -48,7 +48,7 @@ export class WwGeomOptions extends LitElementWw {
             this.manager.abstractRightAngle = !this.manager.abstractRightAngle;
         }}>
         Abstract right angle
-        <sl-tooltip placement="right">
+        <sl-tooltip placement="left" hoist>
           <sl-icon src=${InfoSVG}></sl-icon>
           <span slot="content">
             When enabled, right angles will be drawn as a small square

@@ -56,7 +56,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   render() {
     return html`<div class="wrapper">
-      ${
+      ${  
         this.isContentEditable
           ? html`<ww-geom-toolbar
               mode=${this.mode}
@@ -179,9 +179,12 @@ export class WwGeometryCloze extends LitElementWw {
       outline: none;
       z-index: 10000000;
       position: relative;
+      border-width: 2px;
+      border-style: solid;
+      border-radius: 5px;
+      border-color: #6a6a6a;
     }
     .wrapper {
-      margin: 2rem;
       margin-top: 0;
       position: relative;
       outline: none;
@@ -189,7 +192,6 @@ export class WwGeometryCloze extends LitElementWw {
     canvas {
       aspect-ratio: 10 / 7;
       width: calc(100% - 2px);
-      border: solid 1px black;
       box-sizing: border-box;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
