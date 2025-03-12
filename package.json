@@ -1,6 +1,6 @@
 {
     "name": "@webwriter/geometry-cloze",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": "Create and view geometry exercises with coloring, styling and labeling options.",
     "keywords": [
         "webwriter-widget",
@@ -40,6 +40,11 @@
         "./icon": "./icon.svg"
     },
     "editingConfig": {
+        ".": {
+            "description": {
+                "de": "Erstellen und Betrachten von Übungen zur Geometrie mit Optionen zur Einfärbung, Formatierung und Beschriftung."
+            }
+        },
         "./snippets/geometry-cloze": {
             "label": {
                 "en": "Polygon"
