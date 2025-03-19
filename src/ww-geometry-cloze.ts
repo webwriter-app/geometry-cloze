@@ -67,7 +67,7 @@ export class WwGeometryCloze extends LitElementWw {
               }}></ww-geom-toolbar>`
           : ''
       }
-        <canvas width="1000" height="700"></canvas>
+        <canvas width="1000" height="700" @click=${()=>{this.dispatchEvent(new Event("focus"))}}></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>
