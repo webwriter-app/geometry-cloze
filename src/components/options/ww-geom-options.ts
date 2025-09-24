@@ -60,7 +60,7 @@ export class WwGeomOptions extends LitElementWw {
         max="10"
         step="1"
         label="Scale"
-        help-text="Scales all label of lengths and sizes."
+        help-text="Scales all labels of lengths and sizes."
         value="5"
         @sl-input=${(e: SlInputEvent) => {
           const value = (e.target as SlRange)?.value ?? 5;

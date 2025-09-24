@@ -300,7 +300,7 @@ export default class Stylable extends Element {
     if (options.stroke) {
       res.push({
         type: 'submenu',
-        label: 'Stoke',
+        label: 'Stroke',
         key: 'stroke',
         items: Stylable.COLORS.map(
           (option) =>
@@ -335,7 +335,7 @@ export default class Stylable extends Element {
     if (options.lineWidth) {
       const options = [
         {
-          label: 'Extra thin',
+          label: 'Extra Thin',
           value: 1
         },
         {
