@@ -16,7 +16,8 @@
     "license": "MIT",
     "author": "Florin Große (https://der-grosse.de)",
     "scripts": {
-        "prepublishOnly": "npx @webwriter/build"
+        "prepublishOnly": "npx @webwriter/build",
+        "dev": "npx @webwriter/build dev"
     },
     "dependencies": {
         "@shoelace-style/shoelace": "^2.14.0",
@@ -26,8 +27,7 @@
     },
     "devDependencies": {
         "prettier": "^3.1.0",
-        "typescript": "^5.0.2",
-        "vite": "^4.4.5"
+        "typescript": "^5.0.2"
     },
     "type": "module",
     "exports": {
