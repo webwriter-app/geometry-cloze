@@ -74,7 +74,9 @@
     "./snippets/right-triangle.html": "./src/snippets/triangle.html",
     "./package.json": "./package.json",
     "./icon": "./icon.svg",
-    "./editing-config.json": "./editing-config.json"
+    "./editing-config.json": "./editing-config.json",
+    "./custom-elements.json": "./custom-elements.json"
   },
-  "editingConfig": {}
+  "editingConfig": {},
+  "customElements": "custom-elements.json"
 }

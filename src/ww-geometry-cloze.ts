@@ -16,21 +16,24 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import { WwGeomOptions } from './components/options/ww-geom-options';
 
 /**
- * A widget to create and view geometry exercises.
+ * Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.
  */
 @localized()
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
-  @query('canvas') accessor  canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu') accessor contextMenu!: WwGeomContextMenu;
+  @query('canvas') private accessor canvas!: HTMLCanvasElement;
+  @query('ww-geom-context-menu') private accessor contextMenu!: WwGeomContextMenu;
 
-  manager: CanvasManager | null = null;
+  private manager: CanvasManager | null = null;
 
   protected localize = LOCALIZE;
 
   private appliedLocale: string | null = null;
   private pendingLocale: string | null = null;
 
+  /**
+   * Serialized children describing the current canvas content provided by the host.
+   */
   @property({
     attribute: true,
     reflect: true,
@@ -38,24 +41,42 @@ export class WwGeometryCloze extends LitElementWw {
   })
   accessor elements: CanvasData['children'];
 
+  /**
+   * Active editing mode, accepting three possible values:
+   * - 'select': Move and connect objects
+   * - 'create': Create and connect objects
+   * - 'divider': Create divider lines
+   */
   @property({
     attribute: true,
     reflect: true,
     type: String
   })
   accessor mode: CanvasData['mode'] = 'select';
+
+  /**
+   * Whether right angles will be drawn as small squares instead of arcs.
+   */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
   accessor abstractRightAngle: CanvasData['abstractRightAngle'] = false;
+
+  /**
+   * Whether the grid is shown on the canvas.
+   */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
   accessor showGrid: CanvasData['showGrid'] = true;
+
+  /**
+   * Whether user interactions snap to the grid.
+   */
   @property({
     attribute: true,
     reflect: true,
@@ -239,11 +260,13 @@ export class WwGeometryCloze extends LitElementWw {
     super.disconnectedCallback();
   }
 
+  /** @internal */
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true
   };
 
+  /** @internal */
   public static get scopedElements() {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
