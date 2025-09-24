@@ -1,5 +1,5 @@
-# Geometry,Cloze (`@webwriter/geometry-cloze@2.0.6`)
-[License: MIT](LICENSE) | Version: 2.0.6
+# Geometry,Cloze (`@webwriter/geometry-cloze@2.1.0`)
+[License: MIT](LICENSE) | Version: 2.1.0
 
 Create and view geometry exercises with coloring, styling and labeling options.
 
