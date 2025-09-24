@@ -67,7 +67,7 @@ export class WwGeometryCloze extends LitElementWw {
               }}></ww-geom-toolbar>`
           : ''
       }
-        <canvas width="1000" height="700" @click=${()=>{this.dispatchEvent(new Event("focus"))}}></canvas>
+        <canvas tabindex="0" width="1000" height="700"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>
@@ -193,6 +193,7 @@ export class WwGeometryCloze extends LitElementWw {
       aspect-ratio: 10 / 7;
       width: calc(100% - 2px);
       box-sizing: border-box;
+	  outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;
