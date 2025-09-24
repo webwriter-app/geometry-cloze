@@ -1,71 +1,80 @@
 {
-    "name": "@webwriter/geometry-cloze",
-    "version": "2.0.6",
-    "description": "Create and view geometry exercises with coloring, styling and labeling options.",
-    "keywords": [
-        "webwriter-widget",
-        "widget-presentational",
-        "widget-informational",
-        "widget-lang-en",
-        "iscedf2013-05",
-        "isced2011-2",
-        "geometry",
-        "shapes",
-        "angles"
-    ],
-    "license": "MIT",
-    "author": "Florin Große (https://der-grosse.de)",
-    "scripts": {
-        "prepublishOnly": "npx @webwriter/build",
-        "dev": "npx @webwriter/build dev"
+  "name": "@webwriter/geometry-cloze",
+  "version": "2.0.6",
+  "description": "Create and view geometry exercises with coloring, styling and labeling options.",
+  "keywords": [
+    "webwriter-widget",
+    "widget-presentational",
+    "widget-informational",
+    "widget-lang-en",
+    "iscedf2013-05",
+    "isced2011-2",
+    "geometry",
+    "shapes",
+    "angles",
+    "widget-lang-de",
+    "widget-lang-ar",
+    "widget-lang-bg",
+    "widget-lang-cs",
+    "widget-lang-da",
+    "widget-lang-nl",
+    "widget-lang-et",
+    "widget-lang-fi",
+    "widget-lang-fr",
+    "widget-lang-el",
+    "widget-lang-hu",
+    "widget-lang-it",
+    "widget-lang-lv",
+    "widget-lang-lt",
+    "widget-lang-nb",
+    "widget-lang-pl",
+    "widget-lang-pt-PT",
+    "widget-lang-ro",
+    "widget-lang-ru",
+    "widget-lang-sk",
+    "widget-lang-sl",
+    "widget-lang-es",
+    "widget-lang-sv",
+    "widget-lang-tr",
+    "widget-lang-uk",
+    "widget-lang-pt-BR",
+    "widget-lang-ko",
+    "widget-lang-ja",
+    "widget-lang-id",
+    "widget-lang-zh-hans",
+    "widget-lang-zh-hant"
+  ],
+  "license": "MIT",
+  "author": "Florin Große (https://der-grosse.de)",
+  "scripts": {
+    "prepublishOnly": "npx @webwriter/build",
+    "dev": "npx @webwriter/build dev",
+    "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
+  },
+  "dependencies": {
+    "@lit/localize": "^0.12.2",
+    "@shoelace-style/shoelace": "^2.14.0",
+    "@webcomponents/scoped-custom-element-registry": "^0.0.9",
+    "@webwriter/lit": "^2.0.0",
+    "lit": "^3.1.1"
+  },
+  "devDependencies": {
+    "@lit/localize-tools": "^0.8.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.0.2"
+  },
+  "type": "module",
+  "exports": {
+    "./widgets/ww-geometry-cloze.*": {
+      "source": "./src/ww-geometry-cloze.ts",
+      "default": "./dist/widgets/ww-geometry-cloze.*"
     },
-    "dependencies": {
-        "@shoelace-style/shoelace": "^2.14.0",
-        "@webcomponents/scoped-custom-element-registry": "^0.0.9",
-        "@webwriter/lit": "^2.0.0",
-        "lit": "^3.1.1"
-    },
-    "devDependencies": {
-        "prettier": "^3.1.0",
-        "typescript": "^5.0.2"
-    },
-    "type": "module",
-    "exports": {
-        "./widgets/ww-geometry-cloze.*": {
-            "source": "./src/ww-geometry-cloze.ts",
-            "default": "./dist/widgets/ww-geometry-cloze.*"
-        },
-        "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
-        "./snippets/polygon.html": "./src/snippets/polygon2.html",
-        "./snippets/right-triangle.html": "./src/snippets/triangle.html",
-        "./package.json": "./package.json",
-        "./icon": "./icon.svg"
-    },
-    "editingConfig": {
-        ".": {
-            "description": {
-                "de": "Erstellen und Betrachten von Übungen zur Geometrie mit Optionen zur Einfärbung, Formatierung und Beschriftung."
-            }
-        },
-        "./snippets/geometry-cloze": {
-            "label": {
-                "en": "Polygon"
-            }
-        },
-        "./snippets/polygon": {
-            "label": {
-                "en": "Polygon"
-            }
-        },
-        "./snippets/right-triangle": {
-            "label": {
-                "en": "Right Triangle"
-            }
-        },
-        "./widgets/ww-geometry-cloze": {
-            "label": {
-                "en": "Geometry Cloze"
-            }
-        }
-    }
+    "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
+    "./snippets/polygon.html": "./src/snippets/polygon2.html",
+    "./snippets/right-triangle.html": "./src/snippets/triangle.html",
+    "./package.json": "./package.json",
+    "./icon": "./icon.svg",
+    "./editing-config.json": "./editing-config.json"
+  },
+  "editingConfig": {}
 }

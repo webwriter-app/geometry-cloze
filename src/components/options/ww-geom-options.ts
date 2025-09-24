@@ -1,6 +1,7 @@
 import { LitElementWw } from '@webwriter/lit';
 import { css, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { localized, msg } from '@lit/localize';
 import SlCheckbox from '@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
 import SlTag from '@shoelace-style/shoelace/dist/components/tag/tag.component.js';
@@ -15,6 +16,7 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
 /**
  * A widget to create and view geometry exercises.
  */
+@localized()
 @customElement('ww-geom-options')
 export class WwGeomOptions extends LitElementWw {
   @state()
@@ -23,21 +25,21 @@ export class WwGeomOptions extends LitElementWw {
 
   render() {
     return html`<div class="options">
-      <h4>Teacher Options</h4>
+      <h4>${msg('Teacher Options')}</h4>
       <sl-checkbox
         .checked=${this.manager?.showGrid ?? false}
         @sl-change=${() => this.manager?.toggleGrid()}>
-        Show grid
+        ${msg('Show grid')}
       </sl-checkbox>
       <sl-checkbox
         .checked=${this.manager?.snapping ?? false}
         @sl-change=${() => this.manager?.toggleSnapping()}>
-        Snap to grid
+        ${msg('Snap to grid')}
         <sl-tooltip placement="left" hoist>
           <sl-icon src=${InfoSVG}></sl-icon>
           <span slot="content">
-            You can also temporarily disable snapping by pressing
-            <sl-tag size="small">Alt</sl-tag> while dragging an element
+            ${msg(html`You can also temporarily disable snapping by pressing
+            <sl-tag size="small">Alt</sl-tag> while dragging an element`)}
           </span>
         </sl-tooltip>
       </sl-checkbox>
@@ -47,11 +49,13 @@ export class WwGeomOptions extends LitElementWw {
           if (this.manager)
             this.manager.abstractRightAngle = !this.manager.abstractRightAngle;
         }}>
-        Abstract right angle
+        ${msg('Abstract right angle')}
         <sl-tooltip placement="left" hoist>
           <sl-icon src=${InfoSVG}></sl-icon>
           <span slot="content">
-            When enabled, right angles will be drawn as a small square
+            ${msg(
+              'When enabled, right angles will be drawn as a small square'
+            )}
           </span>
         </sl-tooltip>
       </sl-checkbox>
@@ -59,8 +63,8 @@ export class WwGeomOptions extends LitElementWw {
         min="0"
         max="10"
         step="1"
-        label="Scale"
-        help-text="Scales all labels of lengths and sizes."
+        label=${msg('Scale')}
+        help-text=${msg('Scales all labels of lengths and sizes.')}
         value="5"
         @sl-input=${(e: SlInputEvent) => {
           const value = (e.target as SlRange)?.value ?? 5;

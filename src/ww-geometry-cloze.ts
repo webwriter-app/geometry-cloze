@@ -1,7 +1,10 @@
+// @ts-ignore
+import LOCALIZE from '../localization/generated/index.js';
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
+import { localized } from '@lit/localize';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
@@ -15,12 +18,18 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
 /**
  * A widget to create and view geometry exercises.
  */
+@localized()
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
   @query('canvas') accessor  canvas!: HTMLCanvasElement;
   @query('ww-geom-context-menu') accessor contextMenu!: WwGeomContextMenu;
 
   manager: CanvasManager | null = null;
+
+  protected localize = LOCALIZE;
+
+  private appliedLocale: string | null = null;
+  private pendingLocale: string | null = null;
 
   @property({
     attribute: true,
@@ -53,6 +62,75 @@ export class WwGeometryCloze extends LitElementWw {
     type: Boolean
   })
   accessor snap: CanvasData['snapping'] = true;
+
+  static override get observedAttributes() {
+    const attributes = super.observedAttributes ?? [];
+    return attributes.includes('lang')
+      ? attributes
+      : [...attributes, 'lang'];
+  }
+
+  override attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null
+  ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (name === 'lang' && oldValue !== newValue) {
+      this.applyLocale(newValue);
+    }
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    const initialLocale =
+      this.getAttribute('lang') ||
+      document.documentElement.lang ||
+      navigator.language ||
+      null;
+    this.applyLocale(initialLocale);
+  }
+
+  private async applyLocale(locale: string | null) {
+    const normalized = this.normalizeLocale(locale);
+    if (!normalized) return;
+    if (normalized === this.appliedLocale && !this.pendingLocale) return;
+    this.pendingLocale = normalized;
+    try {
+      await LOCALIZE.setLocale(normalized);
+      if (this.pendingLocale === normalized) {
+        this.appliedLocale = normalized;
+        this.pendingLocale = null;
+      }
+    } catch (error) {
+      console.warn(
+        `Failed to load locale "${normalized}" – falling back to default locale.`,
+        error
+      );
+      if (normalized !== 'en') {
+        try {
+          await LOCALIZE.setLocale('en');
+          if (this.pendingLocale === normalized) {
+            this.appliedLocale = 'en';
+            this.pendingLocale = null;
+          }
+        } catch (fallbackError) {
+          console.error('Failed to load fallback locale "en".', fallbackError);
+        }
+      }
+    } finally {
+      if (this.pendingLocale === normalized) {
+        this.pendingLocale = null;
+      }
+    }
+  }
+
+  private normalizeLocale(locale: string | null): string {
+    if (!locale) return 'en';
+    const trimmed = locale.trim();
+    if (!trimmed) return 'en';
+    return trimmed;
+  }
 
   render() {
     return html`<div class="wrapper">
