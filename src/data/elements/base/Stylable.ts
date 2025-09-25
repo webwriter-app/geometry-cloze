@@ -1,6 +1,7 @@
 import { ContextMenuItem } from '../../../types/ContextMenu';
 import Manager from '../../CanvasManager/Abstracts';
 import Element, { NamedElement } from './Element';
+import { msg } from '@lit/localize';
 
 export interface StylableData {
   lineWidth?: number;
@@ -29,55 +30,59 @@ const DEFAULT_STYLE = {
 } as const;
 
 export default class Stylable extends Element {
-  public static COLORS = [
-    {
-      label: 'Black',
-      color: '#111827'
-    },
-    {
-      label: 'Red',
-      color: '#dc2626'
-    },
-    {
-      label: 'Orange',
-      color: '#ea580c'
-    },
-    {
-      label: 'Yellow',
-      color: '#facc15'
-    },
-    {
-      label: 'Lime',
-      color: '#84cc16'
-    },
-    {
-      label: 'Green',
-      color: '#15803d'
-    },
-    {
-      label: 'Cyan',
-      color: '#06b6d4'
-    },
-    {
-      label: 'Blue',
-      color: '#2563eb'
-    },
-    {
-      label: 'Violet',
-      color: '#6d28d9'
-    },
-    {
-      label: 'Pink',
-      color: '#db2777'
-    }
-  ];
-  public static COLORS_WITH_TRANSPARENT = [
-    {
-      label: 'Transparent',
-      color: 'transparent'
-    },
-    ...Stylable.COLORS
-  ];
+  public static get COLORS() {
+    return [
+      {
+        label: msg('Black'),
+        color: '#111827'
+      },
+      {
+        label: msg('Red'),
+        color: '#dc2626'
+      },
+      {
+        label: msg('Orange'),
+        color: '#ea580c'
+      },
+      {
+        label: msg('Yellow'),
+        color: '#facc15'
+      },
+      {
+        label: msg('Lime'),
+        color: '#84cc16'
+      },
+      {
+        label: msg('Green'),
+        color: '#15803d'
+      },
+      {
+        label: msg('Cyan'),
+        color: '#06b6d4'
+      },
+      {
+        label: msg('Blue'),
+        color: '#2563eb'
+      },
+      {
+        label: msg('Violet'),
+        color: '#6d28d9'
+      },
+      {
+        label: msg('Pink'),
+        color: '#db2777'
+      }
+    ] as const;
+  }
+  public static get COLORS_WITH_TRANSPARENT() {
+    return [
+      {
+        label: msg('Transparent'),
+        color: 'transparent'
+      },
+      ...Stylable.COLORS
+    ] as const;
+  }
   public static LETTERS = [
     'a',
     'b',
@@ -300,7 +305,7 @@ export default class Stylable extends Element {
     if (options.stroke) {
       res.push({
         type: 'submenu',
-        label: 'Stoke',
+        label: msg('Stroke'),
         key: 'stroke',
         items: Stylable.COLORS.map(
           (option) =>
@@ -317,7 +322,7 @@ export default class Stylable extends Element {
     if (options.fill) {
       res.push({
         type: 'submenu',
-        label: 'Fill',
+        label: msg('Fill'),
         key: 'fill',
         items: Stylable.COLORS_WITH_TRANSPARENT.map((option) => {
           const color =
@@ -335,29 +340,29 @@ export default class Stylable extends Element {
     if (options.lineWidth) {
       const options = [
         {
-          label: 'Extra thin',
+          label: msg('Extra Thin'),
           value: 1
         },
         {
-          label: 'Thin',
+          label: msg('Thin'),
           value: 2
         },
         {
-          label: 'Medium',
+          label: msg('Medium'),
           value: 3
         },
         {
-          label: 'Thick',
+          label: msg('Thick'),
           value: 5
         },
         {
-          label: 'Extra Thick',
+          label: msg('Extra Thick'),
           value: 7
         }
       ];
       res.push({
         type: 'submenu',
-        label: 'Line Width',
+        label: msg('Line Width'),
         key: 'line_width',
         items: options.map(
           (option) =>
@@ -374,7 +379,7 @@ export default class Stylable extends Element {
     if (options.dashed) {
       res.push({
         type: 'checkbox',
-        label: 'Dashed',
+        label: msg('Dashed'),
         getChecked: () => this._dashed,
         action: () => this.setDashed(!this._dashed),
         key: 'dashed'
@@ -383,19 +388,19 @@ export default class Stylable extends Element {
     if (options.showLabel ?? this.getValueLabel() !== '') {
       res.push({
         type: 'submenu',
-        label: 'Label',
+        label: msg('Label'),
         key: 'label',
         items: [
           {
             type: 'checkbox',
-            label: 'Show Label',
+            label: msg('Show Label'),
             getChecked: () => this.showLabel,
             action: () => this.shouldShowLabel(!this.showLabel),
             key: 'show-label'
           },
           {
             type: 'submenu',
-            label: 'Color',
+            label: msg('Color'),
             key: 'label_color',
             items: Stylable.COLORS.map(
               (option) =>
@@ -410,13 +415,13 @@ export default class Stylable extends Element {
           },
           {
             type: 'submenu',
-            label: 'Name',
+            label: msg('Name'),
             key: 'label_name',
             items: [
               {
                 type: 'checkbox',
                 key: 'label_name_value',
-                label: 'Value',
+                label: msg('Value'),
                 action: () => this.setLabelStyle('value'),
                 getChecked: () => this._labelStyle === 'value'
               },

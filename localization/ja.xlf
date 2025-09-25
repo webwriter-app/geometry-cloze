@@ -1,0 +1,191 @@
+<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="ja">
+    <body>
+      <trans-unit id="ha8da28ed158bf353">
+        <source>Select and move objects <x id="0" equiv-text="&lt;strong&gt;"/>[S]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>オブジェクトの選択と移動 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[S]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="h8c672b5ba7f6c67e">
+        <source>Create and connect objects <x id="0" equiv-text="&lt;strong&gt;"/>[C]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>オブジェクトの作成と接続 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[C]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="hce2957acd38b290c">
+        <source>Create divider lines <x id="0" equiv-text="&lt;strong&gt;"/>[D]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>区切り線の作成 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[D]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="s5e3cb80d43a34044">
+        <source>Black</source>
+        <target>ブラック</target>
+      </trans-unit>
+      <trans-unit id="s9ff1de19feac1b7c">
+        <source>Red</source>
+        <target>レッド</target>
+      </trans-unit>
+      <trans-unit id="s8f450dd0b7bdb8cb">
+        <source>Orange</source>
+        <target>オレンジ</target>
+      </trans-unit>
+      <trans-unit id="s6baf78886c99db89">
+        <source>Yellow</source>
+        <target>イエロー</target>
+      </trans-unit>
+      <trans-unit id="s3d0296b47fe6323c">
+        <source>Lime</source>
+        <target>ライム</target>
+      </trans-unit>
+      <trans-unit id="scf00d78fd5953f1c">
+        <source>Green</source>
+        <target>グリーン</target>
+      </trans-unit>
+      <trans-unit id="s9b3c2f9cc32d565a">
+        <source>Cyan</source>
+        <target>シアン</target>
+      </trans-unit>
+      <trans-unit id="secf3d3a7c1693e2d">
+        <source>Blue</source>
+        <target>ブルー</target>
+      </trans-unit>
+      <trans-unit id="s109991b0423f1512">
+        <source>Violet</source>
+        <target>バイオレット</target>
+      </trans-unit>
+      <trans-unit id="se9beed19c6a38fed">
+        <source>Pink</source>
+        <target>ピンク</target>
+      </trans-unit>
+      <trans-unit id="sd0e945b97c0c46d1">
+        <source>Transparent</source>
+        <target>透明</target>
+      </trans-unit>
+      <trans-unit id="s8e5cbbecf3c94675">
+        <source>Stroke</source>
+        <target>脳卒中</target>
+      </trans-unit>
+      <trans-unit id="sd1f81984eeb7c0e8">
+        <source>Fill</source>
+        <target>充填</target>
+      </trans-unit>
+      <trans-unit id="s76f530e2d85adb04">
+        <source>Extra Thin</source>
+        <target>エクストラシン</target>
+      </trans-unit>
+      <trans-unit id="s5015a8fb33b98872">
+        <source>Thin</source>
+        <target>薄い</target>
+      </trans-unit>
+      <trans-unit id="sac6bdc71f750ac96">
+        <source>Medium</source>
+        <target>ミディアム</target>
+      </trans-unit>
+      <trans-unit id="sce673bd8e450b5ae">
+        <source>Thick</source>
+        <target>厚い</target>
+      </trans-unit>
+      <trans-unit id="s7d579875a2423728">
+        <source>Extra Thick</source>
+        <target>エクストラ・シック</target>
+      </trans-unit>
+      <trans-unit id="s731f505729e9f61f">
+        <source>Line Width</source>
+        <target>線幅</target>
+      </trans-unit>
+      <trans-unit id="sc74e6ebfbc1a0e5c">
+        <source>Dashed</source>
+        <target>破線</target>
+      </trans-unit>
+      <trans-unit id="s5590dbf7e425789d">
+        <source>Label</source>
+        <target>ラベル</target>
+      </trans-unit>
+      <trans-unit id="sa41aa566ff06c212">
+        <source>Show Label</source>
+        <target>ラベルを表示</target>
+      </trans-unit>
+      <trans-unit id="s344ea8f4939cdc98">
+        <source>Color</source>
+        <target>カラー</target>
+      </trans-unit>
+      <trans-unit id="sef49aec68fd1dc66">
+        <source>Name</source>
+        <target>名称</target>
+      </trans-unit>
+      <trans-unit id="s41f7dca46d3f1b4a">
+        <source>Value</source>
+        <target>価値</target>
+      </trans-unit>
+      <trans-unit id="seea6c1f82cdc7c62">
+        <source>Switch angle</source>
+        <target>スイッチ角度</target>
+      </trans-unit>
+      <trans-unit id="sdc673e73b5c13aea">
+        <source>Delete</source>
+        <target>削除</target>
+      </trans-unit>
+      <trans-unit id="sf8669fe72676e5fe">
+        <source>Del/Backspace</source>
+        <target>Del/Backspace</target>
+      </trans-unit>
+      <trans-unit id="s71f4a89a7cd714ee">
+        <source>Area: </source>
+        <target>エリア </target>
+      </trans-unit>
+      <trans-unit id="s447b301ca02b353e">
+        <source>Perimeter: </source>
+        <target>ペリメーター： </target>
+      </trans-unit>
+      <trans-unit id="s6751f51ab77310e5">
+        <source>Show Area</source>
+        <target>ショーエリア</target>
+      </trans-unit>
+      <trans-unit id="s24d82e0bdc4ea31f">
+        <source>Show Perimeter</source>
+        <target>外周を表示</target>
+      </trans-unit>
+      <trans-unit id="s6966bdd5b59571cb">
+        <source>Teacher Options</source>
+        <target>教師オプション</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>グリッドを表示</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>グリッドにスナップ</target>
+      </trans-unit>
+      <trans-unit id="hbe8fa4d6f5c921bb">
+        <source>You can also temporarily disable snapping by pressing
+            <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+        <target>を押して、一時的にスナップを無効にすることもできます。
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> を押しながら要素をドラッグします。
+        </target>
+      </trans-unit>
+      <trans-unit id="s4fd35ef13079b962">
+        <source>Abstract right angle</source>
+        <target>抽象的な直角</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>有効にすると、直角は小さな正方形で描かれる。</target>
+      </trans-unit>
+      <trans-unit id="s2706a162264c46f1">
+        <source>Scale</source>
+        <target>スケール</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>長さとサイズのすべてのラベルをはかります。</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

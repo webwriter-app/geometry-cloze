@@ -1,6 +1,7 @@
 import { LitElementWw } from '@webwriter/lit';
 import { css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { localized, msg } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -14,6 +15,7 @@ import PentagonHalf from '../icons/pentagon-half';
 /**
  *
  */
+@localized()
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
   @property({ attribute: true })
@@ -23,7 +25,7 @@ export class WwGeomToolbar extends LitElementWw {
     return html`<div class="wrapper">
       <sl-tooltip>
         <span slot="content">
-          Select and move objects <strong>[S]</strong>
+          ${msg(html`Select and move objects <strong>[S]</strong>`)}
         </span>
         <sl-button
           size="large"
@@ -36,7 +38,7 @@ export class WwGeomToolbar extends LitElementWw {
 
       <sl-tooltip>
         <span slot="content">
-          Create and connect objects <strong>[C]</strong>
+          ${msg(html`Create and connect objects <strong>[C]</strong>`)}
         </span>
         <sl-button
           size="large"
@@ -47,7 +49,9 @@ export class WwGeomToolbar extends LitElementWw {
         </sl-button>
       </sl-tooltip>
       <sl-tooltip>
-        <span slot="content"> Create divider lines <strong>[D]</strong> </span>
+        <span slot="content">
+          ${msg(html`Create divider lines <strong>[D]</strong>`)}
+        </span>
         <sl-button
           size="large"
           circle

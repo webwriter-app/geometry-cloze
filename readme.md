@@ -1,41 +1,63 @@
-# WebWriter Geometry Cloze Widget
+# Geometry,Cloze (`@webwriter/geometry-cloze@2.1.0`)
+[License: MIT](LICENSE) | Version: 2.1.0
 
-This repo contains a widget written in Lit that implements an editor for geometry cloze style exercises. It is espacially designed to be used in the [WebWriter software](https://webwriter.app/). \
-This widget was created as part of the bachelor thesis of [Florin Große](https://der-grosse.de) titled "Implementation of a widget for geometry exercises".
+Create and view geometry exercises with coloring, styling and labeling options.
 
-## Installation
+## Snippets
+[Snippets](https://webwriter.app/docs/snippets/snippets/) are examples and templates using the package's widgets.
 
-You need to have [Node.js](https://nodejs.org/) installed to run the following commands. \
-To install all depedencies use the [pnpm package manager](https://pnpm.io/installation).
+| Name | Import Path |
+| :--: | :---------: |
+| Geometry Cloze | @webwriter/geometry-cloze/snippets/geometry-cloze.html |
+| Polygon | @webwriter/geometry-cloze/snippets/polygon.html |
+| Right Triangle | @webwriter/geometry-cloze/snippets/right-triangle.html |
 
-```bash
-pnpm install --frozen-lockfile
+
+
+## `WwGeometryCloze` (`<ww-geometry-cloze>`)
+Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.
+
+### Usage
+
+Use with a CDN (e.g. [jsdelivr](https://jsdelivr.com)):
+```html
+<link href="https://cdn.jsdelivr.net/npm/@webwriter/geometry-cloze/widgets/ww-geometry-cloze.css" rel="stylesheet">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@webwriter/geometry-cloze/widgets/ww-geometry-cloze.js"></script>
+<ww-geometry-cloze></ww-geometry-cloze>
 ```
 
-## Preview / Usage
+Or use with a bundler (e.g. [Vite](https://vite.dev)):
 
-### Standalone
-
-To preview the widget in a standalone environment run the following command:
-
-```bash
-pnpm preview
+```
+npm install @webwriter/geometry-cloze
 ```
 
-This will start a local server and open the widget in your default browser.
+```html
+<link href="@webwriter/geometry-cloze/widgets/ww-geometry-cloze.css" rel="stylesheet">
+<script type="module" src="@webwriter/geometry-cloze/widgets/ww-geometry-cloze.js"></script>
+<ww-geometry-cloze></ww-geometry-cloze>
+```
 
-### In WebWriter
+## Fields
+| Name (Attribute Name) | Type | Description | Default | Reflects |
+| :-------------------: | :--: | :---------: | :-----: | :------: |
+| `elements` (`elements`) | `CanvasData['children']` | Serialized children describing the current canvas content provided by the host. | - | ✓ |
+| `mode` (`mode`) | `CanvasData['mode']` | Active editing mode, accepting three possible values:<br>- 'select': Move and connect objects<br>- 'create': Create and connect objects<br>- 'divider': Create divider lines | `'select'` | ✓ |
+| `abstractRightAngle` (`abstractRightAngle`) | `CanvasData['abstractRightAngle']` | Whether right angles will be drawn as small squares instead of arcs. | `false` | ✓ |
+| `showGrid` (`showGrid`) | `CanvasData['showGrid']` | Whether the grid is shown on the canvas. | `true` | ✓ |
+| `snap` (`snap`) | `CanvasData['snapping']` | Whether user interactions snap to the grid. | `true` | ✓ |
 
-To import this local version of the widget into WebWriter, follow the instructions below:
+*Fields including [properties](https://developer.mozilla.org/en-US/docs/Glossary/Property/JavaScript) and [attributes](https://developer.mozilla.org/en-US/docs/Glossary/Attribute) define the current state of the widget and offer customization options.*
 
-![Importing instructions part 1](assets/webwriter-import-step-1.png)
+## Editing config
+| Name | Value |
+| :--: | :---------: |
 
-![Importing instructions part 2](assets/webwriter-import-step-2.png)
 
-After importing the widget, you should see the widget in the list of available widgets in WebWriter.
+*The [editing config](https://webwriter.app/docs/packages/configuring/#editingconfig) defines how explorable authoring tools such as [WebWriter](https://webwriter.app) treat the widget.*
 
-**CAUTION:** There is currently a bug in WebWriter that prevents the widget from being imported, when it is not on the same partition as WebWriter.
+*No public methods, slots, events, custom CSS properties, or CSS parts.*
 
-## Development
 
-The development is easiest done in the context of WebWriter. To start import the widget into WebWriter and click the lightning icon next to the widget. This will enable hot-reloading of the widget in WebWriter.
+---
+*Generated with @webwriter/build@1.8.1*

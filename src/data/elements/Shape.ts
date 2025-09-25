@@ -11,6 +11,7 @@ import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
+import { msg } from '@lit/localize';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: Manager, points: BasePoint[]): Shape;
@@ -511,7 +512,7 @@ export default class Shape extends Draggable {
       const area = Calc.getAreaOfPolygon(this.getPoints());
       const scaledArea = area * this.manager.scale ** 2;
       const areaRounded = Numbers.round(scaledArea);
-      const prefix = this.showPerimeter ? 'Area: ' : '';
+      const prefix = this.showPerimeter ? msg('Area: ') : '';
       res.push(`${prefix}${areaRounded}`);
     }
     if (this.showPerimeter) {
@@ -519,7 +520,7 @@ export default class Shape extends Draggable {
         this.getPoints().map((p) => Vector.scale(p, this.manager.scale))
       );
       const perimeterRounded = Numbers.round(perimeter);
-      const prefix = 'Perimeter: ';
+      const prefix = msg('Perimeter: ');
       res.push(`${prefix}${perimeterRounded}`);
     }
     return res.join('|');
@@ -534,12 +535,12 @@ export default class Shape extends Draggable {
       }),
       {
         type: 'submenu',
-        label: 'Label',
+        label: msg('Label'),
         key: 'label',
         items: [
           {
             type: 'checkbox',
-            label: 'Show Area',
+            label: msg('Show Area'),
             getChecked: () => this.showArea,
             action: (checked) => {
               this.showArea = checked;
@@ -550,7 +551,7 @@ export default class Shape extends Draggable {
           },
           {
             type: 'checkbox',
-            label: 'Show Perimeter',
+            label: msg('Show Perimeter'),
             getChecked: () => this.showPerimeter,
             action: (checked) => {
               this.showPerimeter = checked;
@@ -561,7 +562,7 @@ export default class Shape extends Draggable {
           },
           {
             type: 'submenu',
-            label: 'Color',
+            label: msg('Color'),
             key: 'label_color',
             items: Stylable.COLORS.map(
               (option) =>

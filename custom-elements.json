@@ -1,0 +1,246 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/ww-geometry-cloze.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.",
+          "name": "WwGeometryCloze",
+          "members": [
+            {
+              "kind": "field",
+              "name": "canvas",
+              "type": {
+                "text": "HTMLCanvasElement"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "contextMenu",
+              "type": {
+                "text": "WwGeomContextMenu"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "manager",
+              "type": {
+                "text": "CanvasManager | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "localize",
+              "privacy": "protected",
+              "default": "LOCALIZE"
+            },
+            {
+              "kind": "field",
+              "name": "appliedLocale",
+              "type": {
+                "text": "string | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "pendingLocale",
+              "type": {
+                "text": "string | null"
+              },
+              "privacy": "private",
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "elements",
+              "type": {
+                "text": "CanvasData['children']"
+              },
+              "description": "Serialized children describing the current canvas content provided by the host.",
+              "attribute": "elements",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "mode",
+              "type": {
+                "text": "CanvasData['mode']"
+              },
+              "default": "'select'",
+              "description": "Active editing mode, accepting three possible values:\n- 'select': Move and connect objects\n- 'create': Create and connect objects\n- 'divider': Create divider lines",
+              "attribute": "mode",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "abstractRightAngle",
+              "type": {
+                "text": "CanvasData['abstractRightAngle']"
+              },
+              "default": "false",
+              "description": "Whether right angles will be drawn as small squares instead of arcs.",
+              "attribute": "abstractRightAngle",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showGrid",
+              "type": {
+                "text": "CanvasData['showGrid']"
+              },
+              "default": "true",
+              "description": "Whether the grid is shown on the canvas.",
+              "attribute": "showGrid",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "snap",
+              "type": {
+                "text": "CanvasData['snapping']"
+              },
+              "default": "true",
+              "description": "Whether user interactions snap to the grid.",
+              "attribute": "snap",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "applyLocale",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "locale",
+                  "type": {
+                    "text": "string | null"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "normalizeLocale",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "locale",
+                  "type": {
+                    "text": "string | null"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "onBlur",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "onClick",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "onCanvasValueChange",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "value",
+                  "type": {
+                    "text": "CanvasData"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "elements",
+              "type": {
+                "text": "CanvasData['children']"
+              },
+              "description": "Serialized children describing the current canvas content provided by the host.",
+              "fieldName": "elements"
+            },
+            {
+              "name": "mode",
+              "type": {
+                "text": "CanvasData['mode']"
+              },
+              "default": "'select'",
+              "description": "Active editing mode, accepting three possible values:\n- 'select': Move and connect objects\n- 'create': Create and connect objects\n- 'divider': Create divider lines",
+              "fieldName": "mode"
+            },
+            {
+              "name": "abstractRightAngle",
+              "type": {
+                "text": "CanvasData['abstractRightAngle']"
+              },
+              "default": "false",
+              "description": "Whether right angles will be drawn as small squares instead of arcs.",
+              "fieldName": "abstractRightAngle"
+            },
+            {
+              "name": "showGrid",
+              "type": {
+                "text": "CanvasData['showGrid']"
+              },
+              "default": "true",
+              "description": "Whether the grid is shown on the canvas.",
+              "fieldName": "showGrid"
+            },
+            {
+              "name": "snap",
+              "type": {
+                "text": "CanvasData['snapping']"
+              },
+              "default": "true",
+              "description": "Whether user interactions snap to the grid.",
+              "fieldName": "snap"
+            }
+          ],
+          "superclass": {
+            "name": "LitElementWw",
+            "package": "@webwriter/lit"
+          },
+          "tagName": "ww-geometry-cloze",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "WwGeometryCloze",
+          "declaration": {
+            "name": "WwGeometryCloze",
+            "module": "src/ww-geometry-cloze.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "ww-geometry-cloze",
+          "declaration": {
+            "name": "WwGeometryCloze",
+            "module": "src/ww-geometry-cloze.ts"
+          }
+        }
+      ]
+    }
+  ]
+}

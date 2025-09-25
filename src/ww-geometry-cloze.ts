@@ -1,7 +1,10 @@
+// @ts-ignore
+import LOCALIZE from '../localization/generated/index.js';
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
+import { localized } from '@lit/localize';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
@@ -13,15 +16,24 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import { WwGeomOptions } from './components/options/ww-geom-options';
 
 /**
- * A widget to create and view geometry exercises.
+ * Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.
  */
+@localized()
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
-  @query('canvas') accessor  canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu') accessor contextMenu!: WwGeomContextMenu;
+  @query('canvas') private accessor canvas!: HTMLCanvasElement;
+  @query('ww-geom-context-menu') private accessor contextMenu!: WwGeomContextMenu;
 
-  manager: CanvasManager | null = null;
+  private manager: CanvasManager | null = null;
 
+  protected localize = LOCALIZE;
+
+  private appliedLocale: string | null = null;
+  private pendingLocale: string | null = null;
+
+  /**
+   * Serialized children describing the current canvas content provided by the host.
+   */
   @property({
     attribute: true,
     reflect: true,
@@ -29,30 +41,117 @@ export class WwGeometryCloze extends LitElementWw {
   })
   accessor elements: CanvasData['children'];
 
+  /**
+   * Active editing mode, accepting three possible values:
+   * - 'select': Move and connect objects
+   * - 'create': Create and connect objects
+   * - 'divider': Create divider lines
+   */
   @property({
     attribute: true,
     reflect: true,
     type: String
   })
   accessor mode: CanvasData['mode'] = 'select';
+
+  /**
+   * Whether right angles will be drawn as small squares instead of arcs.
+   */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
   accessor abstractRightAngle: CanvasData['abstractRightAngle'] = false;
+
+  /**
+   * Whether the grid is shown on the canvas.
+   */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
   accessor showGrid: CanvasData['showGrid'] = true;
+
+  /**
+   * Whether user interactions snap to the grid.
+   */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
   accessor snap: CanvasData['snapping'] = true;
+
+  static override get observedAttributes() {
+    const attributes = super.observedAttributes ?? [];
+    return attributes.includes('lang')
+      ? attributes
+      : [...attributes, 'lang'];
+  }
+
+  override attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null
+  ) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    if (name === 'lang' && oldValue !== newValue) {
+      this.applyLocale(newValue);
+    }
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    const initialLocale =
+      this.getAttribute('lang') ||
+      document.documentElement.lang ||
+      navigator.language ||
+      null;
+    this.applyLocale(initialLocale);
+  }
+
+  private async applyLocale(locale: string | null) {
+    const normalized = this.normalizeLocale(locale);
+    if (!normalized) return;
+    if (normalized === this.appliedLocale && !this.pendingLocale) return;
+    this.pendingLocale = normalized;
+    try {
+      await LOCALIZE.setLocale(normalized);
+      if (this.pendingLocale === normalized) {
+        this.appliedLocale = normalized;
+        this.pendingLocale = null;
+      }
+    } catch (error) {
+      console.warn(
+        `Failed to load locale "${normalized}" – falling back to default locale.`,
+        error
+      );
+      if (normalized !== 'en') {
+        try {
+          await LOCALIZE.setLocale('en');
+          if (this.pendingLocale === normalized) {
+            this.appliedLocale = 'en';
+            this.pendingLocale = null;
+          }
+        } catch (fallbackError) {
+          console.error('Failed to load fallback locale "en".', fallbackError);
+        }
+      }
+    } finally {
+      if (this.pendingLocale === normalized) {
+        this.pendingLocale = null;
+      }
+    }
+  }
+
+  private normalizeLocale(locale: string | null): string {
+    if (!locale) return 'en';
+    const trimmed = locale.trim();
+    if (!trimmed) return 'en';
+    return trimmed;
+  }
 
   render() {
     return html`<div class="wrapper">
@@ -67,7 +166,7 @@ export class WwGeometryCloze extends LitElementWw {
               }}></ww-geom-toolbar>`
           : ''
       }
-        <canvas width="1000" height="700" @click=${()=>{this.dispatchEvent(new Event("focus"))}}></canvas>
+        <canvas tabindex="0" width="1000" height="700"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>
@@ -161,11 +260,13 @@ export class WwGeometryCloze extends LitElementWw {
     super.disconnectedCallback();
   }
 
+  /** @internal */
   static shadowRootOptions = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true
   };
 
+  /** @internal */
   public static get scopedElements() {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
@@ -193,6 +294,7 @@ export class WwGeometryCloze extends LitElementWw {
       aspect-ratio: 10 / 7;
       width: calc(100% - 2px);
       box-sizing: border-box;
+	  outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;

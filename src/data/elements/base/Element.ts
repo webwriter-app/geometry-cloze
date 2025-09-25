@@ -2,6 +2,7 @@ import { ContextMenuItem } from '../../../types/ContextMenu';
 import Shape from '../Shape';
 import IDManager from '../../CanvasManager/IDManager';
 import Manager from '../../CanvasManager/Abstracts';
+import { msg } from '@lit/localize';
 
 export interface NamedElement {
   name?: string;
@@ -124,9 +125,9 @@ export default class Element {
       {
         key: 'delete',
         type: 'button',
-        label: 'Delete',
+        label: msg('Delete'),
         action: this.delete.bind(this),
-        badge: 'Del/Backspace'
+        badge: msg('Del/Backspace')
       }
     ];
   }

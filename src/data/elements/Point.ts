@@ -11,6 +11,7 @@ import Shape from './Shape';
 import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
+import { msg } from '@lit/localize';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -186,7 +187,7 @@ export default class Point extends Draggable {
     )?.items.splice(1, 0, {
       key: 'showOutsideAngle',
       type: 'checkbox',
-      label: 'Switch angle',
+      label: msg('Switch angle'),
       getChecked: () => this.showOutsideAngle,
       action: (value: boolean) => {
         this.showOutsideAngle = value;

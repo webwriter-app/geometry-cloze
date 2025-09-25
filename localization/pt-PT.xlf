@@ -1,0 +1,191 @@
+<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="pt-PT">
+    <body>
+      <trans-unit id="ha8da28ed158bf353">
+        <source>Select and move objects <x id="0" equiv-text="&lt;strong&gt;"/>[S]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>Selecionar e mover objectos 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[S]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="h8c672b5ba7f6c67e">
+        <source>Create and connect objects <x id="0" equiv-text="&lt;strong&gt;"/>[C]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>Criar e ligar objectos 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[C]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="hce2957acd38b290c">
+        <source>Create divider lines <x id="0" equiv-text="&lt;strong&gt;"/>[D]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
+        <target>Criar linhas divisórias 
+          <x id="0" equiv-text="&lt;strong&gt;"/>[D]
+          <x id="1" equiv-text="&lt;/strong&gt;"/>
+        </target>
+      </trans-unit>
+      <trans-unit id="s5e3cb80d43a34044">
+        <source>Black</source>
+        <target>Preto</target>
+      </trans-unit>
+      <trans-unit id="s9ff1de19feac1b7c">
+        <source>Red</source>
+        <target>Vermelho</target>
+      </trans-unit>
+      <trans-unit id="s8f450dd0b7bdb8cb">
+        <source>Orange</source>
+        <target>Laranja</target>
+      </trans-unit>
+      <trans-unit id="s6baf78886c99db89">
+        <source>Yellow</source>
+        <target>Amarelo</target>
+      </trans-unit>
+      <trans-unit id="s3d0296b47fe6323c">
+        <source>Lime</source>
+        <target>Cal</target>
+      </trans-unit>
+      <trans-unit id="scf00d78fd5953f1c">
+        <source>Green</source>
+        <target>Verde</target>
+      </trans-unit>
+      <trans-unit id="s9b3c2f9cc32d565a">
+        <source>Cyan</source>
+        <target>Ciano</target>
+      </trans-unit>
+      <trans-unit id="secf3d3a7c1693e2d">
+        <source>Blue</source>
+        <target>Azul</target>
+      </trans-unit>
+      <trans-unit id="s109991b0423f1512">
+        <source>Violet</source>
+        <target>Violeta</target>
+      </trans-unit>
+      <trans-unit id="se9beed19c6a38fed">
+        <source>Pink</source>
+        <target>Cor-de-rosa</target>
+      </trans-unit>
+      <trans-unit id="sd0e945b97c0c46d1">
+        <source>Transparent</source>
+        <target>Transparente</target>
+      </trans-unit>
+      <trans-unit id="s8e5cbbecf3c94675">
+        <source>Stroke</source>
+        <target>Acidente vascular cerebral</target>
+      </trans-unit>
+      <trans-unit id="sd1f81984eeb7c0e8">
+        <source>Fill</source>
+        <target>Preencher</target>
+      </trans-unit>
+      <trans-unit id="s76f530e2d85adb04">
+        <source>Extra Thin</source>
+        <target>Extra-fino</target>
+      </trans-unit>
+      <trans-unit id="s5015a8fb33b98872">
+        <source>Thin</source>
+        <target>Fino</target>
+      </trans-unit>
+      <trans-unit id="sac6bdc71f750ac96">
+        <source>Medium</source>
+        <target>Médio</target>
+      </trans-unit>
+      <trans-unit id="sce673bd8e450b5ae">
+        <source>Thick</source>
+        <target>Espesso</target>
+      </trans-unit>
+      <trans-unit id="s7d579875a2423728">
+        <source>Extra Thick</source>
+        <target>Extra espesso</target>
+      </trans-unit>
+      <trans-unit id="s731f505729e9f61f">
+        <source>Line Width</source>
+        <target>Largura da linha</target>
+      </trans-unit>
+      <trans-unit id="sc74e6ebfbc1a0e5c">
+        <source>Dashed</source>
+        <target>A tracejado</target>
+      </trans-unit>
+      <trans-unit id="s5590dbf7e425789d">
+        <source>Label</source>
+        <target>Rótulo</target>
+      </trans-unit>
+      <trans-unit id="sa41aa566ff06c212">
+        <source>Show Label</source>
+        <target>Mostrar etiqueta</target>
+      </trans-unit>
+      <trans-unit id="s344ea8f4939cdc98">
+        <source>Color</source>
+        <target>Cor</target>
+      </trans-unit>
+      <trans-unit id="sef49aec68fd1dc66">
+        <source>Name</source>
+        <target>Nome</target>
+      </trans-unit>
+      <trans-unit id="s41f7dca46d3f1b4a">
+        <source>Value</source>
+        <target>Valor</target>
+      </trans-unit>
+      <trans-unit id="seea6c1f82cdc7c62">
+        <source>Switch angle</source>
+        <target>Ângulo do interrutor</target>
+      </trans-unit>
+      <trans-unit id="sdc673e73b5c13aea">
+        <source>Delete</source>
+        <target>Eliminar</target>
+      </trans-unit>
+      <trans-unit id="sf8669fe72676e5fe">
+        <source>Del/Backspace</source>
+        <target>Del/Backspace</target>
+      </trans-unit>
+      <trans-unit id="s71f4a89a7cd714ee">
+        <source>Area: </source>
+        <target>Área: </target>
+      </trans-unit>
+      <trans-unit id="s447b301ca02b353e">
+        <source>Perimeter: </source>
+        <target>Perímetro: </target>
+      </trans-unit>
+      <trans-unit id="s6751f51ab77310e5">
+        <source>Show Area</source>
+        <target>Área de espetáculo</target>
+      </trans-unit>
+      <trans-unit id="s24d82e0bdc4ea31f">
+        <source>Show Perimeter</source>
+        <target>Mostrar perímetro</target>
+      </trans-unit>
+      <trans-unit id="s6966bdd5b59571cb">
+        <source>Teacher Options</source>
+        <target>Opções do professor</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>Mostrar grelha</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>Encaixar na grelha</target>
+      </trans-unit>
+      <trans-unit id="hbe8fa4d6f5c921bb">
+        <source>You can also temporarily disable snapping by pressing
+            <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+        <target>Também é possível desativar temporariamente o encaixe premindo
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> enquanto arrasta um elemento
+        </target>
+      </trans-unit>
+      <trans-unit id="s4fd35ef13079b962">
+        <source>Abstract right angle</source>
+        <target>Ângulo reto abstrato</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>Quando ativado, os ângulos rectos serão desenhados como um pequeno quadrado</target>
+      </trans-unit>
+      <trans-unit id="s2706a162264c46f1">
+        <source>Scale</source>
+        <target>Escala</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>Balança todas as etiquetas de comprimentos e tamanhos.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
