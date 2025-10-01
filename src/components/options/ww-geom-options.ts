@@ -25,7 +25,6 @@ export class WwGeomOptions extends LitElementWw {
 
   render() {
     return html`<div class="options">
-      <h4>${msg('Teacher Options')}</h4>
       <sl-checkbox
         .checked=${this.manager?.showGrid ?? false}
         @sl-change=${() => this.manager?.toggleGrid()}>
@@ -34,14 +33,16 @@ export class WwGeomOptions extends LitElementWw {
       <sl-checkbox
         .checked=${this.manager?.snapping ?? false}
         @sl-change=${() => this.manager?.toggleSnapping()}>
-        ${msg('Snap to grid')}
-        <sl-tooltip placement="left" hoist>
-          <sl-icon src=${InfoSVG}></sl-icon>
-          <span slot="content">
-            ${msg(html`You can also temporarily disable snapping by pressing
-            <sl-tag size="small">Alt</sl-tag> while dragging an element`)}
-          </span>
-        </sl-tooltip>
+        <div class="checkbox-info-container">
+          ${msg('Snap to grid')}
+          <sl-tooltip placement="left" hoist>
+            <sl-icon src=${InfoSVG}></sl-icon>
+            <span slot="content">
+              ${msg(html`You can also temporarily disable snapping by pressing
+              <sl-tag size="small">Alt</sl-tag> while dragging an element`)}
+            </span>
+          </sl-tooltip>
+        </div>
       </sl-checkbox>
       <sl-checkbox
         .checked=${this.manager?.abstractRightAngle ?? false}
@@ -49,15 +50,17 @@ export class WwGeomOptions extends LitElementWw {
           if (this.manager)
             this.manager.abstractRightAngle = !this.manager.abstractRightAngle;
         }}>
-        ${msg('Abstract right angle')}
-        <sl-tooltip placement="left" hoist>
-          <sl-icon src=${InfoSVG}></sl-icon>
-          <span slot="content">
-            ${msg(
-              'When enabled, right angles will be drawn as a small square'
-            )}
-          </span>
-        </sl-tooltip>
+        <div class="checkbox-info-container">
+          ${msg('Abstract right angle')}
+          <sl-tooltip placement="left" hoist>
+            <sl-icon src=${InfoSVG}></sl-icon>
+            <span slot="content">
+              ${msg(
+                'When enabled, right angles will be drawn as a small square'
+              )}
+            </span>
+          </sl-tooltip>
+        </div>
       </sl-checkbox>
       <sl-range
         min="0"
@@ -113,16 +116,11 @@ export class WwGeomOptions extends LitElementWw {
       flex-direction: column;
       gap: 1rem;
     }
-    .options > *:not(h4) {
-      padding-left: 1rem;
-    }
-    .options h4 {
-      user-select: none;
-      margin: 0;
-    }
-    sl-range {
-      box-sizing: border-box;
-      max-width: 80%;
+
+    .checkbox-info-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
   `;
 }
