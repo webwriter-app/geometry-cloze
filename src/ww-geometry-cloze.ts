@@ -277,13 +277,18 @@ export class WwGeometryCloze extends LitElementWw {
 
   static styles = css`
     :host {
-      outline: none;
-      z-index: 10000000;
       position: relative;
-      border-width: 2px;
-      border-style: solid;
-      border-radius: 5px;
-      border-color: #6a6a6a;
+      display: block;
+      width: 100%;
+      
+      border: solid 1px var(--sl-color-neutral-300);
+      border-radius: var(--sl-border-radius-medium);
+      box-sizing: border-box;
+
+      overflow: hidden;
+      z-index: 10000000;
+      
+      outline: none;
     }
     .wrapper {
       margin-top: 0;
@@ -291,10 +296,11 @@ export class WwGeometryCloze extends LitElementWw {
       outline: none;
     }
     canvas {
+      display: block;
       aspect-ratio: 10 / 7;
-      width: calc(100% - 2px);
+      width: 100%;
       box-sizing: border-box;
-	  outline: none !important;
+	    outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;
