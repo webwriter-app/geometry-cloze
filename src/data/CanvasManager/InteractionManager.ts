@@ -64,11 +64,12 @@ export default class InteractionManager extends EventManager {
       ctx.setLineDash([]);
       ctx.beginPath();
       const { width, height } = this.getCanvasDimensions();
-      for (let x = 0; x < width; x += spacing) {
+      // Skip first lines to not draw right on the edge of the canvas and interfere with border
+      for (let x = spacing; x < width; x += spacing) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
       }
-      for (let y = 0; y < height; y += spacing) {
+      for (let y = spacing; y < height; y += spacing) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
