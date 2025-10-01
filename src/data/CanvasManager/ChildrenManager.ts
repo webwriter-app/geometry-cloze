@@ -25,9 +25,8 @@ export default abstract class ChildrenManager {
     if (!ctx || !this._canvas) return;
 
     ctx.resetTransform();
-    ctx.scale(this._canvasScale, this._canvasScale);
-
     ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    ctx.scale(this._canvasScale, this._canvasScale);
 
     // reverse order so that the first shape is on top
     for (const shape of this.children.map((s) => s).reverse()) {
