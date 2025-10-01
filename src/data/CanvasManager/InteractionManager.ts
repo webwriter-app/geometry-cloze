@@ -28,7 +28,7 @@ export default class InteractionManager extends EventManager {
     return this._snapSpacing !== null;
   }
   public toggleSnapping(snapping = !this.snapping) {
-    this._snapSpacing = snapping ? SNAP_SPACING * (this.scale ?? 1) : null;
+    this._snapSpacing = snapping ? SNAP_SPACING : null;
     // request redraw is not neccessary but requestRedraw also triggers an update (-> updates the attributes of the webcomponent)
     this.requestRedraw();
   }
