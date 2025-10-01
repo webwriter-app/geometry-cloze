@@ -494,6 +494,14 @@ export default class InteractionManager extends EventManager {
     return true;
   }
 
+  protected handleCanvasResize(): void {
+    const elementBounds = this.wrapper.getBoundingClientRect();
+    const canvasDimensions = this.getCanvasDimensions();
+    const scale =  elementBounds.width / canvasDimensions.width * window.devicePixelRatio;
+    this.resizeCanvas(elementBounds.width * window.devicePixelRatio, elementBounds.height * window.devicePixelRatio, scale);
+    this.requestRedraw();
+  }
+
   public get mode() {
     return this._mode;
   }
