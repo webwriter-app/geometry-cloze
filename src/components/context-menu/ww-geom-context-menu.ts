@@ -11,6 +11,11 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuItem from '@shoelace-style/shoelace/dist/components/menu-item/menu-item.component.js';
 import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
 import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.component.js';
+import SlDropDown from '@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js';
+import { setDefaultAnimation } from '@shoelace-style/shoelace/dist/utilities/animation-registry.js';
+
+setDefaultAnimation('dropdown.show', { keyframes: [], options: { duration: 0 } });
+setDefaultAnimation('dropdown.hide', { keyframes: [], options: { duration: 0 } });
 
 /**
  *
@@ -110,30 +115,22 @@ export class WwGeomContextMenu extends LitElementWw {
   }
 
   render() {
-    return html`<sl-menu
-      class="menu${this._open ? ' open' : ''}"
-      style="left: ${this.x}px; top: ${this.y}px"
-      @sl-select="${this.handleClick.bind(this)}">
-      ${this.items.map((item) => this.getContextMenuItem(item))}
-    </sl-menu> `;
+    return html`<sl-dropdown style="left: ${this.x}px; top: ${this.y}px" .open=${this._open}>
+      <div slot="trigger"><!--  Placeholder, required for correct positioning --></div>
+      <sl-menu @sl-select="${this.handleClick.bind(this)}">
+        ${this.items.map((item) => this.getContextMenuItem(item))}
+      </sl-menu> 
+    </sl-dropdown>`;
   }
 
   static styles = css`
     :host {
       user-select: none;
     }
-    .menu {
+    
+    sl-dropdown {
       position: absolute;
       z-index: 1000;
-    }
-    .menu:not(.open) {
-      display: none;
-    }
-    sl-menu:not(.menu) {
-      top: 0;
-      bottom: 0;
-      overflow: auto;
-      max-height: 50vh;
     }
   `;
 
@@ -142,7 +139,8 @@ export class WwGeomContextMenu extends LitElementWw {
       'sl-menu': SlMenu,
       'sl-menu-item': SlMenuItem,
       'sl-divider': SlDivider,
-      'sl-badge': SlBadge
+      'sl-badge': SlBadge,
+      'sl-dropdown': SlDropDown
     };
   }
 }

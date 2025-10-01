@@ -287,7 +287,7 @@ export class WwGeometryCloze extends LitElementWw {
       border-radius: var(--sl-border-radius-medium);
       box-sizing: border-box;
 
-      overflow: hidden;
+      overflow: visible;
       z-index: 10000000;
       
       outline: none;
