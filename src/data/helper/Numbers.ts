@@ -1,5 +1,5 @@
 export default class Numbers {
-  static round(number: number, precision: number = 2): string {
+  static round(number: number, precision: number = 1): string {
     const factor = 10 ** precision;
     const rounded = Math.round(number * factor) / factor;
     const fixed = rounded.toFixed(precision);

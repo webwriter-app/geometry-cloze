@@ -11,6 +11,8 @@ export default abstract class ChildrenManager {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
+  private _canvasScale = 1;
+
   private children: Child[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
@@ -21,7 +23,10 @@ export default abstract class ChildrenManager {
   // pass ctx here since this method can be overwritten by super classes and can be used to render additional elements
   protected redraw(ctx: CanvasRenderingContext2D) {
     if (!ctx || !this._canvas) return;
+
+    ctx.resetTransform();
     ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+    ctx.scale(this._canvasScale, this._canvasScale);
 
     // reverse order so that the first shape is on top
     for (const shape of this.children.map((s) => s).reverse()) {
@@ -100,10 +105,13 @@ export default abstract class ChildrenManager {
   }
 
   public getCanvasDimensions(): { width: number; height: number } {
-    return {
-      width: this._canvas.width,
-      height: this._canvas.height
-    };
+    return { width: 1000, height: 700 };
+  }
+
+  public resizeCanvas(width: number, height: number, scale: number) {
+    this._canvas.width = width;
+    this._canvas.height = height;
+    this._canvasScale = scale;
   }
 
   protected getChildByID(id: number) {

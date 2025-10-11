@@ -166,7 +166,7 @@ export class WwGeometryCloze extends LitElementWw {
               }}></ww-geom-toolbar>`
           : ''
       }
-        <canvas tabindex="0" width="1000" height="700"></canvas>
+        <canvas tabindex="0"></canvas>
         <ww-geom-context-menu></ww-geom-context-menu>
       </div>
     </div>
@@ -277,24 +277,32 @@ export class WwGeometryCloze extends LitElementWw {
 
   static styles = css`
     :host {
-      outline: none;
-      z-index: 10000000;
       position: relative;
-      border-width: 2px;
-      border-style: solid;
-      border-radius: 5px;
-      border-color: #6a6a6a;
+      display: block;
+
+      width: 100%;
+      aspect-ratio: 10 / 7;
+      
+      border: solid 1px var(--sl-color-neutral-300);
+      border-radius: var(--sl-border-radius-medium);
+      box-sizing: border-box;
+
+      overflow: visible;
+      z-index: 10000000;
+      
+      outline: none;
     }
     .wrapper {
-      margin-top: 0;
+      margin: 0;
+      height: 100%;
       position: relative;
       outline: none;
     }
     canvas {
-      aspect-ratio: 10 / 7;
-      width: calc(100% - 2px);
-      box-sizing: border-box;
-	  outline: none !important;
+      display: block;
+      width: 100%;
+      height: 100%;
+	    outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;

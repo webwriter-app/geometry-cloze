@@ -28,7 +28,7 @@ export default class InteractionManager extends EventManager {
     return this._snapSpacing !== null;
   }
   public toggleSnapping(snapping = !this.snapping) {
-    this._snapSpacing = snapping ? SNAP_SPACING * (this.scale ?? 1) : null;
+    this._snapSpacing = snapping ? SNAP_SPACING : null;
     // request redraw is not neccessary but requestRedraw also triggers an update (-> updates the attributes of the webcomponent)
     this.requestRedraw();
   }
@@ -64,11 +64,12 @@ export default class InteractionManager extends EventManager {
       ctx.setLineDash([]);
       ctx.beginPath();
       const { width, height } = this.getCanvasDimensions();
-      for (let x = 0; x < width; x += spacing) {
+      // Skip first lines to not draw right on the edge of the canvas and interfere with border
+      for (let x = spacing; x < width; x += spacing) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
       }
-      for (let y = 0; y < height; y += spacing) {
+      for (let y = spacing; y < height; y += spacing) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
       }
@@ -491,6 +492,14 @@ export default class InteractionManager extends EventManager {
       return false;
     }
     return true;
+  }
+
+  protected handleCanvasResize(): void {
+    const elementBounds = this.wrapper.getBoundingClientRect();
+    const canvasDimensions = this.getCanvasDimensions();
+    const scale =  elementBounds.width / canvasDimensions.width * window.devicePixelRatio;
+    this.resizeCanvas(elementBounds.width * window.devicePixelRatio, elementBounds.height * window.devicePixelRatio, scale);
+    this.requestRedraw();
   }
 
   public get mode() {

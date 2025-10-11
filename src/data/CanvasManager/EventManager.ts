@@ -4,7 +4,7 @@ import ChildrenManager from './ChildrenManager';
 import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
 
 export default abstract class EventManager extends ChildrenManager {
-  private wrapper: HTMLElement;
+  protected wrapper: HTMLCanvasElement;
 
   private clickTargetEle: HTMLElement;
   private rootEle: HTMLElement;
@@ -13,6 +13,9 @@ export default abstract class EventManager extends ChildrenManager {
    * Currently selected element
    */
   private _selected: Draggable[] = [];
+
+  private _resizeObserver = new ResizeObserver(this.handleCanvasResize.bind(this));
+  private _currentDpr = window.devicePixelRatio || 1;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -66,6 +69,9 @@ export default abstract class EventManager extends ChildrenManager {
       this._handleKeyboardEvent.bind(this)
     );
     this.rootEle.addEventListener('keyup', this.handleKeyUp.bind(this));
+
+    window.addEventListener('resize', this.onWindowResize.bind(this));
+    this._resizeObserver.observe(this.wrapper);
   }
 
   unmount() {
@@ -106,6 +112,9 @@ export default abstract class EventManager extends ChildrenManager {
       this._handleKeyboardEvent.bind(this)
     );
     this.rootEle.removeEventListener('keyup', this.handleKeyUp.bind(this));
+
+    window.removeEventListener('resize', this.onWindowResize.bind(this));
+    this._resizeObserver.disconnect();
   }
 
   private preventTouchScroll(event: TouchEvent) {
@@ -315,6 +324,15 @@ export default abstract class EventManager extends ChildrenManager {
   protected onSelect(element: Draggable): boolean {
     return true;
   }
+
+  private onWindowResize() {
+    const dpr = window.devicePixelRatio || 1;
+    if (dpr !== this._currentDpr) {
+      this._currentDpr = dpr;
+      this.handleCanvasResize();
+    }
+  }
+  protected abstract handleCanvasResize(): void;
 
   protected get selected() {
     return this._selected;

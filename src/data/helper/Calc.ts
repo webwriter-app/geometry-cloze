@@ -188,19 +188,22 @@ export default class Calc {
     return inside;
   }
 
+  /**
+   * Calculates the even-odd area of an arbitrary polygon using the shoelace formula.
+   * This works for both convex and concave polygons, but for self-intersecting polygons,
+   * it returns the "even-odd" area (taking into account orientation and winding), which
+   * does not correspond to the plain union-area of the shape.
+   * @see https://en.wikipedia.org/wiki/Shoelace_formula
+   * @param polygon an ordered list of points defining the polygon (excluding the closing point)
+   */
   static getAreaOfPolygon(polygon: MathPoint[]): number {
-    // calculate area of all subtriangles
-    const rootPoint = polygon.shift();
-    if (!rootPoint) return 0;
-    let lastPoint = polygon.shift();
-    if (!lastPoint) return 0;
+    if (polygon.length < 3) return 0;
     let area = 0;
-    for (const point of polygon) {
-      area += this.getAreaOfTriangle(rootPoint, lastPoint, point);
-      lastPoint = point;
+    for (let i = 0; i < polygon.length; i++) {
+      let j = (i + 1) % polygon.length;
+      area += polygon[i].x * polygon[j].y - polygon[j].x * polygon[i].y;
     }
-
-    return area;
+    return Math.abs(area / 2);
   }
 
   static getAreaOfTriangle(
