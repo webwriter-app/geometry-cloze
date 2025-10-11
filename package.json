@@ -1,6 +1,6 @@
 {
   "name": "@webwriter/geometry-cloze",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Create and view geometry exercises with coloring, styling and labeling options.",
   "keywords": [
     "webwriter-widget",
