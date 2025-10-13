@@ -7,14 +7,12 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
-import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
+import SlButtonGroup from '@shoelace-style/shoelace/dist/components/button-group/button-group.component.js';
+
 import CursorIcon from '../icons/cursor';
 import PolygonIcon from '../icons/polygon';
 import DividerLineIcon from '../icons/divider-line';
 
-/**
- *
- */
 @localized()
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
@@ -22,45 +20,45 @@ export class WwGeomToolbar extends LitElementWw {
   accessor mode: InteractionMode = 'select';
 
   render() {
-    return html`<div class="wrapper">
-      <sl-tooltip>
-        <span slot="content">
-          ${msg(html`Select and move objects <strong>[S]</strong>`)}
-        </span>
-        <sl-button
-          size="large"
-          circle
-          @click=${this.handleModeChange.bind(this, 'select')}
-          variant=${this.mode === 'select' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${CursorIcon}</div>
-        </sl-button>
-      </sl-tooltip>
+    return html`${this.ModeSelector()}`;
+  }
 
-      <sl-tooltip>
-        <span slot="content">
-          ${msg(html`Create and connect objects <strong>[C]</strong>`)}
-        </span>
+  private ModeSelector() {
+    return html`<sl-button-group>
+      <sl-tooltip placement="bottom" hoist>
+        <span slot="content"
+          >${msg(html`Select and move objects <kbd>S</kbd>`)}</span
+        >
         <sl-button
-          size="large"
-          circle
-          @click=${this.handleModeChange.bind(this, 'create')}
-          variant=${this.mode === 'create' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${PolygonIcon}</div>
+          size="small"
+          variant=${this.mode === 'select' ? 'primary' : 'default'}
+          @click=${this.handleModeChange.bind(this, 'select')}>
+          ${CursorIcon}
         </sl-button>
       </sl-tooltip>
-      <sl-tooltip>
-        <span slot="content">
-          ${msg(html`Create divider lines <strong>[D]</strong>`)}
-        </span>
+      <sl-tooltip placement="bottom" hoist>
+        <span slot="content"
+          >${msg(html`Create and connect objects <kbd>C</kbd>`)}</span
+        >
         <sl-button
-          size="large"
-          circle
-          @click=${this.handleModeChange.bind(this, 'divider')}
-          variant=${this.mode === 'divider' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${DividerLineIcon}</div>
+          size="small"
+          variant=${this.mode === 'create' ? 'primary' : 'default'}
+          @click=${this.handleModeChange.bind(this, 'create')}>
+          ${PolygonIcon}
         </sl-button>
       </sl-tooltip>
-    </div>`;
+      <sl-tooltip placement="bottom" hoist>
+        <span slot="content"
+          >${msg(html`Create divider lines <kbd>D</kbd>`)}</span
+        >
+        <sl-button
+          size="small"
+          variant=${this.mode === 'divider' ? 'primary' : 'default'}
+          @click=${this.handleModeChange.bind(this, 'divider')}>
+          ${DividerLineIcon}
+        </sl-button>
+      </sl-tooltip>
+    </sl-button-group>`;
   }
 
   handleModeChange(mode: InteractionMode) {
@@ -75,20 +73,24 @@ export class WwGeomToolbar extends LitElementWw {
   }
 
   static styles = css`
-    .wrapper {
-      position: absolute;
-      top: 0.5rem;
-      left: 0.5rem;
-      user-select: none;
-    }
-    .iconWrapper {
-      height: 100%;
-      width: 100%;
+    :host {
+      display: block;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-bottom: 0.1rem;
-      box-sizing: border-box;
+      padding: var(--sl-spacing-x-small);
+      gap: var(--sl-spacing-x-small);
+    }
+
+    svg {
+      display: inline-block;
+      height: 1.5em;
+      width: 1.5em;
+    }
+
+    sl-button {
+      &::part(label) {
+        display: flex;
+        align-items: center;
+      }
     }
   `;
 
@@ -96,7 +98,7 @@ export class WwGeomToolbar extends LitElementWw {
     return {
       'sl-button': SlButton,
       'sl-tooltip': SlTooltip,
-      'sl-icon': SlIcon
+      'sl-button-group': SlButtonGroup
     };
   }
 }

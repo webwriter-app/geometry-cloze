@@ -2,7 +2,7 @@
 import LOCALIZE from '../localization/generated/index.js';
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
-import { PropertyValueMap, css, html } from 'lit';
+import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { localized } from '@lit/localize';
 import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
@@ -153,25 +153,20 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   render() {
-    return html`<div class="wrapper">
-      ${
-        this.isContentEditable
-          ? html`<ww-geom-toolbar
-              mode=${this.mode}
-              @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-                this.mode = e.detail.mode;
-                if (!this.manager) return;
-                this.manager.mode = e.detail.mode;
-              }}></ww-geom-toolbar>`
-          : ''
-      }
-        <canvas tabindex="0"></canvas>
-        <ww-geom-context-menu></ww-geom-context-menu>
-      </div>
-    </div>
-    <ww-geom-options part="options" .manager=${
-      this.manager
-    }></ww-geom-options>`;
+    return html` ${this.isContentEditable
+        ? html`<ww-geom-toolbar
+            mode=${this.mode}
+            @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
+              this.mode = e.detail.mode;
+              if (!this.manager) return;
+              this.manager.mode = e.detail.mode;
+            }}></ww-geom-toolbar>`
+        : nothing}
+      <canvas tabindex="0"></canvas>
+      <ww-geom-context-menu></ww-geom-context-menu>
+      <ww-geom-options
+        part="options"
+        .manager=${this.manager}></ww-geom-options>`;
   }
 
   private onBlur() {
@@ -280,27 +275,23 @@ export class WwGeometryCloze extends LitElementWw {
       display: block;
 
       width: 100%;
-      aspect-ratio: 10 / 7;
 
       border: solid 1px var(--sl-color-neutral-300);
       border-radius: var(--sl-border-radius-medium);
       box-sizing: border-box;
 
-      overflow: visible;
+      overflow: hidden;
       z-index: 10000000;
 
       outline: none;
     }
-    .wrapper {
-      margin: 0;
-      height: 100%;
-      position: relative;
-      outline: none;
+    ww-geom-toolbar {
+      border-bottom: solid 1px var(--sl-color-neutral-300);
     }
     canvas {
       display: block;
       width: 100%;
-      height: 100%;
+      aspect-ratio: 10 / 7;
       outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
