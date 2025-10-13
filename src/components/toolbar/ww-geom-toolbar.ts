@@ -25,7 +25,7 @@ export class WwGeomToolbar extends LitElementWw {
 
   private ModeSelector() {
     return html`<sl-button-group>
-      <sl-tooltip placement="bottom" hoist>
+      <sl-tooltip placement="bottom">
         <span slot="content"
           >${msg(html`Select and move objects <kbd>S</kbd>`)}</span
         >
@@ -36,7 +36,7 @@ export class WwGeomToolbar extends LitElementWw {
           ${CursorIcon}
         </sl-button>
       </sl-tooltip>
-      <sl-tooltip placement="bottom" hoist>
+      <sl-tooltip placement="bottom">
         <span slot="content"
           >${msg(html`Create and connect objects <kbd>C</kbd>`)}</span
         >
@@ -47,7 +47,7 @@ export class WwGeomToolbar extends LitElementWw {
           ${PolygonIcon}
         </sl-button>
       </sl-tooltip>
-      <sl-tooltip placement="bottom" hoist>
+      <sl-tooltip placement="bottom">
         <span slot="content"
           >${msg(html`Create divider lines <kbd>D</kbd>`)}</span
         >
@@ -91,6 +91,21 @@ export class WwGeomToolbar extends LitElementWw {
         display: flex;
         align-items: center;
       }
+    }
+
+    /* Inspired by the <kbd> styling on shoelace.style */
+    kbd {
+      display: inline-block;
+      background: var(--sl-color-neutral-600);
+      border: solid 1px var(--sl-color-neutral-500);
+      box-shadow:
+        inset 0 1px 0 0 var(--sl-color-neutral-700),
+        inset 0 -1px 0 0 var(--sl-color-neutral-500);
+      font-family: var(--sl-font-mono);
+      font-size: 0.9125em;
+      border-radius: var(--sl-border-radius-small);
+      color: var(--sl-color-neutral-100);
+      padding: 0.125em 0.4em;
     }
   `;
 
