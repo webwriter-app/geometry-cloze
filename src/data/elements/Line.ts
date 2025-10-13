@@ -9,6 +9,7 @@ import Point from './Point';
 import { ContextMenuItem } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
+import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -81,6 +82,17 @@ export default class Line extends Draggable {
       end.y -= normalized.y * this.end.size;
     }
     ctx.lineTo(end.x, end.y);
+
+    if (this.selected) {
+      ctx.globalAlpha = SELECTION_STYLE.alpha;
+      ctx.lineWidth = this.lineWidth + SELECTION_STYLE.strokeOffset * 2;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = this.lineWidth;
+      if (this.dashed) ctx.setLineDash([10, 10]);
+    }
+
     ctx.stroke();
 
     // draw label

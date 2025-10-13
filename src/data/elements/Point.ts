@@ -12,6 +12,7 @@ import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
+import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -38,6 +39,21 @@ export default class Point extends Draggable {
     ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
+
+    if (this.selected) {
+      ctx.globalAlpha = SELECTION_STYLE.alpha;
+      if (this.fill === 'transparent') ctx.fillStyle = this.stroke;
+      ctx.beginPath();
+      ctx.arc(
+        this.x,
+        this.y,
+        this.size + this.lineWidth / 2 + SELECTION_STYLE.strokeOffset,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
 
     if (this.showLabel) {
       ctx.font = '18px Arial';
