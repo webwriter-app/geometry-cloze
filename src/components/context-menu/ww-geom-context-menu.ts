@@ -14,8 +14,14 @@ import SlBadge from '@shoelace-style/shoelace/dist/components/badge/badge.compon
 import SlDropDown from '@shoelace-style/shoelace/dist/components/dropdown/dropdown.component.js';
 import { setDefaultAnimation } from '@shoelace-style/shoelace/dist/utilities/animation-registry.js';
 
-setDefaultAnimation('dropdown.show', { keyframes: [], options: { duration: 0 } });
-setDefaultAnimation('dropdown.hide', { keyframes: [], options: { duration: 0 } });
+setDefaultAnimation('dropdown.show', {
+  keyframes: [],
+  options: { duration: 0 }
+});
+setDefaultAnimation('dropdown.hide', {
+  keyframes: [],
+  options: { duration: 0 }
+});
 
 /**
  *
@@ -23,7 +29,8 @@ setDefaultAnimation('dropdown.hide', { keyframes: [], options: { duration: 0 } }
 @localized()
 @customElement('ww-geom-context-menu')
 export class WwGeomContextMenu extends LitElementWw {
-  @property({ type: Array, attribute: true }) accessor items: ContextMenuItem[] = [];
+  @property({ type: Array, attribute: true })
+  accessor items: ContextMenuItem[] = [];
   @property({ type: Boolean, attribute: 'open' }) accessor _open = false;
   @property({ type: Number, attribute: true }) accessor x = 0;
   @property({ type: Number, attribute: true }) accessor y = 0;
@@ -115,11 +122,15 @@ export class WwGeomContextMenu extends LitElementWw {
   }
 
   render() {
-    return html`<sl-dropdown style="left: ${this.x}px; top: ${this.y}px" .open=${this._open}>
-      <div slot="trigger"><!--  Placeholder, required for correct positioning --></div>
+    return html`<sl-dropdown
+      style="left: ${this.x}px; top: ${this.y}px"
+      .open=${this._open}>
+      <div slot="trigger">
+        <!--  Placeholder, required for correct positioning -->
+      </div>
       <sl-menu @sl-select="${this.handleClick.bind(this)}">
         ${this.items.map((item) => this.getContextMenuItem(item))}
-      </sl-menu> 
+      </sl-menu>
     </sl-dropdown>`;
   }
 
@@ -127,7 +138,7 @@ export class WwGeomContextMenu extends LitElementWw {
     :host {
       user-select: none;
     }
-    
+
     sl-dropdown {
       position: absolute;
       z-index: 1000;

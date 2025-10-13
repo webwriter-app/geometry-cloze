@@ -48,7 +48,7 @@ export default class Point extends Draggable {
       const neighbors = this.getNeighborPoints();
       // To prevent flickering when a point is moved and the angle changes rapidly,
       // we measure the maximum space the angle label could take and always reserve that.
-      const metrics = ctx.measureText((angle < 100 ? "00.0" : "000.0") + "°");
+      const metrics = ctx.measureText((angle < 100 ? '00.0' : '000.0') + '°');
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {

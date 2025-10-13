@@ -14,7 +14,9 @@ export default abstract class EventManager extends ChildrenManager {
    */
   private _selected: Draggable[] = [];
 
-  private _resizeObserver = new ResizeObserver(this.handleCanvasResize.bind(this));
+  private _resizeObserver = new ResizeObserver(
+    this.handleCanvasResize.bind(this)
+  );
   private _currentDpr = window.devicePixelRatio || 1;
 
   constructor(

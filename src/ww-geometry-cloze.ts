@@ -22,7 +22,8 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
   @query('canvas') private accessor canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu') private accessor contextMenu!: WwGeomContextMenu;
+  @query('ww-geom-context-menu')
+  private accessor contextMenu!: WwGeomContextMenu;
 
   private manager: CanvasManager | null = null;
 
@@ -86,9 +87,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   static override get observedAttributes() {
     const attributes = super.observedAttributes ?? [];
-    return attributes.includes('lang')
-      ? attributes
-      : [...attributes, 'lang'];
+    return attributes.includes('lang') ? attributes : [...attributes, 'lang'];
   }
 
   override attributeChangedCallback(
@@ -155,7 +154,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   render() {
     return html`<div class="wrapper">
-      ${  
+      ${
         this.isContentEditable
           ? html`<ww-geom-toolbar
               mode=${this.mode}
@@ -282,14 +281,14 @@ export class WwGeometryCloze extends LitElementWw {
 
       width: 100%;
       aspect-ratio: 10 / 7;
-      
+
       border: solid 1px var(--sl-color-neutral-300);
       border-radius: var(--sl-border-radius-medium);
       box-sizing: border-box;
 
       overflow: visible;
       z-index: 10000000;
-      
+
       outline: none;
     }
     .wrapper {
@@ -302,7 +301,7 @@ export class WwGeometryCloze extends LitElementWw {
       display: block;
       width: 100%;
       height: 100%;
-	    outline: none !important;
+      outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;

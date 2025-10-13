@@ -1,4 +1,6 @@
 .vite
 dist
+localization
+README.md
 src/components/icons
-pnpm-lock.yaml
+package-lock.json
