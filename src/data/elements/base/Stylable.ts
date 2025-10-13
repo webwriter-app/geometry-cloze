@@ -16,7 +16,7 @@ export interface StylableData {
   dashed?: boolean;
 }
 
-const DEFAULT_STYLE = {
+export const DEFAULT_STYLE = {
   lineWidth: 3,
   size: 10,
   stroke: '#111827',
@@ -139,6 +139,11 @@ export default class Stylable extends Element {
     'ͳ',
     'ϸ'
   ];
+
+  protected get defaultStyle() {
+    return DEFAULT_STYLE;
+  }
+
   private _lineWidth: number;
   private _size: number;
   private _stroke: string;
@@ -152,16 +157,16 @@ export default class Stylable extends Element {
 
   constructor(manager: Manager, data: StylableData & NamedElement = {}) {
     super(manager, data);
-    this._lineWidth = data.lineWidth || DEFAULT_STYLE.lineWidth;
-    this._size = data.size || DEFAULT_STYLE.size;
-    this._stroke = data.stroke || DEFAULT_STYLE.stroke;
-    this._fill = data.fill || DEFAULT_STYLE.fill;
-    this._shadow = data.shadow || DEFAULT_STYLE.shadow;
-    this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
-    this._labelColor = data.labelColor || DEFAULT_STYLE.labelColor;
-    this._labelStyle = data.labelStyle || DEFAULT_STYLE.labelStyle;
-    this._labelName = data.labelName || DEFAULT_STYLE.labelName;
-    this._dashed = data.dashed || DEFAULT_STYLE.dashed;
+    this._lineWidth = data.lineWidth || this.defaultStyle.lineWidth;
+    this._size = data.size || this.defaultStyle.size;
+    this._stroke = data.stroke || this.defaultStyle.stroke;
+    this._fill = data.fill || this.defaultStyle.fill;
+    this._shadow = data.shadow || this.defaultStyle.shadow;
+    this._showLabel = data.showLabel || this.defaultStyle.showLabel;
+    this._labelColor = data.labelColor || this.defaultStyle.labelColor;
+    this._labelStyle = data.labelStyle || this.defaultStyle.labelStyle;
+    this._labelName = data.labelName || this.defaultStyle.labelName;
+    this._dashed = data.dashed || this.defaultStyle.dashed;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
@@ -458,21 +463,21 @@ export default class Stylable extends Element {
   public export() {
     const res: StylableData = {};
 
-    if (this._lineWidth !== DEFAULT_STYLE.lineWidth)
+    if (this._lineWidth !== this.defaultStyle.lineWidth)
       res.lineWidth = this._lineWidth;
-    if (this._size !== DEFAULT_STYLE.size) res.size = this._size;
-    if (this._stroke !== DEFAULT_STYLE.stroke) res.stroke = this._stroke;
-    if (this._fill !== DEFAULT_STYLE.fill) res.fill = this._fill;
-    if (this._shadow !== DEFAULT_STYLE.shadow) res.shadow = this._shadow;
-    if (this._showLabel !== DEFAULT_STYLE.showLabel)
+    if (this._size !== this.defaultStyle.size) res.size = this._size;
+    if (this._stroke !== this.defaultStyle.stroke) res.stroke = this._stroke;
+    if (this._fill !== this.defaultStyle.fill) res.fill = this._fill;
+    if (this._shadow !== this.defaultStyle.shadow) res.shadow = this._shadow;
+    if (this._showLabel !== this.defaultStyle.showLabel)
       res.showLabel = this._showLabel;
-    if (this._labelColor !== DEFAULT_STYLE.labelColor)
+    if (this._labelColor !== this.defaultStyle.labelColor)
       res.labelColor = this._labelColor;
-    if (this._labelStyle !== DEFAULT_STYLE.labelStyle)
+    if (this._labelStyle !== this.defaultStyle.labelStyle)
       res.labelStyle = this._labelStyle;
-    if (this._labelName !== DEFAULT_STYLE.labelName)
+    if (this._labelName !== this.defaultStyle.labelName)
       res.labelName = this._labelName;
-    if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
+    if (this._dashed !== this.defaultStyle.dashed) res.dashed = this._dashed;
 
     return { ...super.export(), ...res };
   }

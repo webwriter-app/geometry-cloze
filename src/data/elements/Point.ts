@@ -3,7 +3,7 @@ import Vector from '../helper/Vector';
 import Arrays from '../helper/Arrays';
 
 import { NamedElement } from './base/Element';
-import { StylableData } from './base/Stylable';
+import { DEFAULT_STYLE, StylableData } from './base/Stylable';
 import Draggable, { DraggableData } from './base/Draggable';
 
 import Shape from './Shape';
@@ -16,7 +16,16 @@ import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export type BasePoint = MathPoint & NamedElement;
 
+const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
+  fill: DEFAULT_STYLE.stroke,
+  size: 5
+});
+
 export default class Point extends Draggable {
+  protected get defaultStyle() {
+    return DEFAULT_POINT_STYLE;
+  }
+
   protected _x: number;
   protected _y: number;
 
@@ -36,9 +45,11 @@ export default class Point extends Draggable {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    // We actually don't want to draw the stroke, but for now we still need to extend the radius by it
+    // for the line rendering to not look weird.
+    // TODO: Fix this properly by changing the line rendering logic
+    ctx.arc(this.x, this.y, this.size + this.lineWidth / 2, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.stroke();
 
     if (this.selected) {
       ctx.globalAlpha = SELECTION_STYLE.alpha;
@@ -47,7 +58,7 @@ export default class Point extends Draggable {
       ctx.arc(
         this.x,
         this.y,
-        this.size + this.lineWidth / 2 + SELECTION_STYLE.strokeOffset,
+        this.size + this.lineWidth + SELECTION_STYLE.strokeOffset,
         0,
         2 * Math.PI
       );
