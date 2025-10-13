@@ -8,9 +8,9 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import SlButton from '@shoelace-style/shoelace/dist/components/button/button.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
 import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
-import HandIndexThumb from '../icons/hand-index-thumb';
-import Pentagon from '../icons/pentagon';
-import PentagonHalf from '../icons/pentagon-half';
+import CursorIcon from '../icons/cursor';
+import PolygonIcon from '../icons/polygon';
+import DividerLineIcon from '../icons/divider-line';
 
 /**
  *
@@ -32,7 +32,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'select')}
           variant=${this.mode === 'select' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${HandIndexThumb}</div>
+          <div class="iconWrapper">${CursorIcon}</div>
         </sl-button>
       </sl-tooltip>
 
@@ -45,7 +45,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'create')}
           variant=${this.mode === 'create' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${Pentagon}</div>
+          <div class="iconWrapper">${PolygonIcon}</div>
         </sl-button>
       </sl-tooltip>
       <sl-tooltip>
@@ -57,7 +57,7 @@ export class WwGeomToolbar extends LitElementWw {
           circle
           @click=${this.handleModeChange.bind(this, 'divider')}
           variant=${this.mode === 'divider' ? 'primary' : 'default'}>
-          <div class="iconWrapper">${PentagonHalf}</div>
+          <div class="iconWrapper">${DividerLineIcon}</div>
         </sl-button>
       </sl-tooltip>
     </div>`;
@@ -87,7 +87,7 @@ export class WwGeomToolbar extends LitElementWw {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 0.3rem;
+      padding-bottom: 0.1rem;
       box-sizing: border-box;
     }
   `;
