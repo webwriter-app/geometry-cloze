@@ -6,10 +6,11 @@ export default class SelectionRect {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    // --sl-focus-ring-color (--sl-color-primary-600)
+    // https://shoelace.style/tokens/more/
+    ctx.strokeStyle = 'hsl(200.4 98% 39.4%)';
+    ctx.fillStyle = 'hsl(200.4 98% 39.4% / 0.1)';
     ctx.lineWidth = 2;
-    ctx.setLineDash([10, 10]);
     ctx.rect(
       this.coords.x,
       this.coords.y,
