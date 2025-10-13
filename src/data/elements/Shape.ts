@@ -162,8 +162,21 @@ export default class Shape extends Draggable {
     if (!point2 && hits.length > 0) return hits;
     res.push(...hits);
 
-    if (this.closed && Calc.isPointInPolygon(point, this.getPoints()))
-      res.unshift(this);
+    // Check if the polygon itself is hit
+    if (this.closed) {
+      let polygonHit = false;
+      if (!point2) {
+        // if only one point is given, we check if it is inside the polygon
+        polygonHit = Calc.isPointInPolygon(point, this.getPoints());
+      } else {
+        // If two points are given, we check if the bounding box includes all points of the polygon
+        // which implies that the polygon is fully selected
+        polygonHit =
+          hits.filter((h) => h instanceof Point).length ==
+          this.getPoints().length;
+      }
+      if (polygonHit) res.unshift(this);
+    }
 
     return res;
   }
