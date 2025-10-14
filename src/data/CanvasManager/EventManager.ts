@@ -13,6 +13,7 @@ export default abstract class EventManager extends ChildrenManager {
    * Currently selected element
    */
   private _selected: Draggable[] = [];
+  private selectionChangeListeners: ((selection: Draggable[]) => void)[] = [];
 
   private _resizeObserver = new ResizeObserver(
     this.handleCanvasResize.bind(this)
@@ -346,7 +347,7 @@ export default abstract class EventManager extends ChildrenManager {
   ) {
     const { keepSelection = false } = options;
 
-    if (!keepSelection) this.blur();
+    if (!keepSelection) this.blur(null, false);
 
     const shapes = Array.isArray(shape) ? shape : [shape];
     for (const shape of shapes) {
@@ -355,10 +356,11 @@ export default abstract class EventManager extends ChildrenManager {
         shape.select();
       }
     }
+    this.onSelectionChange();
     this.requestRedraw();
   }
 
-  blur(element?: Draggable | null) {
+  blur(element?: Draggable | null, triggerEvent: boolean = true) {
     if (element) {
       const index = this._selected.indexOf(element);
       if (index < 0) return;
@@ -368,6 +370,27 @@ export default abstract class EventManager extends ChildrenManager {
       this._selected.forEach((shape) => shape.blur());
       this._selected = [];
     }
+    if (triggerEvent) this.onSelectionChange();
     this.requestRedraw();
+  }
+
+  private onSelectionChange() {
+    this.selectionChangeListeners.forEach((listener) =>
+      listener(this._selected)
+    );
+  }
+
+  public addSelectionChangeListener(
+    listener: (selection: Draggable[]) => void
+  ) {
+    this.selectionChangeListeners.push(listener);
+  }
+
+  public removeSelectionChangeListener(
+    listener: (selection: Draggable[]) => void
+  ) {
+    const index = this.selectionChangeListeners.indexOf(listener);
+    if (index < 0) return;
+    this.selectionChangeListeners.splice(index, 1);
   }
 }

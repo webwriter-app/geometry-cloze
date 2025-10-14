@@ -1,6 +1,6 @@
 import { LitElementWw } from '@webwriter/lit';
-import { css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { css, html, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
@@ -12,64 +12,102 @@ import SlButtonGroup from '@shoelace-style/shoelace/dist/components/button-group
 import CursorIcon from '../icons/cursor';
 import PolygonIcon from '../icons/polygon';
 import DividerLineIcon from '../icons/divider-line';
+import TrashIcon from '../icons/trash';
+import CanvasManager, {
+  CanvasData
+} from '../../data/CanvasManager/CanvasManager';
+import Draggable from '../../data/elements/base/Draggable';
 
 @localized()
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
-  @property({ attribute: true })
-  accessor mode: InteractionMode = 'select';
+  @property({ type: Object })
+  accessor manager!: CanvasManager;
+
+  @state()
+  private accessor mode: InteractionMode = 'select';
+  private modeChangeListener = (newMode: InteractionMode) =>
+    (this.mode = newMode);
+
+  @state()
+  private accessor selection: Draggable[] = [];
+  private selectionChangeListener = (newSelection: Draggable[]) =>
+    (this.selection = newSelection);
 
   render() {
-    return html`${this.ModeSelector()}`;
+    return html`${this.ModeSelector()}
+      <div class="spacer"></div>
+      ${this.DeleteButton()}`;
   }
 
   private ModeSelector() {
     return html`<sl-button-group>
-      <sl-tooltip placement="bottom">
-        <span slot="content"
-          >${msg(html`Select and move objects <kbd>S</kbd>`)}</span
-        >
-        <sl-button
-          size="small"
-          variant=${this.mode === 'select' ? 'primary' : 'default'}
-          @click=${this.handleModeChange.bind(this, 'select')}>
-          ${CursorIcon}
-        </sl-button>
-      </sl-tooltip>
-      <sl-tooltip placement="bottom">
-        <span slot="content"
-          >${msg(html`Create and connect objects <kbd>C</kbd>`)}</span
-        >
-        <sl-button
-          size="small"
-          variant=${this.mode === 'create' ? 'primary' : 'default'}
-          @click=${this.handleModeChange.bind(this, 'create')}>
-          ${PolygonIcon}
-        </sl-button>
-      </sl-tooltip>
-      <sl-tooltip placement="bottom">
-        <span slot="content"
-          >${msg(html`Create divider lines <kbd>D</kbd>`)}</span
-        >
-        <sl-button
-          size="small"
-          variant=${this.mode === 'divider' ? 'primary' : 'default'}
-          @click=${this.handleModeChange.bind(this, 'divider')}>
-          ${DividerLineIcon}
-        </sl-button>
-      </sl-tooltip>
+      ${this.ModeButton(
+        'select',
+        CursorIcon,
+        html`${msg('Select and move objects')} <kbd>S</kbd>`
+      )}
+      ${this.ModeButton(
+        'create',
+        PolygonIcon,
+        html`${msg('Create and connect objects')} <kbd>C</kbd>`
+      )}
+      ${this.ModeButton(
+        'divider',
+        DividerLineIcon,
+        html`${msg('Create divider lines')} <kbd>D</kbd>`
+      )}
     </sl-button-group>`;
   }
 
-  handleModeChange(mode: InteractionMode) {
-    this.mode = mode;
-    this.dispatchEvent(
-      new CustomEvent('mode-change', {
-        bubbles: true,
-        composed: true,
-        detail: { mode }
-      })
-    );
+  private ModeButton(
+    mode: InteractionMode,
+    icon: TemplateResult,
+    tooltip: TemplateResult
+  ) {
+    return html`<sl-tooltip placement="bottom">
+      <span slot="content">${tooltip}</span>
+      <sl-button
+        size="small"
+        variant=${this.mode === mode ? 'primary' : 'default'}
+        @click=${() => (this.manager.mode = mode)}>
+        ${icon}
+      </sl-button>
+    </sl-tooltip>`;
+  }
+
+  private DeleteButton() {
+    return html`<sl-tooltip placement="bottom">
+      <span slot="content">
+        ${msg('Delete selected objects')} <kbd>⟵</kbd> / <kbd>Del</kbd>
+      </span>
+      <sl-button
+        size="small"
+        ?disabled=${this.selection.length === 0}
+        @click=${() => {
+          this.selection.forEach((element) => element.delete());
+          this.selection = [];
+        }}>
+        ${TrashIcon}
+      </sl-button>
+    </sl-tooltip>`;
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    if (this.manager) {
+      // TODO: Also add event listener on update of manager property
+      this.manager.addModeChangeListener(this.modeChangeListener);
+      this.manager.addSelectionChangeListener(this.selectionChangeListener);
+    }
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.manager) {
+      this.manager.removeModeChangeListener(this.modeChangeListener);
+      this.manager.removeSelectionChangeListener(this.selectionChangeListener);
+    }
   }
 
   static styles = css`
@@ -78,6 +116,10 @@ export class WwGeomToolbar extends LitElementWw {
       display: flex;
       padding: var(--sl-spacing-x-small);
       gap: var(--sl-spacing-x-small);
+    }
+
+    .spacer {
+      flex-grow: 1;
     }
 
     svg {

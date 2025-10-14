@@ -153,14 +153,9 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   render() {
-    return html` ${this.isContentEditable
+    return html` ${this.isContentEditable && this.manager
         ? html`<ww-geom-toolbar
-            mode=${this.mode}
-            @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-              this.mode = e.detail.mode;
-              if (!this.manager) return;
-              this.manager.mode = e.detail.mode;
-            }}></ww-geom-toolbar>`
+            .manager=${this.manager as any}></ww-geom-toolbar>`
         : nothing}
       <canvas tabindex="0"></canvas>
       <ww-geom-context-menu></ww-geom-context-menu>
