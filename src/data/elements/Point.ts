@@ -16,10 +16,10 @@ import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export type BasePoint = MathPoint & NamedElement;
 
-const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
+export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
   fill: DEFAULT_STYLE.stroke,
   size: 5
-});
+}) as any;
 
 export default class Point extends Draggable {
   protected get defaultStyle() {
