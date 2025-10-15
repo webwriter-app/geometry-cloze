@@ -112,6 +112,7 @@ export class WwGeomToolbar extends LitElementWw {
           <sl-divider></sl-divider>
           <sl-menu-label>${msg('Label color')}</sl-menu-label>
           <ww-color-picker
+            .value=${color}
             @input=${(e: CustomEvent) => {
               this.selection.forEach((element) =>
                 element.setLabelColor(e.detail)
@@ -276,6 +277,7 @@ export class WwGeomToolbar extends LitElementWw {
         <sl-menu>
           <sl-menu-label>${msg('Point color')}</sl-menu-label>
           <ww-color-picker
+            .color=${color}
             @input=${(e: CustomEvent) => {
               this.selection
                 .filter((element) => element instanceof Point)
@@ -329,6 +331,7 @@ export class WwGeomToolbar extends LitElementWw {
           <sl-divider></sl-divider>
           <sl-menu-label>${msg('Line color')}</sl-menu-label>
           <ww-color-picker
+            .value=${color}
             @input=${(e: CustomEvent) => {
               this.selection
                 .filter((element) => element instanceof Line)
@@ -366,6 +369,7 @@ export class WwGeomToolbar extends LitElementWw {
         <sl-menu>
           <sl-menu-label>${msg('Fill color')}</sl-menu-label>
           <ww-color-picker
+            .value=${color}
             include-transparent
             @input=${(e: CustomEvent) => {
               const color =

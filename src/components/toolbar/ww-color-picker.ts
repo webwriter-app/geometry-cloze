@@ -2,6 +2,7 @@ import { localized, msg } from '@lit/localize';
 import { LitElementWw } from '@webwriter/lit';
 import { html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 /**
  * A simple color picker component that displays a grid of color options.
@@ -64,6 +65,9 @@ export default class WwColorPicker extends LitElementWw {
     ] as const;
   }
 
+  @property({ type: String, attribute: true })
+  accessor value = '';
+
   /**
    * If true, includes a "transparent" color option at the start of the list.
    */
@@ -77,7 +81,7 @@ export default class WwColorPicker extends LitElementWw {
 
     return html`${colors.map(({ label, color }) => {
       return html`<button
-        class="color-button"
+        class=${classMap({ current: this.value === color })}
         title="${label}"
         @click=${() => {
           this.dispatchEvent(
@@ -103,12 +107,13 @@ export default class WwColorPicker extends LitElementWw {
       grid-template-columns: repeat(5, 1fr);
     }
 
-    .color-button {
+    button {
       border: none;
       background: none;
       cursor: pointer;
       padding: var(--sl-spacing-x-small);
       margin: 0;
+      border-radius: var(--sl-border-radius-medium);
     }
 
     .color-swatch {
@@ -116,6 +121,10 @@ export default class WwColorPicker extends LitElementWw {
       width: 1.5em;
       height: 1.5em;
       border-radius: var(--sl-border-radius-circle);
+    }
+
+    .current .color-swatch {
+      outline: 4px solid var(--sl-color-primary-200);
     }
 
     .color-swatch__transparent {
