@@ -1,7 +1,7 @@
 import { LitElementWw } from '@webwriter/lit';
 import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { localized, msg } from '@lit/localize';
+import { localized, msg, str } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -130,7 +130,7 @@ export class WwGeomToolbar extends LitElementWw {
   private CurrentLabelMenu() {
     if (this.selection.length > 1) {
       return html`<sl-menu-label>
-        ${msg(`${this.selection.length} objects selected`)}
+        ${msg(str`${this.selection.length} objects selected`)}
       </sl-menu-label>`;
     }
 

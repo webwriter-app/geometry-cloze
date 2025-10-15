@@ -1,27 +1,6 @@
 <xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="sv">
     <body>
-      <trans-unit id="ha8da28ed158bf353">
-        <source>Select and move objects <x id="0" equiv-text="&lt;strong&gt;"/>[S]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Markera och flytta objekt 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[S]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
-      <trans-unit id="h8c672b5ba7f6c67e">
-        <source>Create and connect objects <x id="0" equiv-text="&lt;strong&gt;"/>[C]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Skapa och anslut objekt 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[C]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
-      <trans-unit id="hce2957acd38b290c">
-        <source>Create divider lines <x id="0" equiv-text="&lt;strong&gt;"/>[D]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Skapa delningslinjer 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[D]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
       <trans-unit id="s5e3cb80d43a34044">
         <source>Black</source>
         <target>Svart</target>
@@ -66,74 +45,6 @@
         <source>Transparent</source>
         <target>Transparent</target>
       </trans-unit>
-      <trans-unit id="s8e5cbbecf3c94675">
-        <source>Stroke</source>
-        <target>Stroke</target>
-      </trans-unit>
-      <trans-unit id="sd1f81984eeb7c0e8">
-        <source>Fill</source>
-        <target>Fylla</target>
-      </trans-unit>
-      <trans-unit id="s76f530e2d85adb04">
-        <source>Extra Thin</source>
-        <target>Extra tunn</target>
-      </trans-unit>
-      <trans-unit id="s5015a8fb33b98872">
-        <source>Thin</source>
-        <target>Tunn</target>
-      </trans-unit>
-      <trans-unit id="sac6bdc71f750ac96">
-        <source>Medium</source>
-        <target>Medium</target>
-      </trans-unit>
-      <trans-unit id="sce673bd8e450b5ae">
-        <source>Thick</source>
-        <target>Tjock</target>
-      </trans-unit>
-      <trans-unit id="s7d579875a2423728">
-        <source>Extra Thick</source>
-        <target>Extra tjock</target>
-      </trans-unit>
-      <trans-unit id="s731f505729e9f61f">
-        <source>Line Width</source>
-        <target>Linjebredd</target>
-      </trans-unit>
-      <trans-unit id="sc74e6ebfbc1a0e5c">
-        <source>Dashed</source>
-        <target>Streckad</target>
-      </trans-unit>
-      <trans-unit id="s5590dbf7e425789d">
-        <source>Label</source>
-        <target>Etikett</target>
-      </trans-unit>
-      <trans-unit id="sa41aa566ff06c212">
-        <source>Show Label</source>
-        <target>Visa etikett</target>
-      </trans-unit>
-      <trans-unit id="s344ea8f4939cdc98">
-        <source>Color</source>
-        <target>Färg</target>
-      </trans-unit>
-      <trans-unit id="sef49aec68fd1dc66">
-        <source>Name</source>
-        <target>Namn</target>
-      </trans-unit>
-      <trans-unit id="s41f7dca46d3f1b4a">
-        <source>Value</source>
-        <target>Värde</target>
-      </trans-unit>
-      <trans-unit id="seea6c1f82cdc7c62">
-        <source>Switch angle</source>
-        <target>Omkopplarens vinkel</target>
-      </trans-unit>
-      <trans-unit id="sdc673e73b5c13aea">
-        <source>Delete</source>
-        <target>Radera</target>
-      </trans-unit>
-      <trans-unit id="sf8669fe72676e5fe">
-        <source>Del/Backspace</source>
-        <target>Del/Backspace</target>
-      </trans-unit>
       <trans-unit id="s71f4a89a7cd714ee">
         <source>Area: </source>
         <target>Område: </target>
@@ -150,10 +61,6 @@
         <source>Show Perimeter</source>
         <target>Visa omkrets</target>
       </trans-unit>
-      <trans-unit id="s6966bdd5b59571cb">
-        <source>Teacher Options</source>
-        <target>Alternativ för lärare</target>
-      </trans-unit>
       <trans-unit id="sf6f1d2fce4cc2014">
         <source>Show grid</source>
         <target>Visa rutnät</target>
@@ -161,14 +68,6 @@
       <trans-unit id="s73c0e4814878d26e">
         <source>Snap to grid</source>
         <target>Fäst i rutnätet</target>
-      </trans-unit>
-      <trans-unit id="hbe8fa4d6f5c921bb">
-        <source>You can also temporarily disable snapping by pressing
-            <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
-        <target>Du kan också tillfälligt avaktivera snapping genom att trycka på
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> medan du drar ett element
-        </target>
       </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
@@ -185,6 +84,68 @@
       <trans-unit id="s2dae9bc7aa02bab7">
         <source>Scales all labels of lengths and sizes.</source>
         <target>Skalar alla etiketter i olika längder och storlekar.</target>
+      </trans-unit>
+      <trans-unit id="s8a347fce9c8f6045">
+        <source>Select and move objects</source>
+        <target>Markera och flytta objekt</target>
+      </trans-unit>
+      <trans-unit id="sc76449099e8dab8e">
+        <source>Create and connect objects</source>
+        <target>Skapa och koppla samman objekt</target>
+      </trans-unit>
+      <trans-unit id="s3b627b7632baa8d7">
+        <source>Create divider lines</source>
+        <target>Skapa skiljelinjer</target>
+      </trans-unit>
+      <trans-unit id="sc641744471095036">
+        <source>Label color</source>
+        <target>Färg på etiketten</target>
+      </trans-unit>
+      <trans-unit id="sb6055dddb583f562">
+        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <target>
+          <x id="0" equiv-text="${this.selection.length}"/> valda objekt
+        </target>
+      </trans-unit>
+      <trans-unit id="s5246434aaa760348">
+        <source>Shape label</source>
+        <target>Form etikett</target>
+      </trans-unit>
+      <trans-unit id="sbaf7984effccc73d">
+        <source>Line label</source>
+        <target>Linjeetikett</target>
+      </trans-unit>
+      <trans-unit id="s202fffd5a2e1c595">
+        <source>Length</source>
+        <target>Längd</target>
+      </trans-unit>
+      <trans-unit id="s44f0e16cc86358e2">
+        <source>Point color</source>
+        <target>Punktens färg</target>
+      </trans-unit>
+      <trans-unit id="s5cda68f59fd34ebf">
+        <source>Line width</source>
+        <target>Linjebredd</target>
+      </trans-unit>
+      <trans-unit id="sf8f55cf0946dcb38">
+        <source>Line color</source>
+        <target>Linjefärg</target>
+      </trans-unit>
+      <trans-unit id="s997f2252dabae00f">
+        <source>Fill color</source>
+        <target>Fyll färg</target>
+      </trans-unit>
+      <trans-unit id="s4585ad5504d24a6b">
+        <source>Delete selected objects</source>
+        <target>Ta bort markerade objekt</target>
+      </trans-unit>
+      <trans-unit id="hcf737b9b198de693">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+        <target>Du kan också tillfälligt avaktivera snapping genom att trycka på
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> medan du drar ett element
+        </target>
       </trans-unit>
     </body>
   </file>

@@ -1,27 +1,6 @@
 <xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="fr">
     <body>
-      <trans-unit id="ha8da28ed158bf353">
-        <source>Select and move objects <x id="0" equiv-text="&lt;strong&gt;"/>[S]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Sélectionner et déplacer des objets 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[S]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
-      <trans-unit id="h8c672b5ba7f6c67e">
-        <source>Create and connect objects <x id="0" equiv-text="&lt;strong&gt;"/>[C]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Créer et connecter des objets 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[C]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
-      <trans-unit id="hce2957acd38b290c">
-        <source>Create divider lines <x id="0" equiv-text="&lt;strong&gt;"/>[D]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-        <target>Créer des lignes de séparation 
-          <x id="0" equiv-text="&lt;strong&gt;"/>[D]
-          <x id="1" equiv-text="&lt;/strong&gt;"/>
-        </target>
-      </trans-unit>
       <trans-unit id="s5e3cb80d43a34044">
         <source>Black</source>
         <target>Noir</target>
@@ -66,74 +45,6 @@
         <source>Transparent</source>
         <target>Transparent</target>
       </trans-unit>
-      <trans-unit id="s8e5cbbecf3c94675">
-        <source>Stroke</source>
-        <target>Accident vasculaire cérébral</target>
-      </trans-unit>
-      <trans-unit id="sd1f81984eeb7c0e8">
-        <source>Fill</source>
-        <target>Remplir</target>
-      </trans-unit>
-      <trans-unit id="s76f530e2d85adb04">
-        <source>Extra Thin</source>
-        <target>Extra mince</target>
-      </trans-unit>
-      <trans-unit id="s5015a8fb33b98872">
-        <source>Thin</source>
-        <target>Mince</target>
-      </trans-unit>
-      <trans-unit id="sac6bdc71f750ac96">
-        <source>Medium</source>
-        <target>Moyen</target>
-      </trans-unit>
-      <trans-unit id="sce673bd8e450b5ae">
-        <source>Thick</source>
-        <target>Épais</target>
-      </trans-unit>
-      <trans-unit id="s7d579875a2423728">
-        <source>Extra Thick</source>
-        <target>Très épais</target>
-      </trans-unit>
-      <trans-unit id="s731f505729e9f61f">
-        <source>Line Width</source>
-        <target>Largeur de ligne</target>
-      </trans-unit>
-      <trans-unit id="sc74e6ebfbc1a0e5c">
-        <source>Dashed</source>
-        <target>En pointillés</target>
-      </trans-unit>
-      <trans-unit id="s5590dbf7e425789d">
-        <source>Label</source>
-        <target>Étiquette</target>
-      </trans-unit>
-      <trans-unit id="sa41aa566ff06c212">
-        <source>Show Label</source>
-        <target>Afficher l'étiquette</target>
-      </trans-unit>
-      <trans-unit id="s344ea8f4939cdc98">
-        <source>Color</source>
-        <target>Couleur</target>
-      </trans-unit>
-      <trans-unit id="sef49aec68fd1dc66">
-        <source>Name</source>
-        <target>Nom</target>
-      </trans-unit>
-      <trans-unit id="s41f7dca46d3f1b4a">
-        <source>Value</source>
-        <target>Valeur</target>
-      </trans-unit>
-      <trans-unit id="seea6c1f82cdc7c62">
-        <source>Switch angle</source>
-        <target>Angle de commutation</target>
-      </trans-unit>
-      <trans-unit id="sdc673e73b5c13aea">
-        <source>Delete</source>
-        <target>Supprimer</target>
-      </trans-unit>
-      <trans-unit id="sf8669fe72676e5fe">
-        <source>Del/Backspace</source>
-        <target>Del/Backspace</target>
-      </trans-unit>
       <trans-unit id="s71f4a89a7cd714ee">
         <source>Area: </source>
         <target>Zone : </target>
@@ -150,10 +61,6 @@
         <source>Show Perimeter</source>
         <target>Afficher le périmètre</target>
       </trans-unit>
-      <trans-unit id="s6966bdd5b59571cb">
-        <source>Teacher Options</source>
-        <target>Options pour les enseignants</target>
-      </trans-unit>
       <trans-unit id="sf6f1d2fce4cc2014">
         <source>Show grid</source>
         <target>Afficher la grille</target>
@@ -161,14 +68,6 @@
       <trans-unit id="s73c0e4814878d26e">
         <source>Snap to grid</source>
         <target>Accrochage à la grille</target>
-      </trans-unit>
-      <trans-unit id="hbe8fa4d6f5c921bb">
-        <source>You can also temporarily disable snapping by pressing
-            <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
-        <target>Vous pouvez également désactiver temporairement l'accrochage en appuyant sur la touche
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> tout en faisant glisser un élément
-        </target>
       </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
@@ -185,6 +84,68 @@
       <trans-unit id="s2dae9bc7aa02bab7">
         <source>Scales all labels of lengths and sizes.</source>
         <target>Échelle de toutes les étiquettes de longueurs et de tailles.</target>
+      </trans-unit>
+      <trans-unit id="s8a347fce9c8f6045">
+        <source>Select and move objects</source>
+        <target>Sélectionner et déplacer des objets</target>
+      </trans-unit>
+      <trans-unit id="sc76449099e8dab8e">
+        <source>Create and connect objects</source>
+        <target>Créer et connecter des objets</target>
+      </trans-unit>
+      <trans-unit id="s3b627b7632baa8d7">
+        <source>Create divider lines</source>
+        <target>Créer des lignes de séparation</target>
+      </trans-unit>
+      <trans-unit id="sc641744471095036">
+        <source>Label color</source>
+        <target>Couleur de l'étiquette</target>
+      </trans-unit>
+      <trans-unit id="sb6055dddb583f562">
+        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <target>
+          <x id="0" equiv-text="${this.selection.length}"/> objets sélectionnés
+        </target>
+      </trans-unit>
+      <trans-unit id="s5246434aaa760348">
+        <source>Shape label</source>
+        <target>Étiquette de forme</target>
+      </trans-unit>
+      <trans-unit id="sbaf7984effccc73d">
+        <source>Line label</source>
+        <target>Etiquette de ligne</target>
+      </trans-unit>
+      <trans-unit id="s202fffd5a2e1c595">
+        <source>Length</source>
+        <target>Longueur</target>
+      </trans-unit>
+      <trans-unit id="s44f0e16cc86358e2">
+        <source>Point color</source>
+        <target>Couleur du point</target>
+      </trans-unit>
+      <trans-unit id="s5cda68f59fd34ebf">
+        <source>Line width</source>
+        <target>Largeur de la ligne</target>
+      </trans-unit>
+      <trans-unit id="sf8f55cf0946dcb38">
+        <source>Line color</source>
+        <target>Couleur de la ligne</target>
+      </trans-unit>
+      <trans-unit id="s997f2252dabae00f">
+        <source>Fill color</source>
+        <target>Couleur de remplissage</target>
+      </trans-unit>
+      <trans-unit id="s4585ad5504d24a6b">
+        <source>Delete selected objects</source>
+        <target>Supprimer les objets sélectionnés</target>
+      </trans-unit>
+      <trans-unit id="hcf737b9b198de693">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+        <target>Vous pouvez également désactiver temporairement l'accrochage en appuyant sur la touche
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> tout en faisant glisser un élément
+        </target>
       </trans-unit>
     </body>
   </file>

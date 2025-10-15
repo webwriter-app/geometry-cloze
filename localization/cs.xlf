@@ -1,137 +1,152 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-<file target-language="cs" source-language="en" original="lit-localize-inputs" datatype="plaintext">
-<body>
-<trans-unit id="ha8da28ed158bf353">
-  <source>Select and move objects <x id="0" equiv-text="&lt;strong&gt;"/>[S]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-</trans-unit>
-<trans-unit id="h8c672b5ba7f6c67e">
-  <source>Create and connect objects <x id="0" equiv-text="&lt;strong&gt;"/>[C]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-</trans-unit>
-<trans-unit id="hce2957acd38b290c">
-  <source>Create divider lines <x id="0" equiv-text="&lt;strong&gt;"/>[D]<x id="1" equiv-text="&lt;/strong&gt;"/></source>
-</trans-unit>
-<trans-unit id="s5e3cb80d43a34044">
-  <source>Black</source>
-</trans-unit>
-<trans-unit id="s9ff1de19feac1b7c">
-  <source>Red</source>
-</trans-unit>
-<trans-unit id="s8f450dd0b7bdb8cb">
-  <source>Orange</source>
-</trans-unit>
-<trans-unit id="s6baf78886c99db89">
-  <source>Yellow</source>
-</trans-unit>
-<trans-unit id="s3d0296b47fe6323c">
-  <source>Lime</source>
-</trans-unit>
-<trans-unit id="scf00d78fd5953f1c">
-  <source>Green</source>
-</trans-unit>
-<trans-unit id="s9b3c2f9cc32d565a">
-  <source>Cyan</source>
-</trans-unit>
-<trans-unit id="secf3d3a7c1693e2d">
-  <source>Blue</source>
-</trans-unit>
-<trans-unit id="s109991b0423f1512">
-  <source>Violet</source>
-</trans-unit>
-<trans-unit id="se9beed19c6a38fed">
-  <source>Pink</source>
-</trans-unit>
-<trans-unit id="sd0e945b97c0c46d1">
-  <source>Transparent</source>
-</trans-unit>
-<trans-unit id="s8e5cbbecf3c94675">
-  <source>Stroke</source>
-</trans-unit>
-<trans-unit id="sd1f81984eeb7c0e8">
-  <source>Fill</source>
-</trans-unit>
-<trans-unit id="s76f530e2d85adb04">
-  <source>Extra Thin</source>
-</trans-unit>
-<trans-unit id="s5015a8fb33b98872">
-  <source>Thin</source>
-</trans-unit>
-<trans-unit id="sac6bdc71f750ac96">
-  <source>Medium</source>
-</trans-unit>
-<trans-unit id="sce673bd8e450b5ae">
-  <source>Thick</source>
-</trans-unit>
-<trans-unit id="s7d579875a2423728">
-  <source>Extra Thick</source>
-</trans-unit>
-<trans-unit id="s731f505729e9f61f">
-  <source>Line Width</source>
-</trans-unit>
-<trans-unit id="sc74e6ebfbc1a0e5c">
-  <source>Dashed</source>
-</trans-unit>
-<trans-unit id="s5590dbf7e425789d">
-  <source>Label</source>
-</trans-unit>
-<trans-unit id="sa41aa566ff06c212">
-  <source>Show Label</source>
-</trans-unit>
-<trans-unit id="s344ea8f4939cdc98">
-  <source>Color</source>
-</trans-unit>
-<trans-unit id="sef49aec68fd1dc66">
-  <source>Name</source>
-</trans-unit>
-<trans-unit id="s41f7dca46d3f1b4a">
-  <source>Value</source>
-</trans-unit>
-<trans-unit id="seea6c1f82cdc7c62">
-  <source>Switch angle</source>
-</trans-unit>
-<trans-unit id="sdc673e73b5c13aea">
-  <source>Delete</source>
-</trans-unit>
-<trans-unit id="sf8669fe72676e5fe">
-  <source>Del/Backspace</source>
-</trans-unit>
-<trans-unit id="s71f4a89a7cd714ee">
-  <source>Area: </source>
-</trans-unit>
-<trans-unit id="s447b301ca02b353e">
-  <source>Perimeter: </source>
-</trans-unit>
-<trans-unit id="s6751f51ab77310e5">
-  <source>Show Area</source>
-</trans-unit>
-<trans-unit id="s24d82e0bdc4ea31f">
-  <source>Show Perimeter</source>
-</trans-unit>
-<trans-unit id="s6966bdd5b59571cb">
-  <source>Teacher Options</source>
-</trans-unit>
-<trans-unit id="sf6f1d2fce4cc2014">
-  <source>Show grid</source>
-</trans-unit>
-<trans-unit id="s73c0e4814878d26e">
-  <source>Snap to grid</source>
-</trans-unit>
-<trans-unit id="hbe8fa4d6f5c921bb">
-  <source>You can also temporarily disable snapping by pressing
-            <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
-</trans-unit>
-<trans-unit id="s4fd35ef13079b962">
-  <source>Abstract right angle</source>
-</trans-unit>
-<trans-unit id="sf9f816447b409e1c">
-  <source>When enabled, right angles will be drawn as a small square</source>
-</trans-unit>
-<trans-unit id="s2706a162264c46f1">
-  <source>Scale</source>
-</trans-unit>
-<trans-unit id="s2dae9bc7aa02bab7">
-  <source>Scales all labels of lengths and sizes.</source>
-</trans-unit>
-</body>
-</file>
+<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="cs">
+    <body>
+      <trans-unit id="s5e3cb80d43a34044">
+        <source>Black</source>
+        <target>Černá</target>
+      </trans-unit>
+      <trans-unit id="s9ff1de19feac1b7c">
+        <source>Red</source>
+        <target>Červená</target>
+      </trans-unit>
+      <trans-unit id="s8f450dd0b7bdb8cb">
+        <source>Orange</source>
+        <target>Orange</target>
+      </trans-unit>
+      <trans-unit id="s6baf78886c99db89">
+        <source>Yellow</source>
+        <target>Žlutý</target>
+      </trans-unit>
+      <trans-unit id="s3d0296b47fe6323c">
+        <source>Lime</source>
+        <target>Lime</target>
+      </trans-unit>
+      <trans-unit id="scf00d78fd5953f1c">
+        <source>Green</source>
+        <target>Zelená</target>
+      </trans-unit>
+      <trans-unit id="s9b3c2f9cc32d565a">
+        <source>Cyan</source>
+        <target>Cyan</target>
+      </trans-unit>
+      <trans-unit id="secf3d3a7c1693e2d">
+        <source>Blue</source>
+        <target>Modrá</target>
+      </trans-unit>
+      <trans-unit id="s109991b0423f1512">
+        <source>Violet</source>
+        <target>Violet</target>
+      </trans-unit>
+      <trans-unit id="se9beed19c6a38fed">
+        <source>Pink</source>
+        <target>Růžová</target>
+      </trans-unit>
+      <trans-unit id="sd0e945b97c0c46d1">
+        <source>Transparent</source>
+        <target>Transparentní</target>
+      </trans-unit>
+      <trans-unit id="s71f4a89a7cd714ee">
+        <source>Area: </source>
+        <target>Oblast: </target>
+      </trans-unit>
+      <trans-unit id="s447b301ca02b353e">
+        <source>Perimeter: </source>
+        <target>Obvod: </target>
+      </trans-unit>
+      <trans-unit id="s6751f51ab77310e5">
+        <source>Show Area</source>
+        <target>Výstavní plocha</target>
+      </trans-unit>
+      <trans-unit id="s24d82e0bdc4ea31f">
+        <source>Show Perimeter</source>
+        <target>Zobrazit obvod</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>Zobrazit mřížku</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>Přichycení k mřížce</target>
+      </trans-unit>
+      <trans-unit id="s4fd35ef13079b962">
+        <source>Abstract right angle</source>
+        <target>Abstraktní pravý úhel</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>Pokud je tato funkce povolena, pravé úhly se vykreslí jako malý čtverec.</target>
+      </trans-unit>
+      <trans-unit id="s2706a162264c46f1">
+        <source>Scale</source>
+        <target>Měřítko</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>Váhy všech označení délek a velikostí.</target>
+      </trans-unit>
+      <trans-unit id="s8a347fce9c8f6045">
+        <source>Select and move objects</source>
+        <target>Výběr a přesun objektů</target>
+      </trans-unit>
+      <trans-unit id="sc76449099e8dab8e">
+        <source>Create and connect objects</source>
+        <target>Vytváření a připojování objektů</target>
+      </trans-unit>
+      <trans-unit id="s3b627b7632baa8d7">
+        <source>Create divider lines</source>
+        <target>Vytvoření dělících čar</target>
+      </trans-unit>
+      <trans-unit id="sc641744471095036">
+        <source>Label color</source>
+        <target>Barva štítku</target>
+      </trans-unit>
+      <trans-unit id="sb6055dddb583f562">
+        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <target>
+          <x id="0" equiv-text="${this.selection.length}"/> vybrané objekty
+        </target>
+      </trans-unit>
+      <trans-unit id="s5246434aaa760348">
+        <source>Shape label</source>
+        <target>Štítek tvaru</target>
+      </trans-unit>
+      <trans-unit id="sbaf7984effccc73d">
+        <source>Line label</source>
+        <target>Označení řádku</target>
+      </trans-unit>
+      <trans-unit id="s202fffd5a2e1c595">
+        <source>Length</source>
+        <target>Délka</target>
+      </trans-unit>
+      <trans-unit id="s44f0e16cc86358e2">
+        <source>Point color</source>
+        <target>Barva bodu</target>
+      </trans-unit>
+      <trans-unit id="s5cda68f59fd34ebf">
+        <source>Line width</source>
+        <target>Šířka čáry</target>
+      </trans-unit>
+      <trans-unit id="sf8f55cf0946dcb38">
+        <source>Line color</source>
+        <target>Barva čáry</target>
+      </trans-unit>
+      <trans-unit id="s997f2252dabae00f">
+        <source>Fill color</source>
+        <target>Barva výplně</target>
+      </trans-unit>
+      <trans-unit id="s4585ad5504d24a6b">
+        <source>Delete selected objects</source>
+        <target>Odstranění vybraných objektů</target>
+      </trans-unit>
+      <trans-unit id="hcf737b9b198de693">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+        <target>Přichytávání můžete také dočasně zakázat stisknutím tlačítka
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> při přetahování prvku
+        </target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
