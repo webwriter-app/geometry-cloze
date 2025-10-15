@@ -5,7 +5,6 @@ import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { localized } from '@lit/localize';
-import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
@@ -22,8 +21,6 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
   @query('canvas') private accessor canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu')
-  private accessor contextMenu!: WwGeomContextMenu;
 
   private manager: CanvasManager | null = null;
 
@@ -158,17 +155,9 @@ export class WwGeometryCloze extends LitElementWw {
             .manager=${this.manager as any}></ww-geom-toolbar>`
         : nothing}
       <canvas tabindex="0"></canvas>
-      <ww-geom-context-menu></ww-geom-context-menu>
       <ww-geom-options
         part="options"
         .manager=${this.manager as any}></ww-geom-options>`;
-  }
-
-  private onBlur() {
-    this.contextMenu?.close();
-  }
-  private onClick() {
-    this.contextMenu?.close();
   }
 
   protected updated(
@@ -202,8 +191,6 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   firstUpdated() {
-    this.addEventListener('blur', this.onBlur.bind(this));
-    this.addEventListener('click', this.onClick.bind(this));
     if (this.canvas) {
       if (this.manager) {
         console.warn('Prevented creating multiple CanvasManager');
@@ -211,8 +198,7 @@ export class WwGeometryCloze extends LitElementWw {
       }
       this.manager = new CanvasManager(
         this.canvas,
-        this.renderRoot as HTMLElement,
-        this.contextMenu
+        this.renderRoot as HTMLElement
       );
       this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
 
@@ -240,8 +226,6 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener('blur', this.onBlur);
-    this.removeEventListener('click', this.onClick);
     if (this.manager) {
       this.manager.removeUpdateListener(this.onCanvasValueChange);
       this.manager.unmount();
@@ -259,7 +243,6 @@ export class WwGeometryCloze extends LitElementWw {
   public static get scopedElements() {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
-      'ww-geom-context-menu': WwGeomContextMenu,
       'ww-geom-options': WwGeomOptions
     };
   }

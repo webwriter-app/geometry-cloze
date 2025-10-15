@@ -1,14 +1,12 @@
 import Calc, { MathPoint } from '../helper/Calc';
 import Draggable from '../elements/base/Draggable';
 import ChildrenManager from './ChildrenManager';
-import { WwGeomContextMenu } from '../../components/context-menu/ww-geom-context-menu';
 
 export default abstract class EventManager extends ChildrenManager {
   protected wrapper: HTMLCanvasElement;
 
   private clickTargetEle: HTMLElement;
   private rootEle: HTMLElement;
-  private contextMenu: WwGeomContextMenu;
   /**
    * Currently selected element
    */
@@ -20,14 +18,9 @@ export default abstract class EventManager extends ChildrenManager {
   );
   private _currentDpr = window.devicePixelRatio || 1;
 
-  constructor(
-    canvas: HTMLCanvasElement,
-    rootEle: HTMLElement,
-    contextMenu: WwGeomContextMenu
-  ) {
+  constructor(canvas: HTMLCanvasElement, rootEle: HTMLElement) {
     super(canvas);
     this.wrapper = canvas;
-    this.contextMenu = contextMenu;
 
     this.clickTargetEle = canvas;
     this.rootEle = rootEle;
@@ -63,10 +56,6 @@ export default abstract class EventManager extends ChildrenManager {
       capture: false
     });
 
-    this.clickTargetEle.addEventListener(
-      'contextmenu',
-      this.handleContextMenu.bind(this)
-    );
     this.rootEle.addEventListener(
       'keydown',
       this._handleKeyboardEvent.bind(this)
@@ -105,10 +94,6 @@ export default abstract class EventManager extends ChildrenManager {
     this.clickTargetEle.removeEventListener(
       'touchmove',
       this.preventTouchScroll
-    );
-    this.clickTargetEle.removeEventListener(
-      'contextmenu',
-      this.handleContextMenu.bind(this)
     );
     this.rootEle.removeEventListener(
       'keydown',
@@ -254,21 +239,6 @@ export default abstract class EventManager extends ChildrenManager {
     });
   }
 
-  private handleContextMenu(event: MouseEvent) {
-    const coords = this.getRelativeCoordinates(event);
-    const hit = this.getElementAt(coords);
-    if (hit) {
-      event.preventDefault();
-      const menuitems = hit.getContextMenuItems();
-      if (menuitems.length) {
-        const localX =
-          event.clientX - this.wrapper.getBoundingClientRect().left;
-        const localY = event.clientY - this.wrapper.getBoundingClientRect().top;
-        this.contextMenu.items = menuitems;
-        this.contextMenu.open(localX, localY);
-      }
-    }
-  }
   protected keys = {
     alt: false,
     shift: false,

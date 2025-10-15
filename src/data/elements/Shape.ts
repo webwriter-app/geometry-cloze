@@ -6,7 +6,6 @@ import Draggable, { DraggableData } from './base/Draggable';
 import Point, { BasePoint } from './Point';
 import Line, { BaseLine } from './Line';
 
-import { ContextMenuItem } from '../../types/ContextMenu';
 import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
@@ -533,60 +532,6 @@ export default class Shape extends Draggable {
       res.push(`${prefix}${perimeterRounded}`);
     }
     return res.join('|');
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    return [
-      ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({
-        fill: true,
-        showLabel: false
-      }),
-      {
-        type: 'submenu',
-        label: msg('Label'),
-        key: 'label',
-        items: [
-          {
-            type: 'checkbox',
-            label: msg('Show Area'),
-            getChecked: () => this.showArea,
-            action: (checked) => {
-              this.showArea = checked;
-              this.shouldShowLabel(this.showArea || this.showPerimeter);
-              this.requestRedraw();
-            },
-            key: 'show-area-label'
-          },
-          {
-            type: 'checkbox',
-            label: msg('Show Perimeter'),
-            getChecked: () => this.showPerimeter,
-            action: (checked) => {
-              this.showPerimeter = checked;
-              this.shouldShowLabel(this.showArea || this.showPerimeter);
-              this.requestRedraw();
-            },
-            key: 'show-perimeter-label'
-          },
-          {
-            type: 'submenu',
-            label: msg('Color'),
-            key: 'label_color',
-            items: Stylable.COLORS.map(
-              (option) =>
-                ({
-                  type: 'checkbox',
-                  getChecked: () => this.labelColor === option.color,
-                  label: option.label,
-                  action: () => this.setLabelColor(option.color),
-                  key: `label_color_${option.label.toLowerCase()}`
-                }) as const
-            )
-          }
-        ]
-      }
-    ];
   }
 
   public connect(shape: Shape, point: Point, to: Point) {

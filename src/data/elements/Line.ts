@@ -6,7 +6,6 @@ import { StylableData } from './base/Stylable';
 import Draggable, { DraggableData } from './base/Draggable';
 import Point from './Point';
 
-import { ContextMenuItem } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { SELECTION_STYLE } from '../components/SelectionRect';
@@ -200,13 +199,6 @@ export default class Line extends Draggable {
     return Numbers.round(
       Calc.distance(this.start, this.end) * this.manager.scale
     );
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    return [
-      ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({ stroke: true, lineWidth: true })
-    ];
   }
 
   public isEndpoint(point: MathPoint) {

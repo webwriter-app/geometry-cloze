@@ -8,7 +8,6 @@ import Draggable, { DraggableData } from './base/Draggable';
 
 import Shape from './Shape';
 
-import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
@@ -196,35 +195,6 @@ export default class Point extends Draggable {
     if (angle === -1) return '';
     if (this.showOutsideAngle) angle = 360 - angle;
     return `${Numbers.round(angle)}°`;
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    const res = [
-      ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({
-        stroke: true,
-        fill: true,
-        lineWidth: true,
-        nameList: 'greek'
-      })
-    ];
-
-    (
-      res.find((i) => i.type === 'submenu' && i.key === 'label') as
-        | ContextMenuSubmenu
-        | undefined
-    )?.items.splice(1, 0, {
-      key: 'showOutsideAngle',
-      type: 'checkbox',
-      label: msg('Switch angle'),
-      getChecked: () => this.showOutsideAngle,
-      action: (value: boolean) => {
-        this.showOutsideAngle = value;
-        this.requestRedraw();
-      }
-    });
-
-    return res;
   }
 
   public export() {
