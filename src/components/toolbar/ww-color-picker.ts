@@ -100,7 +100,7 @@ export default class WwColorPicker extends LitElementWw {
   static styles = css`
     :host {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
     }
 
     .color-button {
@@ -127,4 +127,10 @@ export default class WwColorPicker extends LitElementWw {
       background-position: center;
     }
   `;
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'ww-color-picker': WwColorPicker;
+  }
 }

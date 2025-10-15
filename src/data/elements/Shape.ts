@@ -513,8 +513,8 @@ export default class Shape extends Draggable {
     }
   }
 
-  protected showArea = false;
-  protected showPerimeter = false;
+  public showArea = false;
+  public showPerimeter = false;
   protected getValueLabel(): string {
     const res: (string | number)[] = [];
     if (this.showArea) {

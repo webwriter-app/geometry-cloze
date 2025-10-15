@@ -40,7 +40,7 @@ export default class Point extends Draggable {
     this._y = data.y;
   }
 
-  protected showOutsideAngle = false;
+  public showOutsideAngle = false;
   draw(ctx: CanvasRenderingContext2D) {
     if (this.hidden) return;
     super.draw(ctx);
