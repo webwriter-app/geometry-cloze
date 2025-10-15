@@ -153,7 +153,7 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   render() {
-    return html` ${this.isContentEditable && this.manager
+    return html` ${this.isContentEditable
         ? html`<ww-geom-toolbar
             .manager=${this.manager as any}></ww-geom-toolbar>`
         : nothing}
@@ -161,7 +161,7 @@ export class WwGeometryCloze extends LitElementWw {
       <ww-geom-context-menu></ww-geom-context-menu>
       <ww-geom-options
         part="options"
-        .manager=${this.manager}></ww-geom-options>`;
+        .manager=${this.manager as any}></ww-geom-options>`;
   }
 
   private onBlur() {

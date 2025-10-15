@@ -1,5 +1,5 @@
 import { LitElementWw } from '@webwriter/lit';
-import { css, html, nothing, TemplateResult } from 'lit';
+import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
 
@@ -35,7 +35,7 @@ import AngleIcon from '../icons/angle';
 @customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
   @property({ type: Object })
-  accessor manager!: CanvasManager;
+  accessor manager: CanvasManager | null = null;
 
   @state()
   private accessor mode: InteractionMode = 'select';
@@ -88,7 +88,9 @@ export class WwGeomToolbar extends LitElementWw {
         <sl-button
           size="small"
           variant=${this.mode === mode ? 'primary' : 'default'}
-          @click=${() => (this.manager.mode = mode)}>
+          @click=${() => {
+            if (this.manager) this.manager.mode = mode;
+          }}>
           ${icon}
         </sl-button>
       </sl-tooltip>
@@ -117,7 +119,7 @@ export class WwGeomToolbar extends LitElementWw {
               this.selection.forEach((element) =>
                 element.setLabelColor(e.detail)
               );
-              this.manager.requestRedraw();
+              this.manager?.requestRedraw();
               this.requestUpdate();
             }}></ww-color-picker>
         </sl-menu>
@@ -147,7 +149,7 @@ export class WwGeomToolbar extends LitElementWw {
   private ShapeLabelMenu(shape: Shape) {
     const labelChanged = () => {
       shape.shouldShowLabel(shape.showArea || shape.showPerimeter);
-      this.manager.requestRedraw();
+      this.manager?.requestRedraw();
       this.requestUpdate();
     };
 
@@ -220,7 +222,7 @@ export class WwGeomToolbar extends LitElementWw {
         @sl-change=${(e: CustomEvent) => {
           point.showOutsideAngle = (e.target as SlCheckbox).checked;
           point.shouldShowLabel(point.showLabel);
-          this.manager.requestRedraw();
+          this.manager?.requestRedraw();
           this.requestUpdate();
         }}>
         Flip angle
@@ -405,19 +407,31 @@ export class WwGeomToolbar extends LitElementWw {
 
   connectedCallback(): void {
     super.connectedCallback();
-    if (this.manager) {
-      // TODO: Also add event listener on update of manager property
-      this.manager.addModeChangeListener(this.modeChangeListener);
-      this.manager.addSelectionChangeListener(this.selectionChangeListener);
-    }
+    if (this.manager) this.managerAttached(this.manager);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    if (this.manager) {
-      this.manager.removeModeChangeListener(this.modeChangeListener);
-      this.manager.removeSelectionChangeListener(this.selectionChangeListener);
+    if (this.manager) this.managerDetached(this.manager);
+  }
+
+  protected updated(changed: PropertyValues<this>) {
+    if (changed.has('manager')) {
+      const old = changed.get('manager');
+      if (old) this.managerDetached(old as CanvasManager);
+      if (this.manager) this.managerAttached(this.manager);
     }
+  }
+
+  private managerAttached(manager: CanvasManager) {
+    manager.addModeChangeListener(this.modeChangeListener);
+    manager.addSelectionChangeListener(this.selectionChangeListener);
+    this.mode = manager.mode;
+  }
+
+  private managerDetached(manager: CanvasManager) {
+    manager.removeModeChangeListener(this.modeChangeListener);
+    manager.removeSelectionChangeListener(this.selectionChangeListener);
   }
 
   static styles = css`
