@@ -16,6 +16,7 @@ export default class SelectionRect {
     // https://shoelace.style/tokens/more/
     ctx.strokeStyle = 'hsl(200.4 98% 39.4%)';
     ctx.fillStyle = 'hsl(200.4 98% 39.4% / 0.1)';
+    ctx.setLineDash([]);
     ctx.lineWidth = 2;
     ctx.rect(
       this.coords.x,
