@@ -147,7 +147,6 @@ export default abstract class EventManager extends ChildrenManager {
   private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
     null;
   private onMouseDown(event: MouseEvent | TouchEvent) {
-    event.stopPropagation();
     this.moved = false;
     const coords = this.getRelativeCoordinates(event);
 
@@ -177,7 +176,6 @@ export default abstract class EventManager extends ChildrenManager {
   }
 
   private onMouseUp(event: MouseEvent | TouchEvent) {
-    event.stopPropagation();
     const isRightClick = 'button' in event && event.button === 2;
 
     if (this.moved) {
@@ -257,7 +255,6 @@ export default abstract class EventManager extends ChildrenManager {
   }
 
   private handleContextMenu(event: MouseEvent) {
-    event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
     const hit = this.getElementAt(coords);
     if (hit) {
