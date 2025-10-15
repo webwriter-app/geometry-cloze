@@ -1,4 +1,3 @@
-import { ContextMenuItem } from '../../../types/ContextMenu';
 import Shape from '../Shape';
 import IDManager from '../../CanvasManager/IDManager';
 import Manager from '../../CanvasManager/Abstracts';
@@ -118,18 +117,6 @@ export default class Element {
 
   protected requestRedraw() {
     this.fireEvent('request-redraw');
-  }
-
-  public getContextMenuItems(this: Shape): ContextMenuItem[] {
-    return [
-      {
-        key: 'delete',
-        type: 'button',
-        label: msg('Delete'),
-        action: this.delete.bind(this),
-        badge: msg('Del/Backspace')
-      }
-    ];
   }
 
   public getChildByID(id: number): Element | null {

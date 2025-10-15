@@ -38,8 +38,10 @@ export class WwGeomOptions extends LitElementWw {
           <sl-tooltip placement="left" hoist>
             <sl-icon src=${InfoSVG}></sl-icon>
             <span slot="content">
-              ${msg(html`You can also temporarily disable snapping by pressing
-              <sl-tag size="small">Alt</sl-tag> while dragging an element`)}
+              ${msg(
+                html`You can also temporarily disable snapping by pressing
+                  <sl-tag size="small">Alt</sl-tag> while dragging an element`
+              )}
             </span>
           </sl-tooltip>
         </div>

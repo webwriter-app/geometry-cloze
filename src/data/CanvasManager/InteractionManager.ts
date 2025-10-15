@@ -11,6 +11,7 @@ import CanvasManager from './CanvasManager';
 const SNAP_SPACING = 50;
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
+  private modeChangeListeners: ((mode: InteractionMode) => void)[] = [];
   protected _snapSpacing: number | null = SNAP_SPACING;
   private snap<Value extends number | MathPoint>(value: Value): Value {
     if (this._snapSpacing === null || this.keys.alt) return value;
@@ -54,9 +55,6 @@ export default class InteractionManager extends EventManager {
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
-    this.selectionRect?.draw(ctx);
-    this.ghostLine?.draw(ctx);
-    this.ghostDividerLine?.draw(ctx);
     if (this.showGrid) {
       const spacing = SNAP_SPACING;
       ctx.strokeStyle = '#00000050';
@@ -74,6 +72,15 @@ export default class InteractionManager extends EventManager {
         ctx.lineTo(width, y);
       }
       ctx.stroke();
+    }
+    this.selectionRect?.draw(ctx);
+    this.ghostLine?.draw(ctx);
+    this.ghostDividerLine?.draw(ctx);
+
+    // reverse order so that the first shape is on top
+    for (const shape of this.getChildren().reverse()) {
+      if (shape.hidden) continue;
+      shape.draw(ctx);
     }
   }
 
@@ -497,8 +504,13 @@ export default class InteractionManager extends EventManager {
   protected handleCanvasResize(): void {
     const elementBounds = this.wrapper.getBoundingClientRect();
     const canvasDimensions = this.getCanvasDimensions();
-    const scale =  elementBounds.width / canvasDimensions.width * window.devicePixelRatio;
-    this.resizeCanvas(elementBounds.width * window.devicePixelRatio, elementBounds.height * window.devicePixelRatio, scale);
+    const scale =
+      (elementBounds.width / canvasDimensions.width) * window.devicePixelRatio;
+    this.resizeCanvas(
+      elementBounds.width * window.devicePixelRatio,
+      elementBounds.height * window.devicePixelRatio,
+      scale
+    );
     this.requestRedraw();
   }
 
@@ -517,7 +529,18 @@ export default class InteractionManager extends EventManager {
         (line) => this.blur(line)
       );
     }
+    this.modeChangeListeners.forEach((listener) => listener(mode));
     this.requestRedraw();
+  }
+
+  public addModeChangeListener(listener: (mode: InteractionMode) => void) {
+    this.modeChangeListeners.push(listener);
+  }
+
+  public removeModeChangeListener(listener: (mode: InteractionMode) => void) {
+    const index = this.modeChangeListeners.indexOf(listener);
+    if (index < 0) return;
+    this.modeChangeListeners.splice(index, 1);
   }
 
   public export() {

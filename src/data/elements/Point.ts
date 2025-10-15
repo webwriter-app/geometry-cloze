@@ -3,19 +3,28 @@ import Vector from '../helper/Vector';
 import Arrays from '../helper/Arrays';
 
 import { NamedElement } from './base/Element';
-import { StylableData } from './base/Stylable';
+import { DEFAULT_STYLE, StylableData } from './base/Stylable';
 import Draggable, { DraggableData } from './base/Draggable';
 
 import Shape from './Shape';
 
-import { ContextMenuItem, ContextMenuSubmenu } from '../../types/ContextMenu';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
+import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export type BasePoint = MathPoint & NamedElement;
 
+export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
+  fill: DEFAULT_STYLE.stroke,
+  size: 5
+}) as any;
+
 export default class Point extends Draggable {
+  protected get defaultStyle() {
+    return DEFAULT_POINT_STYLE;
+  }
+
   protected _x: number;
   protected _y: number;
 
@@ -30,14 +39,31 @@ export default class Point extends Draggable {
     this._y = data.y;
   }
 
-  protected showOutsideAngle = false;
+  public showOutsideAngle = false;
   draw(ctx: CanvasRenderingContext2D) {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    // We actually don't want to draw the stroke, but for now we still need to extend the radius by it
+    // for the line rendering to not look weird.
+    // TODO: Fix this properly by changing the line rendering logic
+    ctx.arc(this.x, this.y, this.size + this.lineWidth / 2, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.stroke();
+
+    if (this.selected) {
+      ctx.globalAlpha = SELECTION_STYLE.alpha;
+      if (this.fill === 'transparent') ctx.fillStyle = this.stroke;
+      ctx.beginPath();
+      ctx.arc(
+        this.x,
+        this.y,
+        this.size + this.lineWidth + SELECTION_STYLE.strokeOffset,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
 
     if (this.showLabel) {
       ctx.font = '18px Arial';
@@ -48,7 +74,7 @@ export default class Point extends Draggable {
       const neighbors = this.getNeighborPoints();
       // To prevent flickering when a point is moved and the angle changes rapidly,
       // we measure the maximum space the angle label could take and always reserve that.
-      const metrics = ctx.measureText((angle < 100 ? "00.0" : "000.0") + "°");
+      const metrics = ctx.measureText((angle < 100 ? '00.0' : '000.0') + '°');
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
@@ -169,35 +195,6 @@ export default class Point extends Draggable {
     if (angle === -1) return '';
     if (this.showOutsideAngle) angle = 360 - angle;
     return `${Numbers.round(angle)}°`;
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    const res = [
-      ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({
-        stroke: true,
-        fill: true,
-        lineWidth: true,
-        nameList: 'greek'
-      })
-    ];
-
-    (
-      res.find((i) => i.type === 'submenu' && i.key === 'label') as
-        | ContextMenuSubmenu
-        | undefined
-    )?.items.splice(1, 0, {
-      key: 'showOutsideAngle',
-      type: 'checkbox',
-      label: msg('Switch angle'),
-      getChecked: () => this.showOutsideAngle,
-      action: (value: boolean) => {
-        this.showOutsideAngle = value;
-        this.requestRedraw();
-      }
-    });
-
-    return res;
   }
 
   public export() {

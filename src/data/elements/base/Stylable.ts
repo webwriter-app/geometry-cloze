@@ -1,4 +1,3 @@
-import { ContextMenuItem } from '../../../types/ContextMenu';
 import Manager from '../../CanvasManager/Abstracts';
 import Element, { NamedElement } from './Element';
 import { msg } from '@lit/localize';
@@ -16,7 +15,7 @@ export interface StylableData {
   dashed?: boolean;
 }
 
-const DEFAULT_STYLE = {
+export const DEFAULT_STYLE = {
   lineWidth: 3,
   size: 10,
   stroke: '#111827',
@@ -30,115 +29,10 @@ const DEFAULT_STYLE = {
 } as const;
 
 export default class Stylable extends Element {
-  public static get COLORS() {
-    return [
-      {
-        label: msg('Black'),
-        color: '#111827'
-      },
-      {
-        label: msg('Red'),
-        color: '#dc2626'
-      },
-      {
-        label: msg('Orange'),
-        color: '#ea580c'
-      },
-      {
-        label: msg('Yellow'),
-        color: '#facc15'
-      },
-      {
-        label: msg('Lime'),
-        color: '#84cc16'
-      },
-      {
-        label: msg('Green'),
-        color: '#15803d'
-      },
-      {
-        label: msg('Cyan'),
-        color: '#06b6d4'
-      },
-      {
-        label: msg('Blue'),
-        color: '#2563eb'
-      },
-      {
-        label: msg('Violet'),
-        color: '#6d28d9'
-      },
-      {
-        label: msg('Pink'),
-        color: '#db2777'
-      }
-    ] as const;
+  protected get defaultStyle() {
+    return DEFAULT_STYLE;
   }
-  public static get COLORS_WITH_TRANSPARENT() {
-    return [
-      {
-        label: msg('Transparent'),
-        color: 'transparent'
-      },
-      ...Stylable.COLORS
-    ] as const;
-  }
-  public static LETTERS = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z'
-  ];
-  public static GREEK = [
-    'α',
-    'β',
-    'γ',
-    'δ',
-    'ε',
-    'ζ',
-    'η',
-    'θ',
-    'ι',
-    'κ',
-    'λ',
-    'μ',
-    'ν',
-    'ξ',
-    'ο',
-    'π',
-    'ρ',
-    'σ',
-    'τ',
-    'υ',
-    'φ',
-    'χ',
-    'ω',
-    'ϡ',
-    'ͳ',
-    'ϸ'
-  ];
+
   private _lineWidth: number;
   private _size: number;
   private _stroke: string;
@@ -152,16 +46,16 @@ export default class Stylable extends Element {
 
   constructor(manager: Manager, data: StylableData & NamedElement = {}) {
     super(manager, data);
-    this._lineWidth = data.lineWidth || DEFAULT_STYLE.lineWidth;
-    this._size = data.size || DEFAULT_STYLE.size;
-    this._stroke = data.stroke || DEFAULT_STYLE.stroke;
-    this._fill = data.fill || DEFAULT_STYLE.fill;
-    this._shadow = data.shadow || DEFAULT_STYLE.shadow;
-    this._showLabel = data.showLabel || DEFAULT_STYLE.showLabel;
-    this._labelColor = data.labelColor || DEFAULT_STYLE.labelColor;
-    this._labelStyle = data.labelStyle || DEFAULT_STYLE.labelStyle;
-    this._labelName = data.labelName || DEFAULT_STYLE.labelName;
-    this._dashed = data.dashed || DEFAULT_STYLE.dashed;
+    this._lineWidth = data.lineWidth || this.defaultStyle.lineWidth;
+    this._size = data.size || this.defaultStyle.size;
+    this._stroke = data.stroke || this.defaultStyle.stroke;
+    this._fill = data.fill || this.defaultStyle.fill;
+    this._shadow = data.shadow || this.defaultStyle.shadow;
+    this._showLabel = data.showLabel || this.defaultStyle.showLabel;
+    this._labelColor = data.labelColor || this.defaultStyle.labelColor;
+    this._labelStyle = data.labelStyle || this.defaultStyle.labelStyle;
+    this._labelName = data.labelName || this.defaultStyle.labelName;
+    this._dashed = data.dashed || this.defaultStyle.dashed;
 
     this.addEventListener('style-change', this.requestRedraw.bind(this));
   }
@@ -293,186 +187,24 @@ export default class Stylable extends Element {
     return this.labelName;
   }
 
-  protected getStyleContextMenuItems(options: {
-    stroke?: boolean;
-    fill?: boolean;
-    lineWidth?: boolean;
-    showLabel?: boolean;
-    dashed?: boolean;
-    nameList?: 'lowercase' | 'uppercase' | 'greek';
-  }): ContextMenuItem[] {
-    const res: ContextMenuItem[] = [];
-    if (options.stroke) {
-      res.push({
-        type: 'submenu',
-        label: msg('Stroke'),
-        key: 'stroke',
-        items: Stylable.COLORS.map(
-          (option) =>
-            ({
-              type: 'checkbox',
-              label: option.label,
-              getChecked: () => this._stroke === option.color,
-              action: () => this.setStroke(option.color),
-              key: `stroke_${option.label.toLowerCase()}`
-            }) as const
-        )
-      });
-    }
-    if (options.fill) {
-      res.push({
-        type: 'submenu',
-        label: msg('Fill'),
-        key: 'fill',
-        items: Stylable.COLORS_WITH_TRANSPARENT.map((option) => {
-          const color =
-            option.color === 'transparent' ? option.color : option.color + '50';
-          return {
-            type: 'checkbox',
-            getChecked: () => this._fill === color,
-            label: option.label,
-            action: () => this.setFill(color),
-            key: `fill_${option.label.toLowerCase()}`
-          } as const;
-        })
-      });
-    }
-    if (options.lineWidth) {
-      const options = [
-        {
-          label: msg('Extra Thin'),
-          value: 1
-        },
-        {
-          label: msg('Thin'),
-          value: 2
-        },
-        {
-          label: msg('Medium'),
-          value: 3
-        },
-        {
-          label: msg('Thick'),
-          value: 5
-        },
-        {
-          label: msg('Extra Thick'),
-          value: 7
-        }
-      ];
-      res.push({
-        type: 'submenu',
-        label: msg('Line Width'),
-        key: 'line_width',
-        items: options.map(
-          (option) =>
-            ({
-              type: 'checkbox',
-              getChecked: () => this._lineWidth === option.value,
-              label: option.label,
-              action: () => this.setLineWidth(option.value),
-              key: `line-width_${option.label.toLowerCase()}`
-            }) as const
-        )
-      });
-    }
-    if (options.dashed) {
-      res.push({
-        type: 'checkbox',
-        label: msg('Dashed'),
-        getChecked: () => this._dashed,
-        action: () => this.setDashed(!this._dashed),
-        key: 'dashed'
-      });
-    }
-    if (options.showLabel ?? this.getValueLabel() !== '') {
-      res.push({
-        type: 'submenu',
-        label: msg('Label'),
-        key: 'label',
-        items: [
-          {
-            type: 'checkbox',
-            label: msg('Show Label'),
-            getChecked: () => this.showLabel,
-            action: () => this.shouldShowLabel(!this.showLabel),
-            key: 'show-label'
-          },
-          {
-            type: 'submenu',
-            label: msg('Color'),
-            key: 'label_color',
-            items: Stylable.COLORS.map(
-              (option) =>
-                ({
-                  type: 'checkbox',
-                  getChecked: () => this._labelColor === option.color,
-                  label: option.label,
-                  action: () => this.setLabelColor(option.color),
-                  key: `label_color_${option.label.toLowerCase()}`
-                }) as const
-            )
-          },
-          {
-            type: 'submenu',
-            label: msg('Name'),
-            key: 'label_name',
-            items: [
-              {
-                type: 'checkbox',
-                key: 'label_name_value',
-                label: msg('Value'),
-                action: () => this.setLabelStyle('value'),
-                getChecked: () => this._labelStyle === 'value'
-              },
-              ...(options.nameList === 'greek'
-                ? Stylable.GREEK
-                : Stylable.LETTERS
-              ).map((letter) => {
-                if (options.nameList === 'uppercase')
-                  letter = letter.toUpperCase();
-                return {
-                  type: 'checkbox',
-                  getChecked: () =>
-                    this._labelStyle === 'name' && this._labelName === letter,
-                  label: letter,
-                  action: () => {
-                    this.shouldShowLabel(true);
-                    this.setLabelName(letter);
-                  },
-                  key: `label_color_${letter}`
-                } as const;
-              })
-            ]
-          }
-        ]
-      });
-    }
-    return res;
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    return [...super.getContextMenuItems()];
-  }
-
   public export() {
     const res: StylableData = {};
 
-    if (this._lineWidth !== DEFAULT_STYLE.lineWidth)
+    if (this._lineWidth !== this.defaultStyle.lineWidth)
       res.lineWidth = this._lineWidth;
-    if (this._size !== DEFAULT_STYLE.size) res.size = this._size;
-    if (this._stroke !== DEFAULT_STYLE.stroke) res.stroke = this._stroke;
-    if (this._fill !== DEFAULT_STYLE.fill) res.fill = this._fill;
-    if (this._shadow !== DEFAULT_STYLE.shadow) res.shadow = this._shadow;
-    if (this._showLabel !== DEFAULT_STYLE.showLabel)
+    if (this._size !== this.defaultStyle.size) res.size = this._size;
+    if (this._stroke !== this.defaultStyle.stroke) res.stroke = this._stroke;
+    if (this._fill !== this.defaultStyle.fill) res.fill = this._fill;
+    if (this._shadow !== this.defaultStyle.shadow) res.shadow = this._shadow;
+    if (this._showLabel !== this.defaultStyle.showLabel)
       res.showLabel = this._showLabel;
-    if (this._labelColor !== DEFAULT_STYLE.labelColor)
+    if (this._labelColor !== this.defaultStyle.labelColor)
       res.labelColor = this._labelColor;
-    if (this._labelStyle !== DEFAULT_STYLE.labelStyle)
+    if (this._labelStyle !== this.defaultStyle.labelStyle)
       res.labelStyle = this._labelStyle;
-    if (this._labelName !== DEFAULT_STYLE.labelName)
+    if (this._labelName !== this.defaultStyle.labelName)
       res.labelName = this._labelName;
-    if (this._dashed !== DEFAULT_STYLE.dashed) res.dashed = this._dashed;
+    if (this._dashed !== this.defaultStyle.dashed) res.dashed = this._dashed;
 
     return { ...super.export(), ...res };
   }

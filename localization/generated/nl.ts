@@ -3,66 +3,51 @@
     // Re-generate this file by running lit-localize
 
     import {html} from 'lit';
-    
+    import {str} from '@lit/localize';
 
     /* eslint-disable no-irregular-whitespace */
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'h8c672b5ba7f6c67e': html`Objecten maken en verbinden 
-          <strong>[C]
-          </strong>
-        `,
-'ha8da28ed158bf353': html`Objecten selecteren en verplaatsen 
-          <strong>[S]
-          </strong>
-        `,
-'hbe8fa4d6f5c921bb': html`Je kunt het vastpakken ook tijdelijk uitschakelen door op
+      'hcf737b9b198de693': html`Je kunt het vastpakken ook tijdelijk uitschakelen door op
           <sl-tag size="small">Alt
           </sl-tag> te drukken terwijl je een element sleept
         `,
-'hce2957acd38b290c': html`Scheidingslijnen maken 
-          <strong>[D]
-          </strong>
-        `,
 's109991b0423f1512': `Violet`,
+'s202fffd5a2e1c595': `Lengte`,
 's24d82e0bdc4ea31f': `Omtrek tonen`,
 's2706a162264c46f1': `Schaal`,
 's2dae9bc7aa02bab7': `Weegt alle labels van lengtes en maten.`,
-'s344ea8f4939cdc98': `Kleur`,
+'s3b627b7632baa8d7': `Scheidingslijnen maken`,
 's3d0296b47fe6323c': `Kalk`,
-'s41f7dca46d3f1b4a': `Waarde`,
 's447b301ca02b353e': `Omtrek: `,
+'s44f0e16cc86358e2': `Kleur punt`,
+'s4585ad5504d24a6b': `Geselecteerde objecten verwijderen`,
 's4fd35ef13079b962': `Abstracte rechte hoek`,
-'s5015a8fb33b98872': `Dun`,
-'s5590dbf7e425789d': `Label`,
+'s5246434aaa760348': `Vorm label`,
+'s5cda68f59fd34ebf': `Lijnbreedte`,
 's5e3cb80d43a34044': `Zwart`,
 's6751f51ab77310e5': `Toon gebied`,
-'s6966bdd5b59571cb': `Opties voor leerkrachten`,
 's6baf78886c99db89': `Geel`,
 's71f4a89a7cd714ee': `Gebied: `,
-'s731f505729e9f61f': `Lijnbreedte`,
 's73c0e4814878d26e': `Vastmaken aan raster`,
-'s76f530e2d85adb04': `Extra dun`,
-'s7d579875a2423728': `Extra dik`,
-'s8e5cbbecf3c94675': `Beroerte`,
+'s8a347fce9c8f6045': `Objecten selecteren en verplaatsen`,
 's8f450dd0b7bdb8cb': `Oranje`,
+'s997f2252dabae00f': `Vulkleur`,
 's9b3c2f9cc32d565a': `Cyaan`,
 's9ff1de19feac1b7c': `Rood`,
-'sa41aa566ff06c212': `Label tonen`,
-'sac6bdc71f750ac96': `Medium`,
-'sc74e6ebfbc1a0e5c': `Gestippeld`,
-'sce673bd8e450b5ae': `Dik`,
+'sb6055dddb583f562': str`
+          ${0} geselecteerde objecten
+        `,
+'sbaf7984effccc73d': `Lijnlabel`,
+'sc641744471095036': `Kleur label`,
+'sc76449099e8dab8e': `Objecten maken en verbinden`,
 'scf00d78fd5953f1c': `Groen`,
 'sd0e945b97c0c46d1': `Transparant`,
-'sd1f81984eeb7c0e8': `Vullen`,
-'sdc673e73b5c13aea': `Verwijder`,
 'se9beed19c6a38fed': `Roze`,
 'secf3d3a7c1693e2d': `Blauw`,
-'seea6c1f82cdc7c62': `Schakelhoek`,
-'sef49aec68fd1dc66': `Naam`,
 'sf6f1d2fce4cc2014': `Toon rooster`,
-'sf8669fe72676e5fe': `Del/Backspace`,
+'sf8f55cf0946dcb38': `Lijnkleur`,
 'sf9f816447b409e1c': `Indien ingeschakeld, worden rechte hoeken getekend als een klein vierkantje`,
     };
   

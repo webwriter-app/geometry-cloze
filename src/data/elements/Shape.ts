@@ -6,7 +6,6 @@ import Draggable, { DraggableData } from './base/Draggable';
 import Point, { BasePoint } from './Point';
 import Line, { BaseLine } from './Line';
 
-import { ContextMenuItem } from '../../types/ContextMenu';
 import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
@@ -162,8 +161,21 @@ export default class Shape extends Draggable {
     if (!point2 && hits.length > 0) return hits;
     res.push(...hits);
 
-    if (this.closed && Calc.isPointInPolygon(point, this.getPoints()))
-      res.unshift(this);
+    // Check if the polygon itself is hit
+    if (this.closed) {
+      let polygonHit = false;
+      if (!point2) {
+        // if only one point is given, we check if it is inside the polygon
+        polygonHit = Calc.isPointInPolygon(point, this.getPoints());
+      } else {
+        // If two points are given, we check if the bounding box includes all points of the polygon
+        // which implies that the polygon is fully selected
+        polygonHit =
+          hits.filter((h) => h instanceof Point).length ==
+          this.getPoints().length;
+      }
+      if (polygonHit) res.unshift(this);
+    }
 
     return res;
   }
@@ -442,16 +454,8 @@ export default class Shape extends Draggable {
 
   draw(ctx: CanvasRenderingContext2D): void {
     if (this.hidden) return;
-    if (this.selected) {
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = '#000000b0';
-      ctx.shadowOffsetX = 5;
-      ctx.shadowOffsetY = 5;
-    }
     if (this.closed) {
-      ctx.strokeStyle = 'transparent';
-      ctx.fillStyle =
-        this.selected && this.fill === 'transparent' ? '#ffffff50' : this.fill;
+      ctx.fillStyle = this.fill;
       ctx.beginPath();
       const points = this.getPoints();
       const lastPoint = points.slice(-1)[0] as Point | undefined;
@@ -459,10 +463,14 @@ export default class Shape extends Draggable {
       ctx.moveTo(lastPoint.x, lastPoint.y);
       for (const point of points) {
         ctx.lineTo(point.x, point.y);
-        ctx.stroke();
       }
       ctx.closePath();
       ctx.fill();
+
+      if (this.selected) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fill();
+      }
     } else if (this.selected) {
       ctx.strokeStyle = 'transparent';
       ctx.beginPath();
@@ -504,8 +512,8 @@ export default class Shape extends Draggable {
     }
   }
 
-  protected showArea = false;
-  protected showPerimeter = false;
+  public showArea = false;
+  public showPerimeter = false;
   protected getValueLabel(): string {
     const res: (string | number)[] = [];
     if (this.showArea) {
@@ -524,60 +532,6 @@ export default class Shape extends Draggable {
       res.push(`${prefix}${perimeterRounded}`);
     }
     return res.join('|');
-  }
-
-  public getContextMenuItems(): ContextMenuItem[] {
-    return [
-      ...super.getContextMenuItems(),
-      ...this.getStyleContextMenuItems({
-        fill: true,
-        showLabel: false
-      }),
-      {
-        type: 'submenu',
-        label: msg('Label'),
-        key: 'label',
-        items: [
-          {
-            type: 'checkbox',
-            label: msg('Show Area'),
-            getChecked: () => this.showArea,
-            action: (checked) => {
-              this.showArea = checked;
-              this.shouldShowLabel(this.showArea || this.showPerimeter);
-              this.requestRedraw();
-            },
-            key: 'show-area-label'
-          },
-          {
-            type: 'checkbox',
-            label: msg('Show Perimeter'),
-            getChecked: () => this.showPerimeter,
-            action: (checked) => {
-              this.showPerimeter = checked;
-              this.shouldShowLabel(this.showArea || this.showPerimeter);
-              this.requestRedraw();
-            },
-            key: 'show-perimeter-label'
-          },
-          {
-            type: 'submenu',
-            label: msg('Color'),
-            key: 'label_color',
-            items: Stylable.COLORS.map(
-              (option) =>
-                ({
-                  type: 'checkbox',
-                  getChecked: () => this.labelColor === option.color,
-                  label: option.label,
-                  action: () => this.setLabelColor(option.color),
-                  key: `label_color_${option.label.toLowerCase()}`
-                }) as const
-            )
-          }
-        ]
-      }
-    ];
   }
 
   public connect(shape: Shape, point: Point, to: Point) {

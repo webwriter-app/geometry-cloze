@@ -2,10 +2,9 @@
 import LOCALIZE from '../localization/generated/index.js';
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
-import { PropertyValueMap, css, html } from 'lit';
+import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { localized } from '@lit/localize';
-import { WwGeomContextMenu } from './components/context-menu/ww-geom-context-menu';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
@@ -22,7 +21,6 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
   @query('canvas') private accessor canvas!: HTMLCanvasElement;
-  @query('ww-geom-context-menu') private accessor contextMenu!: WwGeomContextMenu;
 
   private manager: CanvasManager | null = null;
 
@@ -86,9 +84,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   static override get observedAttributes() {
     const attributes = super.observedAttributes ?? [];
-    return attributes.includes('lang')
-      ? attributes
-      : [...attributes, 'lang'];
+    return attributes.includes('lang') ? attributes : [...attributes, 'lang'];
   }
 
   override attributeChangedCallback(
@@ -154,32 +150,14 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   render() {
-    return html`<div class="wrapper">
-      ${  
-        this.isContentEditable
-          ? html`<ww-geom-toolbar
-              mode=${this.mode}
-              @mode-change=${(e: CustomEvent<{ mode: InteractionMode }>) => {
-                this.mode = e.detail.mode;
-                if (!this.manager) return;
-                this.manager.mode = e.detail.mode;
-              }}></ww-geom-toolbar>`
-          : ''
-      }
-        <canvas tabindex="0"></canvas>
-        <ww-geom-context-menu></ww-geom-context-menu>
-      </div>
-    </div>
-    <ww-geom-options part="options" .manager=${
-      this.manager
-    }></ww-geom-options>`;
-  }
-
-  private onBlur() {
-    this.contextMenu?.close();
-  }
-  private onClick() {
-    this.contextMenu?.close();
+    return html` ${this.isContentEditable
+        ? html`<ww-geom-toolbar
+            .manager=${this.manager as any}></ww-geom-toolbar>`
+        : nothing}
+      <canvas tabindex="0"></canvas>
+      <ww-geom-options
+        part="options"
+        .manager=${this.manager as any}></ww-geom-options>`;
   }
 
   protected updated(
@@ -213,8 +191,6 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   firstUpdated() {
-    this.addEventListener('blur', this.onBlur.bind(this));
-    this.addEventListener('click', this.onClick.bind(this));
     if (this.canvas) {
       if (this.manager) {
         console.warn('Prevented creating multiple CanvasManager');
@@ -222,8 +198,7 @@ export class WwGeometryCloze extends LitElementWw {
       }
       this.manager = new CanvasManager(
         this.canvas,
-        this.renderRoot as HTMLElement,
-        this.contextMenu
+        this.renderRoot as HTMLElement
       );
       this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
 
@@ -251,8 +226,6 @@ export class WwGeometryCloze extends LitElementWw {
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener('blur', this.onBlur);
-    this.removeEventListener('click', this.onClick);
     if (this.manager) {
       this.manager.removeUpdateListener(this.onCanvasValueChange);
       this.manager.unmount();
@@ -270,7 +243,6 @@ export class WwGeometryCloze extends LitElementWw {
   public static get scopedElements() {
     return {
       'ww-geom-toolbar': WwGeomToolbar,
-      'ww-geom-context-menu': WwGeomContextMenu,
       'ww-geom-options': WwGeomOptions
     };
   }
@@ -281,28 +253,24 @@ export class WwGeometryCloze extends LitElementWw {
       display: block;
 
       width: 100%;
-      aspect-ratio: 10 / 7;
-      
+
       border: solid 1px var(--sl-color-neutral-300);
       border-radius: var(--sl-border-radius-medium);
       box-sizing: border-box;
 
-      overflow: visible;
+      overflow: hidden;
       z-index: 10000000;
-      
+
       outline: none;
     }
-    .wrapper {
-      margin: 0;
-      height: 100%;
-      position: relative;
-      outline: none;
+    ww-geom-toolbar {
+      border-bottom: solid 1px var(--sl-color-neutral-300);
     }
     canvas {
       display: block;
       width: 100%;
-      height: 100%;
-	    outline: none !important;
+      aspect-ratio: 10 / 7;
+      outline: none !important;
     }
     :host(:not([contenteditable='true']):not([contenteditable=''])) canvas {
       pointer-events: none;
