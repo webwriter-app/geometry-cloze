@@ -27,12 +27,6 @@ export default abstract class ChildrenManager {
     ctx.resetTransform();
     ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
     ctx.scale(this._canvasScale, this._canvasScale);
-
-    // reverse order so that the first shape is on top
-    for (const shape of this.children.map((s) => s).reverse()) {
-      if (shape.hidden) continue;
-      shape.draw(ctx);
-    }
   }
 
   protected getElementAt(point: { x: number; y: number }): Draggable | null {

@@ -55,9 +55,6 @@ export default class InteractionManager extends EventManager {
 
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
-    this.selectionRect?.draw(ctx);
-    this.ghostLine?.draw(ctx);
-    this.ghostDividerLine?.draw(ctx);
     if (this.showGrid) {
       const spacing = SNAP_SPACING;
       ctx.strokeStyle = '#00000050';
@@ -75,6 +72,15 @@ export default class InteractionManager extends EventManager {
         ctx.lineTo(width, y);
       }
       ctx.stroke();
+    }
+    this.selectionRect?.draw(ctx);
+    this.ghostLine?.draw(ctx);
+    this.ghostDividerLine?.draw(ctx);
+
+    // reverse order so that the first shape is on top
+    for (const shape of this.getChildren().reverse()) {
+      if (shape.hidden) continue;
+      shape.draw(ctx);
     }
   }
 
