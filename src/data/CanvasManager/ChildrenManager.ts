@@ -6,8 +6,6 @@ import { Child } from './ChildrenTypes';
 import InteractionManager from './InteractionManager';
 
 export default abstract class ChildrenManager {
-  private static FRAME_RATE = 60;
-
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
@@ -43,32 +41,27 @@ export default abstract class ChildrenManager {
     return hit;
   }
 
-  /**
-   * first timestamp where we requested a redraw for current batch
-   */
-  private firstRequestTimestamp: number | null = null;
-  /**
-   * last timestamp where we actually redrew
-   */
-  private lastRedrawTimestamp: number = 0;
-  requestRedraw(originallyScheduledAt?: number) {
-    const now = performance.now();
-    if (!originallyScheduledAt) originallyScheduledAt = now;
+  /** Request a redraw on the next animation frame */
+  private needsRender = false;
+  /** Whether the redraw loop is currently running */
+  private running = false;
 
-    // check if we've already redrawn since this was scheduled
-    if (originallyScheduledAt < this.lastRedrawTimestamp) return;
-
-    if (!this.firstRequestTimestamp)
-      this.firstRequestTimestamp = performance.now();
-
-    if (now - this.firstRequestTimestamp > 1000 / ChildrenManager.FRAME_RATE) {
-      this.lastRedrawTimestamp = now;
+  private _renderLoop = () => {
+    if (this.needsRender) {
+      this.needsRender = false;
       this.redraw(this._ctx);
-      this.firstRequestTimestamp = null;
-    } else
-      requestAnimationFrame(
-        this.requestRedraw.bind(this, originallyScheduledAt)
-      );
+      requestAnimationFrame(this._renderLoop);
+    } else {
+      this.running = false;
+    }
+  };
+
+  requestRedraw() {
+    this.needsRender = true;
+    if (!this.running) {
+      this.running = true;
+      requestAnimationFrame(this._renderLoop);
+    }
   }
 
   public addChild(ele: Child, preventRedraw?: boolean) {
