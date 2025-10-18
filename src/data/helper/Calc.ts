@@ -219,12 +219,11 @@ export default class Calc {
   }
 
   static getPerimeterOfPolygon(polygon: MathPoint[]): number {
+    if (polygon.length < 2) return 0;
     let perimeter = 0;
-    let lastPoint = polygon.shift();
-    if (!lastPoint) return 0;
-    for (const point of polygon) {
-      perimeter += Calc.distance(lastPoint, point);
-      lastPoint = point;
+    for (let i = 0; i < polygon.length; i++) {
+      let j = (i + 1) % polygon.length;
+      perimeter += this.distance(polygon[i], polygon[j]);
     }
     return perimeter;
   }
