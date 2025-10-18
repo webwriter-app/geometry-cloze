@@ -17,7 +17,6 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
  * A widget to create and view geometry exercises.
  */
 @localized()
-@customElement('ww-geom-options')
 export class WwGeomOptions extends LitElementWw {
   @state()
   accessor manager: CanvasManager | null = null;

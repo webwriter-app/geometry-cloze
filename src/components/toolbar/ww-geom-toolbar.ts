@@ -32,7 +32,6 @@ import RulerIcon from '../icons/ruler';
 import AngleIcon from '../icons/angle';
 
 @localized()
-@customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
   @property({ type: Object })
   accessor manager: CanvasManager | null = null;
