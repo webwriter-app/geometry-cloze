@@ -57,30 +57,8 @@ export default class Line extends Draggable {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    const vector = {
-      x: this._end.x - this._start.x,
-      y: this._end.y - this._start.y
-    };
-    const normalized = Vector.normalize(vector);
-    const start = {
-      x: this._start.x,
-      y: this._start.y
-    };
-    if (this.start instanceof Point) {
-      start.x += normalized.x * this.start.size;
-      start.y += normalized.y * this.start.size;
-    }
-    ctx.moveTo(start.x, start.y);
-
-    const end = {
-      x: this._end.x,
-      y: this._end.y
-    };
-    if (this.end instanceof Point) {
-      end.x -= normalized.x * this.end.size;
-      end.y -= normalized.y * this.end.size;
-    }
-    ctx.lineTo(end.x, end.y);
+    ctx.moveTo(this._start.x, this._start.y);
+    ctx.lineTo(this._end.x, this._end.y);
 
     if (this.selected) {
       ctx.globalAlpha = SELECTION_STYLE.alpha;
@@ -98,8 +76,8 @@ export default class Line extends Draggable {
     if (this.showLabel) {
       const padding = 5;
       const middlePoint = {
-        x: (start.x + end.x) / 2,
-        y: (start.y + end.y) / 2
+        x: (this._start.x + this._end.x) / 2,
+        y: (this._start.y + this._end.y) / 2
       };
       const label = this.getLabel();
       ctx.font = '24px Arial';
@@ -108,7 +86,12 @@ export default class Line extends Draggable {
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (this.parent && 'getPoints' in this.parent) {
-        const ortho = Vector.orthogonal(normalized);
+        const ortho = Vector.orthogonal(
+          Vector.normalize({
+            x: this._end.x - this._start.x,
+            y: this._end.y - this._start.y
+          })
+        );
         const point1 = Vector.add(
           middlePoint,
           Vector.scale(ortho, fontHeight / 2)

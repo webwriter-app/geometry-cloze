@@ -84,6 +84,10 @@ export default class Element {
 
   draw(ctx: CanvasRenderingContext2D) {
     if (this._hidden) return;
+    this.drawChildren(ctx);
+  }
+
+  protected drawChildren(ctx: CanvasRenderingContext2D) {
     this._children.forEach((child) => child.draw(ctx));
   }
 

@@ -512,6 +512,16 @@ export default class Shape extends Draggable {
     }
   }
 
+  protected drawChildren(ctx: CanvasRenderingContext2D): void {
+    // Render lines before points, so that points are on top of lines
+    this.children
+      .concat([])
+      .sort(
+        (a, b) => (a instanceof Line ? -1 : 1) - (b instanceof Line ? -1 : 1)
+      )
+      .forEach((child) => child.draw(ctx));
+  }
+
   public showArea = false;
   public showPerimeter = false;
   protected getValueLabel(): string {
