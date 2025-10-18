@@ -9,9 +9,9 @@ import DividerLine from '../elements/DividerLine';
 import CanvasManager from './CanvasManager';
 
 const SNAP_SPACING = 50;
+
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-  private modeChangeListeners: ((mode: InteractionMode) => void)[] = [];
   protected _snapSpacing: number | null = SNAP_SPACING;
   private snap<Value extends number | MathPoint>(value: Value): Value {
     if (this._snapSpacing === null || this.keys.alt) return value;
@@ -529,18 +529,8 @@ export default class InteractionManager extends EventManager {
         (line) => this.blur(line)
       );
     }
-    this.modeChangeListeners.forEach((listener) => listener(mode));
+    this.dispatchEvent(new CustomEvent('modeupdate', { detail: mode }));
     this.requestRedraw();
-  }
-
-  public addModeChangeListener(listener: (mode: InteractionMode) => void) {
-    this.modeChangeListeners.push(listener);
-  }
-
-  public removeModeChangeListener(listener: (mode: InteractionMode) => void) {
-    const index = this.modeChangeListeners.indexOf(listener);
-    if (index < 0) return;
-    this.modeChangeListeners.splice(index, 1);
   }
 
   public export() {

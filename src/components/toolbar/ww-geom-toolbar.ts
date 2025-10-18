@@ -38,13 +38,13 @@ export class WwGeomToolbar extends LitElementWw {
 
   @state()
   private accessor mode: InteractionMode = 'select';
-  private modeChangeListener = (newMode: InteractionMode) =>
-    (this.mode = newMode);
+  private modeEventListener = (event: Event) =>
+    (this.mode = (event as CustomEvent<InteractionMode>).detail);
 
   @state()
   private accessor selection: Draggable[] = [];
-  private selectionChangeListener = (newSelection: Draggable[]) =>
-    (this.selection = newSelection);
+  private selectionEventListener = (event: Event) =>
+    (this.selection = (event as CustomEvent<Draggable[]>).detail);
 
   render() {
     return html`
@@ -423,14 +423,14 @@ export class WwGeomToolbar extends LitElementWw {
   }
 
   private managerAttached(manager: CanvasManager) {
-    manager.addModeChangeListener(this.modeChangeListener);
-    manager.addSelectionChangeListener(this.selectionChangeListener);
+    manager.addEventListener('modeupdate', this.modeEventListener);
+    manager.addEventListener('selectionupdate', this.selectionEventListener);
     this.mode = manager.mode;
   }
 
   private managerDetached(manager: CanvasManager) {
-    manager.removeModeChangeListener(this.modeChangeListener);
-    manager.removeSelectionChangeListener(this.selectionChangeListener);
+    manager.removeEventListener('modeupdate', this.modeEventListener);
+    manager.removeEventListener('selectionupdate', this.selectionEventListener);
   }
 
   static styles = css`

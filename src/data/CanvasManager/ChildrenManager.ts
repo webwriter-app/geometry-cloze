@@ -5,7 +5,7 @@ import Shape from '../elements/Shape';
 import { Child } from './ChildrenTypes';
 import InteractionManager from './InteractionManager';
 
-export default abstract class ChildrenManager {
+export default abstract class ChildrenManager extends EventTarget {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
@@ -14,6 +14,7 @@ export default abstract class ChildrenManager {
   private children: Child[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
+    super();
     this._canvas = canvas;
     this._ctx = this._canvas.getContext('2d')!;
   }

@@ -182,13 +182,14 @@ export class WwGeometryCloze extends LitElementWw {
     }
   }
 
-  private onCanvasValueChange(value: CanvasData) {
+  private onCanvasValueChange: EventListener = (event: Event) => {
+    const value = (event as CustomEvent<CanvasData>).detail;
     this.elements = value.children;
     this.mode = value.mode;
     this.abstractRightAngle = value.abstractRightAngle;
     this.showGrid = value.showGrid;
     this.snap = value.snapping;
-  }
+  };
 
   firstUpdated() {
     if (this.canvas) {
@@ -200,7 +201,7 @@ export class WwGeometryCloze extends LitElementWw {
         this.canvas,
         this.renderRoot as HTMLElement
       );
-      this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
+      this.manager.addEventListener('dataupdate', this.onCanvasValueChange);
 
       if (this.elements) {
         this.manager.import({
@@ -227,7 +228,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   disconnectedCallback(): void {
     if (this.manager) {
-      this.manager.removeUpdateListener(this.onCanvasValueChange);
+      this.manager.removeEventListener('dataupdate', this.onCanvasValueChange);
       this.manager.unmount();
     }
     super.disconnectedCallback();
