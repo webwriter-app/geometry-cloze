@@ -192,16 +192,14 @@ export default class Line extends Draggable {
     return {
       ...super.export(),
       _type: 'line' as const,
-      start: {
-        x: this._start.x,
-        y: this._start.y,
-        ...(this._start instanceof Point && { id: this._start.id })
-      },
-      end: {
-        x: this._end.x,
-        y: this._end.y,
-        ...(this._end instanceof Point && { id: this._end.id })
-      }
+      start:
+        this._start instanceof Point
+          ? { _type: 'reference' as const, id: this._start.id }
+          : { _type: 'absolute' as const, x: this._start.x, y: this._start.y },
+      end:
+        this._end instanceof Point
+          ? { _type: 'reference' as const, id: this._end.id }
+          : { _type: 'absolute' as const, x: this._end.x, y: this._end.y }
     };
   }
 
