@@ -7,6 +7,7 @@ import SelectionRect from '../components/SelectionRect';
 import EventManager from './EventManager';
 import DividerLine from '../elements/DividerLine';
 import CanvasManager from './CanvasManager';
+import SHOELACE from '../helper/Shoelace';
 
 const SNAP_SPACING = 50;
 
@@ -57,7 +58,7 @@ export default class InteractionManager extends EventManager {
     super.redraw(ctx);
     if (this.showGrid) {
       const spacing = SNAP_SPACING;
-      ctx.strokeStyle = '#00000050';
+      ctx.strokeStyle = SHOELACE.color.neutral[300];
       ctx.lineWidth = 1;
       ctx.setLineDash([]);
       ctx.beginPath();

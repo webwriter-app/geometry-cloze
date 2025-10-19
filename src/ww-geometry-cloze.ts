@@ -255,6 +255,9 @@ export class WwGeometryCloze extends LitElementWw {
 
       width: 100%;
 
+      color: var(--sl-color-neutral-900);
+      background-color: var(--sl-color-neutral-0);
+
       border: solid 1px var(--sl-color-neutral-300);
       border-radius: var(--sl-border-radius-medium);
       box-sizing: border-box;

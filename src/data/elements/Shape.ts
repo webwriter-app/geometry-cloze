@@ -11,6 +11,8 @@ import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
+import SHOELACE from '../helper/Shoelace';
+import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: Manager, points: BasePoint[]): Shape;
@@ -468,7 +470,7 @@ export default class Shape extends Draggable {
       ctx.fill();
 
       if (this.selected) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillStyle = SELECTION_STYLE.fillOverlay;
         ctx.fill();
       }
     } else if (this.selected) {
@@ -488,7 +490,7 @@ export default class Shape extends Draggable {
 
     if (this.showLabel) {
       const labels = this.getLabel().split('|');
-      ctx.font = '24px Arial';
+      ctx.font = `24px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       const metrics = labels.map((label) => ctx.measureText(label));
       const fontHeight = metrics.map(

@@ -244,7 +244,6 @@ export default abstract class EventManager extends ChildrenManager {
     ctrl: false
   };
   private _handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(event);
     // ctrl/cmd+z is bubbled up to be handle outside this widget
     if (event.key.toLowerCase() === 'z' && (event.ctrlKey || event.metaKey))
       return;

@@ -1,5 +1,6 @@
 import Draggable from '../elements/base/Draggable';
 import Element from '../elements/base/Element';
+import SHOELACE from '../helper/Shoelace';
 
 export const SELECTION_STYLE = {
   alpha: 0.25,
@@ -12,10 +13,8 @@ export default class SelectionRect {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    // --sl-focus-ring-color (--sl-color-primary-600)
-    // https://shoelace.style/tokens/more/
-    ctx.strokeStyle = 'hsl(200.4 98% 39.4%)';
-    ctx.fillStyle = 'hsl(200.4 98% 39.4% / 0.1)';
+    ctx.strokeStyle = SHOELACE.focus.ringColor;
+    ctx.fillStyle = SHOELACE.focus.ringColor.slice(0, -1) + ' / 0.1)';
     ctx.setLineDash([]);
     ctx.lineWidth = 2;
     ctx.rect(

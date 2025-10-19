@@ -12,12 +12,14 @@ import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
 import { SELECTION_STYLE } from '../components/SelectionRect';
+import SHOELACE from '../helper/Shoelace';
 
 export type BasePoint = MathPoint & NamedElement;
 
 export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
   fill: DEFAULT_STYLE.stroke,
-  size: 5
+  size: 7,
+  lineWidth: 0
 }) as any;
 
 export default class Point extends Draggable {
@@ -44,10 +46,7 @@ export default class Point extends Draggable {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    // We actually don't want to draw the stroke, but for now we still need to extend the radius by it
-    // for the line rendering to not look weird.
-    // TODO: Fix this properly by changing the line rendering logic
-    ctx.arc(this.x, this.y, this.size + this.lineWidth / 2, 0, 2 * Math.PI);
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
 
     if (this.selected) {
@@ -66,7 +65,7 @@ export default class Point extends Draggable {
     }
 
     if (this.showLabel) {
-      ctx.font = '18px Arial';
+      ctx.font = `18px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       ctx.strokeStyle = this.labelColor;
       const label = this.getLabel();

@@ -1,4 +1,5 @@
 import Manager from '../../CanvasManager/Abstracts';
+import SHOELACE, { hslToHex } from '../../helper/Shoelace';
 import Element, { NamedElement } from './Element';
 import { msg } from '@lit/localize';
 
@@ -18,13 +19,13 @@ export interface StylableData {
 export const DEFAULT_STYLE = {
   lineWidth: 3,
   size: 10,
-  stroke: '#111827',
+  stroke: hslToHex(SHOELACE.color.gray[950]),
   fill: 'transparent',
   shadow: false,
   showLabel: false,
-  labelColor: '#111827',
+  labelColor: hslToHex(SHOELACE.color.gray[950]),
   labelStyle: 'value',
-  labelName: 'α',
+  labelName: '',
   dashed: false
 } as const;
 

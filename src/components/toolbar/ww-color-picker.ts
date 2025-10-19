@@ -3,6 +3,7 @@ import { LitElementWw } from '@webwriter/lit';
 import { html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import SHOELACE, { hslToHex } from '../../data/helper/Shoelace';
 
 /**
  * A simple color picker component that displays a grid of color options.
@@ -14,43 +15,43 @@ export default class WwColorPicker extends LitElementWw {
     return [
       {
         label: msg('Black'),
-        color: '#111827'
+        color: hslToHex(SHOELACE.color.gray[950])
       },
       {
         label: msg('Red'),
-        color: '#dc2626'
+        color: hslToHex(SHOELACE.color.red[500])
       },
       {
         label: msg('Orange'),
-        color: '#ea580c'
+        color: hslToHex(SHOELACE.color.orange[500])
       },
       {
         label: msg('Yellow'),
-        color: '#facc15'
+        color: hslToHex(SHOELACE.color.yellow[500])
       },
       {
         label: msg('Lime'),
-        color: '#84cc16'
+        color: hslToHex(SHOELACE.color.lime[500])
       },
       {
         label: msg('Green'),
-        color: '#15803d'
+        color: hslToHex(SHOELACE.color.green[500])
       },
       {
         label: msg('Cyan'),
-        color: '#06b6d4'
+        color: hslToHex(SHOELACE.color.cyan[500])
       },
       {
         label: msg('Blue'),
-        color: '#2563eb'
+        color: hslToHex(SHOELACE.color.blue[500])
       },
       {
         label: msg('Violet'),
-        color: '#6d28d9'
+        color: hslToHex(SHOELACE.color.violet[500])
       },
       {
         label: msg('Pink'),
-        color: '#db2777'
+        color: hslToHex(SHOELACE.color.pink[500])
       }
     ] as const;
   }

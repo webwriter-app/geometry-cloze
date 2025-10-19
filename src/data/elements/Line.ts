@@ -9,6 +9,7 @@ import Point from './Point';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { SELECTION_STYLE } from '../components/SelectionRect';
+import SHOELACE from '../helper/Shoelace';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -80,7 +81,7 @@ export default class Line extends Draggable {
         y: (this._start.y + this._end.y) / 2
       };
       const label = this.getLabel();
-      ctx.font = '24px Arial';
+      ctx.font = `24px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       const metrics = ctx.measureText(label);
       const fontHeight =
