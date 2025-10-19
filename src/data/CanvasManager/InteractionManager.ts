@@ -92,7 +92,7 @@ export default class InteractionManager extends EventManager {
     this: CanvasManager,
     {
       hit,
-      ctrlPressed,
+      shiftPressed,
       alreadySelected,
       isRightClick,
       coords
@@ -100,7 +100,7 @@ export default class InteractionManager extends EventManager {
       coords: MathPoint;
       hit: Draggable | null;
       alreadySelected: boolean;
-      ctrlPressed: boolean;
+      shiftPressed: boolean;
       isRightClick: boolean;
     }
   ) {
@@ -112,7 +112,7 @@ export default class InteractionManager extends EventManager {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
           );
-          this.select(newSelections, { keepSelection: ctrlPressed });
+          this.select(newSelections, { keepSelection: shiftPressed });
           this.selectionRect = null;
           this.requestRedraw();
           return;
@@ -126,24 +126,24 @@ export default class InteractionManager extends EventManager {
 
         if (hit) {
           if (alreadySelected) {
-            if (ctrlPressed) {
-              // when clicking on a selected element while holding ctrl, we want to deselect it
+            if (shiftPressed) {
+              // when clicking on a selected element while holding shift, we want to deselect it
               this.blur(hit);
             } else {
               // blur clicked element / blur everything
               this.blur(hit);
             }
           } else {
-            if (ctrlPressed) {
-              // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
+            if (shiftPressed) {
+              // when clicking on an unselected element while holding shift, we want to select it and keep the other elements selected
               this.select(hit, { keepSelection: true });
             } else {
-              // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
+              // when clicking on an unselected element while not holding shift, we want to select it and deselect the other elements
               this.select(hit, { keepSelection: false });
             }
           }
         } else {
-          if (!ctrlPressed) this.blur();
+          if (!shiftPressed) this.blur();
         }
         break;
       case 'create':
@@ -248,7 +248,7 @@ export default class InteractionManager extends EventManager {
       case 'select':
         // only draw selection rect if we're not dragging an element
         if (!hit) {
-          if (!this.keys.ctrl) this.blur();
+          if (!this.keys.shift) this.blur();
           this.selectionRect = new SelectionRect({
             x: start.x,
             y: start.y
@@ -354,7 +354,7 @@ export default class InteractionManager extends EventManager {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
           );
-          this.select(newSelections, { keepSelection: this.keys.ctrl });
+          this.select(newSelections, { keepSelection: this.keys.shift });
           this.selectionRect = null;
         }
         if (element) {
@@ -457,7 +457,7 @@ export default class InteractionManager extends EventManager {
             break;
           case 'a':
           case 'A':
-            if (this.keys.ctrl) {
+            if (this.keys.shift) {
               const toSelect = this.getChildren((child) =>
                 this.canSelect(child)
               );

@@ -140,7 +140,7 @@ export default abstract class EventManager extends ChildrenManager {
       const wasSelected = this._selected.includes(hit);
 
       if (!wasSelected && this.onSelect(hit))
-        this.select(hit, { keepSelection: event.ctrlKey });
+        this.select(hit, { keepSelection: event.shiftKey });
 
       this.mouseDownTarget = {
         element: hit,
@@ -182,7 +182,7 @@ export default abstract class EventManager extends ChildrenManager {
         coords: this.getRelativeCoordinates(event),
         hit,
         alreadySelected,
-        ctrlPressed: event.ctrlKey,
+        shiftPressed: event.shiftKey,
         isRightClick
       });
     }
@@ -269,7 +269,7 @@ export default abstract class EventManager extends ChildrenManager {
     coords: MathPoint;
     hit: Draggable | null;
     alreadySelected: boolean;
-    ctrlPressed: boolean;
+    shiftPressed: boolean;
     isRightClick: boolean;
   }): void;
   protected abstract handleMouseMove(_event: { current: MathPoint }): void;
