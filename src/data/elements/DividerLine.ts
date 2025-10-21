@@ -30,7 +30,15 @@ export default class DividerLine extends Line {
     end.addEventListener('blur', hidePoints.bind(this, true));
 
     this.setDashed(true);
-    this.setStroke('#00000050');
+  }
+
+  get stroke(): string {
+    let normalStroke = super.stroke;
+    if (normalStroke.startsWith('#')) {
+      if (normalStroke.length === 9) normalStroke = normalStroke.slice(0, 7);
+      normalStroke += '50';
+    }
+    return normalStroke;
   }
 
   public move(coords: {

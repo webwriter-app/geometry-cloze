@@ -294,7 +294,8 @@ export class WwGeomToolbar extends LitElementWw {
 
   private LineStrokeButton() {
     const lineElement = this.selection.find((e) => e instanceof Line);
-    const color = lineElement?.stroke ?? DEFAULT_STYLE.stroke;
+    let color = lineElement?.stroke ?? DEFAULT_STYLE.stroke;
+    if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
     const width = lineElement?.lineWidth ?? DEFAULT_STYLE.lineWidth;
 
     const sliderValue = WwGeomToolbar.LINE_WIDTHS.indexOf(width) ?? 2;
@@ -347,9 +348,7 @@ export class WwGeomToolbar extends LitElementWw {
   private ShapeFillButton() {
     const shapeElement = this.selection.find((e) => e instanceof Shape);
     let color = shapeElement?.fill ?? 'transparent';
-    if (color.startsWith('#') && color.length === 9) {
-      color = color.slice(0, 7); // Remove alpha channel for display
-    }
+    if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
 
     return html`
       <sl-dropdown>
