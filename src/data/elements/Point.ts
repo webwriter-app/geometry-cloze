@@ -23,6 +23,8 @@ export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
 }) as any;
 
 export default class Point extends Draggable {
+  protected clickTargetSize = 2;
+
   protected get defaultStyle() {
     return DEFAULT_POINT_STYLE;
   }
