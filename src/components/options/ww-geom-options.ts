@@ -18,11 +18,19 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
  */
 @localized()
 export class WwGeomOptions extends LitElementWw {
+  private static SCALE_VALUES = [
+    0.01, 0.1, 0.125, 0.25, 0.75, 1, 1.5, 2, 3, 5, 10
+  ];
+
   @state()
   accessor manager: CanvasManager | null = null;
-  @query('sl-range') accessor sizeRange!: SlRange;
 
   render() {
+    let scaleValue = WwGeomOptions.SCALE_VALUES.findIndex(
+      (s) => s === this.manager?.scaleFactor
+    );
+    if (scaleValue === -1) scaleValue = 5; // Default to 1:1
+
     return html`<div class="options">
       <sl-checkbox
         .checked=${this.manager?.showGrid ?? false}
@@ -65,40 +73,24 @@ export class WwGeomOptions extends LitElementWw {
       </sl-checkbox>
       <sl-range
         min="0"
-        max="10"
+        max=${WwGeomOptions.SCALE_VALUES.length - 1}
         step="1"
+        .value=${scaleValue}
         label=${msg('Scale')}
         help-text=${msg('Scales all labels of lengths and sizes.')}
-        value="5"
+        .tooltipFormatter=${(value: number) => {
+          const scale = WwGeomOptions.SCALE_VALUES[value];
+          return `${scale * 100} %`;
+        }}
         @sl-input=${(e: SlInputEvent) => {
-          const value = (e.target as SlRange)?.value ?? 5;
-          const scale = this.convertRange(value);
+          const value = Math.min(
+            Math.max((e.target as SlRange)?.value, 0),
+            WwGeomOptions.SCALE_VALUES.length - 1
+          );
+          const scale = WwGeomOptions.SCALE_VALUES[value];
           this.manager?.setScale(scale);
         }}></sl-range>
     </div>`;
-  }
-
-  public firstUpdated() {
-    if (this.sizeRange)
-      this.sizeRange.tooltipFormatter = (value) =>
-        this.convertRange(value).toString();
-  }
-
-  private convertRange(input: number): number {
-    const map = new Map([
-      [0, 0.01],
-      [1, 0.1],
-      [2, 0.125],
-      [3, 0.25],
-      [4, 0.75],
-      [5, 1],
-      [6, 1.5],
-      [7, 2],
-      [8, 3],
-      [9, 5],
-      [10, 10]
-    ]);
-    return map.get(Math.min(Math.max(input, 0), 10)) ?? 1;
   }
 
   public static get scopedElements() {

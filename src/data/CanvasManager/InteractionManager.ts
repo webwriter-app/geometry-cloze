@@ -49,6 +49,9 @@ export default class InteractionManager extends EventManager {
   public get scale() {
     return this._scale * this.baseScale;
   }
+  public get scaleFactor() {
+    return this._scale;
+  }
   public setScale(scale: number | null) {
     this._scale = scale || 1;
     this.requestRedraw();
@@ -539,7 +542,8 @@ export default class InteractionManager extends EventManager {
       ...super.export(),
       mode: this.mode,
       showGrid: this.showGrid,
-      snapping: this.snapping
+      snapping: this.snapping,
+      scaleFactor: this._scale
     };
   }
 
@@ -547,6 +551,7 @@ export default class InteractionManager extends EventManager {
     if (data.mode) this._mode = data.mode;
     if (data.showGrid !== undefined) this._showGrid = data.showGrid;
     if (data.snapping !== undefined) this.toggleSnapping(data.snapping, false);
+    if (data.scaleFactor !== undefined) this._scale = data.scaleFactor;
     super.import(data);
   }
 }

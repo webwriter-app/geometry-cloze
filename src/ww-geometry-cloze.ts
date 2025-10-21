@@ -50,7 +50,7 @@ export class WwGeometryCloze extends LitElementWw {
   accessor mode: CanvasData['mode'] = 'select';
 
   /**
-   * Whether right angles will be drawn as small squares instead of arcs.
+   * If set, right angles will be rendered as a square instead of a curved arc.
    */
   @property({
     attribute: true,
@@ -79,6 +79,17 @@ export class WwGeometryCloze extends LitElementWw {
     type: Boolean
   })
   accessor disableSnapping: CanvasData['snapping'] = false;
+
+  /**
+   * Global scale factor for the entire canvas.
+   * Importantly, this does not effect the rendering of the shapes themselves, only the labels showing lengths and sizes.
+   */
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Number
+  })
+  accessor scale: number = 1;
 
   render() {
     return html` ${this.isContentEditable
@@ -133,6 +144,7 @@ export class WwGeometryCloze extends LitElementWw {
     this.abstractRightAngle = value.abstractRightAngle;
     this.hideGrid = !value.showGrid;
     this.disableSnapping = !value.snapping;
+    this.scale = value.scaleFactor;
   };
 
   firstUpdated() {
@@ -153,7 +165,8 @@ export class WwGeometryCloze extends LitElementWw {
           mode: this.mode,
           abstractRightAngle: this.abstractRightAngle,
           showGrid: !this.hideGrid,
-          snapping: !this.disableSnapping
+          snapping: !this.disableSnapping,
+          scaleFactor: this.scale
         });
       } else {
         const polygon = Shape.createPolygon(this.manager, [
