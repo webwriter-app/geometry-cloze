@@ -30,6 +30,7 @@ import WwLetterPicker from './ww-letter-picker';
 import TypeIcon from '../icons/type';
 import RulerIcon from '../icons/ruler';
 import AngleIcon from '../icons/angle';
+import WwKbd from '../ui/ww-kbd';
 
 @localized()
 export class WwGeomToolbar extends LitElementWw {
@@ -60,17 +61,17 @@ export class WwGeomToolbar extends LitElementWw {
         ${this.ModeButton(
           'select',
           CursorIcon,
-          html`${msg('Select and move objects')} <kbd>S</kbd>`
+          html`${msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
           PolygonIcon,
-          html`${msg('Create and connect objects')} <kbd>C</kbd>`
+          html`${msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
           DividerLineIcon,
-          html`${msg('Create divider lines')} <kbd>D</kbd>`
+          html`${msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
     `;
@@ -388,7 +389,8 @@ export class WwGeomToolbar extends LitElementWw {
     return html`
       <sl-tooltip placement="bottom">
         <span slot="content">
-          ${msg('Delete selected objects')} <kbd>⟵</kbd> / <kbd>Del</kbd>
+          ${msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
+          <ww-kbd>Del</ww-kbd>
         </span>
         <sl-button
           size="small"
@@ -449,21 +451,6 @@ export class WwGeomToolbar extends LitElementWw {
         display: flex;
         align-items: center;
       }
-    }
-
-    /* Inspired by the <kbd> styling on shoelace.style */
-    kbd {
-      display: inline-block;
-      background: var(--sl-color-neutral-600);
-      border: solid 1px var(--sl-color-neutral-500);
-      box-shadow:
-        inset 0 1px 0 0 var(--sl-color-neutral-700),
-        inset 0 -1px 0 0 var(--sl-color-neutral-500);
-      font-family: var(--sl-font-mono);
-      font-size: 0.9125em;
-      border-radius: var(--sl-border-radius-small);
-      color: var(--sl-color-neutral-100);
-      padding: 0.125em 0.4em;
     }
 
     sl-menu-label::part(base),
@@ -527,6 +514,7 @@ export class WwGeomToolbar extends LitElementWw {
     return {
       'ww-color-picker': WwColorPicker,
       'ww-letter-picker': WwLetterPicker,
+      'ww-kbd': WwKbd,
       'sl-button': SlButton,
       'sl-tooltip': SlTooltip,
       'sl-button-group': SlButtonGroup,

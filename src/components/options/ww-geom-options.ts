@@ -9,6 +9,7 @@ import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component
 import SlRange from '@shoelace-style/shoelace/dist/components/range/range.component.js';
 import InfoSVG from '../icons/info.svg';
 import CanvasManager from '../../data/CanvasManager/CanvasManager';
+import WwKbd from '../ui/ww-kbd';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import { SlInputEvent } from '@shoelace-style/shoelace';
@@ -47,7 +48,7 @@ export class WwGeomOptions extends LitElementWw {
             <span slot="content">
               ${msg(
                 html`You can also temporarily disable snapping by pressing
-                  <sl-tag size="small">Alt</sl-tag> while dragging an element`
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`
               )}
             </span>
           </sl-tooltip>
@@ -115,6 +116,7 @@ export class WwGeomOptions extends LitElementWw {
 
   public static get scopedElements() {
     return {
+      'ww-kbd': WwKbd,
       'sl-checkbox': SlCheckbox,
       'sl-tooltip': SlTooltip,
       'sl-icon': SlIcon,
