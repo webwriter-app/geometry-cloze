@@ -34,10 +34,9 @@ export default class CanvasManager extends InteractionManager {
   }
 
   public import(data: Partial<ReturnType<this['export']>>) {
+    if (data.abstractRightAngle !== undefined)
+      this._abstractRightAngle = data.abstractRightAngle;
     super.import(data);
-    if (data.abstractRightAngle !== undefined) {
-      this.abstractRightAngle = data.abstractRightAngle;
-    }
   }
 }
 

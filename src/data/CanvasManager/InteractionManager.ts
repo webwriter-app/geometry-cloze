@@ -29,10 +29,10 @@ export default class InteractionManager extends EventManager {
   public get snapping() {
     return this._snapSpacing !== null;
   }
-  public toggleSnapping(snapping = !this.snapping) {
+  public toggleSnapping(snapping = !this.snapping, rerender = true) {
     this._snapSpacing = snapping ? SNAP_SPACING : null;
     // request redraw is not neccessary but requestRedraw also triggers an update (-> updates the attributes of the webcomponent)
-    this.requestRedraw();
+    if (rerender) this.requestRedraw();
   }
 
   private _showGrid = true;
@@ -544,9 +544,9 @@ export default class InteractionManager extends EventManager {
   }
 
   public import(data: Partial<ReturnType<this['export']>>) {
-    super.import(data);
-    if (data.mode) this.mode = data.mode;
+    if (data.mode) this._mode = data.mode;
     if (data.showGrid !== undefined) this._showGrid = data.showGrid;
-    if (data.snapping !== undefined) this.toggleSnapping(data.snapping);
+    if (data.snapping !== undefined) this.toggleSnapping(data.snapping, false);
+    super.import(data);
   }
 }

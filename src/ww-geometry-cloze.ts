@@ -26,9 +26,6 @@ export class WwGeometryCloze extends LitElementWw {
 
   protected localize = LOCALIZE;
 
-  private appliedLocale: string | null = null;
-  private pendingLocale: string | null = null;
-
   /**
    * Serialized children describing the current canvas content provided by the host.
    */
@@ -63,91 +60,25 @@ export class WwGeometryCloze extends LitElementWw {
   accessor abstractRightAngle: CanvasData['abstractRightAngle'] = false;
 
   /**
-   * Whether the grid is shown on the canvas.
+   * If set, the grid will not be rendered.
    */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  accessor showGrid: CanvasData['showGrid'] = true;
+  accessor hideGrid: CanvasData['showGrid'] = false;
 
   /**
-   * Whether user interactions snap to the grid.
+   * If set, user interactions will not snap to the grid.
+   * Does not depend on whether the grid is visible or hidden.
    */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  accessor snap: CanvasData['snapping'] = true;
-
-  static override get observedAttributes() {
-    const attributes = super.observedAttributes ?? [];
-    return attributes.includes('lang') ? attributes : [...attributes, 'lang'];
-  }
-
-  override attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === 'lang' && oldValue !== newValue) {
-      this.applyLocale(newValue);
-    }
-  }
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    const initialLocale =
-      this.getAttribute('lang') ||
-      document.documentElement.lang ||
-      navigator.language ||
-      null;
-    this.applyLocale(initialLocale);
-  }
-
-  private async applyLocale(locale: string | null) {
-    const normalized = this.normalizeLocale(locale);
-    if (!normalized) return;
-    if (normalized === this.appliedLocale && !this.pendingLocale) return;
-    this.pendingLocale = normalized;
-    try {
-      await LOCALIZE.setLocale(normalized);
-      if (this.pendingLocale === normalized) {
-        this.appliedLocale = normalized;
-        this.pendingLocale = null;
-      }
-    } catch (error) {
-      console.warn(
-        `Failed to load locale "${normalized}" – falling back to default locale.`,
-        error
-      );
-      if (normalized !== 'en') {
-        try {
-          await LOCALIZE.setLocale('en');
-          if (this.pendingLocale === normalized) {
-            this.appliedLocale = 'en';
-            this.pendingLocale = null;
-          }
-        } catch (fallbackError) {
-          console.error('Failed to load fallback locale "en".', fallbackError);
-        }
-      }
-    } finally {
-      if (this.pendingLocale === normalized) {
-        this.pendingLocale = null;
-      }
-    }
-  }
-
-  private normalizeLocale(locale: string | null): string {
-    if (!locale) return 'en';
-    const trimmed = locale.trim();
-    if (!trimmed) return 'en';
-    return trimmed;
-  }
+  accessor disableSnapping: CanvasData['snapping'] = false;
 
   render() {
     return html` ${this.isContentEditable
@@ -163,6 +94,7 @@ export class WwGeometryCloze extends LitElementWw {
   protected updated(
     changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
+    if (!this.manager) return;
     if (changedProperties.has('elements')) {
       if (!this.manager || !this.elements) return;
       const exportData = this.manager.export();
@@ -170,16 +102,28 @@ export class WwGeometryCloze extends LitElementWw {
         this.manager.import({
           children: this.elements
         });
-    } else if (changedProperties.has('mode')) {
-      if (this.manager) this.manager.mode = this.mode;
-    } else if (changedProperties.has('abstractRightAngle'.toLowerCase())) {
-      if (this.manager)
-        this.manager.abstractRightAngle = this.abstractRightAngle;
-    } else if (changedProperties.has('showGrid'.toLowerCase())) {
-      if (this.manager) this.manager.toggleGrid(this.showGrid);
-    } else if (changedProperties.has('snap')) {
-      if (this.manager) this.manager.toggleSnapping(this.snap);
     }
+
+    if (changedProperties.has('mode') && this.mode !== this.manager.mode)
+      this.manager.mode = this.mode;
+
+    if (
+      changedProperties.has('abstractRightAngle') &&
+      this.abstractRightAngle !== this.manager.abstractRightAngle
+    )
+      this.manager.abstractRightAngle = this.abstractRightAngle;
+
+    if (
+      changedProperties.has('hideGrid') &&
+      this.hideGrid !== !this.manager.showGrid
+    )
+      this.manager.toggleGrid(!this.hideGrid);
+
+    if (
+      changedProperties.has('disableSnapping') &&
+      this.disableSnapping !== !this.manager.snapping
+    )
+      this.manager.toggleSnapping(!this.disableSnapping);
   }
 
   private onCanvasValueChange: EventListener = (event: Event) => {
@@ -187,8 +131,8 @@ export class WwGeometryCloze extends LitElementWw {
     this.elements = value.children;
     this.mode = value.mode;
     this.abstractRightAngle = value.abstractRightAngle;
-    this.showGrid = value.showGrid;
-    this.snap = value.snapping;
+    this.hideGrid = !value.showGrid;
+    this.disableSnapping = !value.snapping;
   };
 
   firstUpdated() {
@@ -206,7 +150,10 @@ export class WwGeometryCloze extends LitElementWw {
       if (this.elements) {
         this.manager.import({
           children: this.elements,
-          mode: this.mode
+          mode: this.mode,
+          abstractRightAngle: this.abstractRightAngle,
+          showGrid: !this.hideGrid,
+          snapping: !this.disableSnapping
         });
       } else {
         const polygon = Shape.createPolygon(this.manager, [
