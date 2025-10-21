@@ -1,5 +1,5 @@
 import { LitElementWw } from '@webwriter/lit';
-import { css, html } from 'lit';
+import { css, html, PropertyValues } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
 import SlCheckbox from '@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js';
@@ -91,6 +91,26 @@ export class WwGeomOptions extends LitElementWw {
           this.manager?.setScale(scale);
         }}></sl-range>
     </div>`;
+  }
+
+  private updateWidget = () => this.requestUpdate();
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.manager?.addEventListener('dataupdate', this.updateWidget);
+  }
+
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has('manager')) {
+      const old = _changedProperties.get('manager');
+      if (old) old.removeEventListener('dataupdate', this.updateWidget);
+      this.manager?.addEventListener('dataupdate', this.updateWidget);
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.manager?.removeEventListener('dataupdate', this.updateWidget);
   }
 
   public static get scopedElements() {
