@@ -92,6 +92,7 @@ export default class Point extends Draggable {
         if (angle === 90 && this.manager.abstractRightAngle) {
           vec1 = Vector.scale(vec1, this.size * 2 + textPadding);
           vec2 = Vector.scale(vec2, this.size * 2 + textPadding);
+          ctx.beginPath();
           ctx.moveTo(this.x + vec1.x, this.y + vec2.x);
           ctx.lineTo(this.x + vec1.x + vec2.x, this.y + vec1.y + vec2.y);
           ctx.lineTo(this.x + vec2.x, this.y + vec2.y);
