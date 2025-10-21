@@ -80,18 +80,30 @@ export default class DividerLine extends Line {
     super.blur();
   }
 
-  public static import(data: BaseLine, manager: Manager) {
+  public static import(
+    data: BaseLine & { start: { _type: string }; end: { _type: string } },
+    manager: Manager
+  ) {
+    if (data.start._type !== 'absolute' || data.end._type !== 'absolute') {
+      throw new Error(
+        'A divider line can only have absolute points as endpoints.'
+      );
+    }
+
     return new DividerLine(manager, data);
   }
 
-  //@ts-ignore
+  // @ts-ignore
   public export(): { _type: 'divider-line' } & Omit<
     ReturnType<Line['export']>,
     '_type'
   > {
     return {
       ...super.export(),
-      _type: 'divider-line' as const
+      _type: 'divider-line' as const,
+      children: undefined,
+      start: { _type: 'absolute', x: this.start.x, y: this.start.y },
+      end: { _type: 'absolute', x: this.end.x, y: this.end.y }
     };
   }
 }
