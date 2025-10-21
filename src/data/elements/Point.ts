@@ -73,7 +73,11 @@ export default class Point extends Draggable {
       const neighbors = this.getNeighborPoints();
       // To prevent flickering when a point is moved and the angle changes rapidly,
       // we measure the maximum space the angle label could take and always reserve that.
-      const metrics = ctx.measureText((angle < 100 ? '00.0' : '000.0') + '°');
+      const measureText =
+        this.labelStyle === 'name'
+          ? 'ω'
+          : (angle < 100 ? '00.0' : '000.0') + '°';
+      const metrics = ctx.measureText(measureText);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
@@ -91,16 +95,10 @@ export default class Point extends Draggable {
           ctx.lineTo(this.x + vec2.x, this.y + vec2.y);
           ctx.stroke();
         } else {
-          // get vector inwards of polygon
+          // Get vector that points to the middle of the angle mark
           let middle = Vector.normalize(Vector.add(vec1, vec2));
           if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
-          if (
-            Calc.isPointInPolygon(
-              Vector.add(this, middle),
-              (this.parent as Shape).getPoints()
-            ) === this.showOutsideAngle
-          )
-            middle = Vector.multiply(middle, -1);
+          if (angle >= 180) middle = Vector.scale(middle, -1);
 
           middle = Vector.normalize(middle, this.size + textPadding);
           const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);
