@@ -4,6 +4,8 @@ import DividerLine from '../elements/DividerLine';
 import Shape from '../elements/Shape';
 import { Child } from './ChildrenTypes';
 import InteractionManager from './InteractionManager';
+import Point from '../elements/Point';
+import Line from '../elements/Line';
 
 export default abstract class ChildrenManager extends EventTarget {
   private _canvas: HTMLCanvasElement;
@@ -29,15 +31,23 @@ export default abstract class ChildrenManager extends EventTarget {
   }
 
   protected getElementAt(point: { x: number; y: number }): Draggable | null {
+    const scoreElement = (element: Draggable) => {
+      if (element instanceof Shape) return 1;
+      if (element instanceof Line) return 2;
+      if (element instanceof Point) return 3;
+      return 0;
+    };
+
     const hit = this.children.reduce<Draggable | null>((cur, shape) => {
-      if (cur) return cur;
       if (shape instanceof Draggable) {
         const hit = shape.getHit(point)[0] ?? null;
-        if (this instanceof InteractionManager) {
-          if (this.canSelect(hit)) return hit;
-        } else return hit;
+        if (hit && this instanceof InteractionManager && this.canSelect(hit)) {
+          if (!cur) return hit;
+          // return the element with the highest score
+          return scoreElement(hit) > scoreElement(cur) ? hit : cur;
+        }
       }
-      return null;
+      return cur;
     }, null);
     return hit;
   }
