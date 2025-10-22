@@ -244,32 +244,17 @@ export class WwGeometryCloze extends LitElementWw {
         this.canvas,
         this.renderRoot as HTMLElement
       );
+      this.requestUpdate();
       this.manager.addEventListener('dataupdate', this.onCanvasValueChange);
 
-      if (this.elements) {
-        this.manager.import({
-          children: this.elements,
-          mode: this.mode,
-          abstractRightAngle: this.abstractRightAngle,
-          showGrid: !this.hideGrid,
-          snapping: !this.disableSnapping,
-          scaleFactor: this.scale
-        });
-      } else {
-        const polygon = Shape.createPolygon(this.manager, [
-          { x: 200, y: 200, name: 'top left' },
-          { x: 500, y: 200, name: 'top right' },
-          {
-            x: 600,
-            y: 300,
-            name: 'middle right'
-          },
-          { x: 500, y: 500, name: 'bottom right' },
-          { x: 200, y: 500, name: 'bottom left' }
-        ]);
-
-        this.manager.addChild(polygon);
-      }
+      this.manager.import({
+        children: this.elements || [],
+        mode: this.mode,
+        abstractRightAngle: this.abstractRightAngle,
+        showGrid: !this.hideGrid,
+        snapping: !this.disableSnapping,
+        scaleFactor: this.scale
+      });
     } else console.warn('No canvas context');
   }
 
