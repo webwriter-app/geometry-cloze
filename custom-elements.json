@@ -8,7 +8,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.",
+          "description": "The geometry cloze widgets allows for the creation and embedding of geometric\nfigures. It provides a 1000 x 700 unit wide canvas which can contain\narbitrary polygons, lines and points with custom styling, labels and\nmeasurements.\n\nIf the widget is `contenteditable`, the user can interactively create and\nedit the shapes on the canvas. Otherwise, the canvas is rendered as a static\nimage.",
           "name": "WwGeometryCloze",
           "members": [
             {
@@ -16,14 +16,6 @@
               "name": "canvas",
               "type": {
                 "text": "HTMLCanvasElement"
-              },
-              "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "contextMenu",
-              "type": {
-                "text": "WwGeomContextMenu"
               },
               "privacy": "private"
             },
@@ -44,29 +36,11 @@
             },
             {
               "kind": "field",
-              "name": "appliedLocale",
-              "type": {
-                "text": "string | null"
-              },
-              "privacy": "private",
-              "default": "null"
-            },
-            {
-              "kind": "field",
-              "name": "pendingLocale",
-              "type": {
-                "text": "string | null"
-              },
-              "privacy": "private",
-              "default": "null"
-            },
-            {
-              "kind": "field",
               "name": "elements",
               "type": {
                 "text": "CanvasData['children']"
               },
-              "description": "Serialized children describing the current canvas content provided by the host.",
+              "description": "A JSON-serialized list of all the objects that make up the canvas. Each\nobject is either a polygon element or a divider line, described below.\n\n### Elements\n\n- Represents a drawable object on the 1000×700 canvas.\n- Every object must include a `\"_type\"` field to indicate its type.\n- Every object must provide a numeric `id` that is unique across the entire\n  canvas.\n\n### Polygon Object (`\"_type\": \"element\"`)\n\n- `id` (number): Unique identifier for the shape.\n- `fill` (string, optional): `'transparent'` or a palette color with a `50`\n  alpha suffix (for example `\"#2563eb50\"`).\n- `labelColor` (string, optional): Palette color applied to any label\n  rendered for the shape.\n- `showArea`, `showPerimeter` (boolean, optional): Enable live area and\n  perimeter labels respectively. When either is `true`, required child\n  labels are shown automatically.\n- `children` (array): Mix of point and line definitions describing the\n  polygon.\n\n### Point Child (`\"_type\": \"point\"`)\n\n- `id` (number): Unique identifier within the shape.\n- `x`, `y` (number): Absolute coordinates on the canvas.\n- `fill` (string, optional): Palette color for the point marker. When\n  omitted, the point defaults to black.\n- `showLabel` (boolean, optional): When `true`, renders an angle marker\n  and label around the point.\n- `labelColor` (string, optional): Palette color for the angle label.\n- `labelStyle` (string, optional): `'name'` renders a fixed letter;\n  `'value'` displays the measured angle.\n- `labelName` (string, optional): One of `['α','β','γ','δ','ε','ζ','η','θ',\n  'ι','κ','λ','μ','ν','ξ','ο','π','ρ','σ','τ','υ','φ','χ','ω','ϡ','ͳ','ϸ']`\n  when `labelStyle` is `'name'`.\n- `showOutsideAngle` (boolean, optional): When `true`, the displayed angle\n  wraps around the exterior.\n\n### Line Child (`\"_type\": \"line\"`)\n\n- `id` (number): Unique identifier within the shape.\n- `start`, `end` (object): Either `{ \"_type\": \"reference\", \"id\": <pointId> }`\n  to reuse a point or `{ \"_type\": \"absolute\", \"x\": number, \"y\": number }`\n  for an independent endpoint.\n- `lineWidth` (number, optional): Width of the line in px, should be one\n  of `1`, `2`, `3`, `5`, `7`.\n- `stroke` (string, optional): Palette color for the stroke.\n- `showLabel` (boolean, optional): When `true`, renders a length label\n  along the line.\n- `labelColor` (string, optional): Palette color for the line label.\n- `labelStyle` (string, optional): `'name'` renders a chosen letter;\n  `'value'` displays the live length.\n- `labelName` (string, optional): One of `['a','b','c','d','e','f','g','h',\n  'i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']`\n  when `labelStyle` is `'name'`.\n\n### Divider Line (`\"_type\": \"divider-line\"`)\n\n- `id` (number): Unique identifier.\n- `start`, `end` (object): Always absolute coordinate objects of the form\n  `{ \"_type\": \"absolute\", \"x\": number, \"y\": number }`.\n- `lineWidth`, `stroke`, `labelColor`, `showLabel`, `labelStyle`,\n  `labelName`: Same meaning and value sets as for regular lines. Divider\n  strokes are automatically rendered with a dashed pattern.\n\n### Palette Colors\n\n| Color  | Hex       |\n| ------ | --------- |\n| Black  | `#131316` |\n| Red    | `#dc2626` |\n| Orange | `#ea580c` |\n| Yellow | `#ca8a04` |\n| Lime   | `#65a30d` |\n| Green  | `#16a34a` |\n| Cyan   | `#0891b2` |\n| Blue   | `#2563eb` |\n| Violet | `#7c3aed` |\n| Pink   | `#db2777` |",
               "attribute": "elements",
               "reflects": true
             },
@@ -77,7 +51,7 @@
                 "text": "CanvasData['mode']"
               },
               "default": "'select'",
-              "description": "Active editing mode, accepting three possible values:\n- 'select': Move and connect objects\n- 'create': Create and connect objects\n- 'divider': Create divider lines",
+              "description": "Active editing mode, accepting three possible values:\n- `select`: Move and connect objects\n- `create`: Create and connect objects\n- `divider`: Create divider lines",
               "attribute": "mode",
               "reflects": true
             },
@@ -88,85 +62,50 @@
                 "text": "CanvasData['abstractRightAngle']"
               },
               "default": "false",
-              "description": "Whether right angles will be drawn as small squares instead of arcs.",
+              "description": "If set, right angles will be rendered as a square instead of a curved arc.",
               "attribute": "abstractRightAngle",
               "reflects": true
             },
             {
               "kind": "field",
-              "name": "showGrid",
+              "name": "hideGrid",
               "type": {
                 "text": "CanvasData['showGrid']"
               },
-              "default": "true",
-              "description": "Whether the grid is shown on the canvas.",
-              "attribute": "showGrid",
+              "default": "false",
+              "description": "If set, the grid will not be rendered.",
+              "attribute": "hideGrid",
               "reflects": true
             },
             {
               "kind": "field",
-              "name": "snap",
+              "name": "disableSnapping",
               "type": {
                 "text": "CanvasData['snapping']"
               },
-              "default": "true",
-              "description": "Whether user interactions snap to the grid.",
-              "attribute": "snap",
+              "default": "false",
+              "description": "If set, user interactions will not snap to the grid.\nDoes not depend on whether the grid is visible or hidden.",
+              "attribute": "disableSnapping",
               "reflects": true
             },
             {
-              "kind": "method",
-              "name": "applyLocale",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "locale",
-                  "type": {
-                    "text": "string | null"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "normalizeLocale",
-              "privacy": "private",
-              "return": {
-                "type": {
-                  "text": "string"
-                }
+              "kind": "field",
+              "name": "scale",
+              "type": {
+                "text": "number"
               },
-              "parameters": [
-                {
-                  "name": "locale",
-                  "type": {
-                    "text": "string | null"
-                  }
-                }
-              ]
+              "default": "1",
+              "description": "Global scale factor for the entire canvas.\nImportantly, this does not effect the rendering of the shapes themselves, only the labels showing lengths and sizes.",
+              "attribute": "scale",
+              "reflects": true
             },
             {
-              "kind": "method",
-              "name": "onBlur",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
-              "name": "onClick",
-              "privacy": "private"
-            },
-            {
-              "kind": "method",
+              "kind": "field",
               "name": "onCanvasValueChange",
-              "privacy": "private",
-              "parameters": [
-                {
-                  "name": "value",
-                  "type": {
-                    "text": "CanvasData"
-                  }
-                }
-              ]
+              "type": {
+                "text": "EventListener"
+              },
+              "privacy": "private"
             }
           ],
           "attributes": [
@@ -175,7 +114,7 @@
               "type": {
                 "text": "CanvasData['children']"
               },
-              "description": "Serialized children describing the current canvas content provided by the host.",
+              "description": "A JSON-serialized list of all the objects that make up the canvas. Each\nobject is either a polygon element or a divider line, described below.\n\n### Elements\n\n- Represents a drawable object on the 1000×700 canvas.\n- Every object must include a `\"_type\"` field to indicate its type.\n- Every object must provide a numeric `id` that is unique across the entire\n  canvas.\n\n### Polygon Object (`\"_type\": \"element\"`)\n\n- `id` (number): Unique identifier for the shape.\n- `fill` (string, optional): `'transparent'` or a palette color with a `50`\n  alpha suffix (for example `\"#2563eb50\"`).\n- `labelColor` (string, optional): Palette color applied to any label\n  rendered for the shape.\n- `showArea`, `showPerimeter` (boolean, optional): Enable live area and\n  perimeter labels respectively. When either is `true`, required child\n  labels are shown automatically.\n- `children` (array): Mix of point and line definitions describing the\n  polygon.\n\n### Point Child (`\"_type\": \"point\"`)\n\n- `id` (number): Unique identifier within the shape.\n- `x`, `y` (number): Absolute coordinates on the canvas.\n- `fill` (string, optional): Palette color for the point marker. When\n  omitted, the point defaults to black.\n- `showLabel` (boolean, optional): When `true`, renders an angle marker\n  and label around the point.\n- `labelColor` (string, optional): Palette color for the angle label.\n- `labelStyle` (string, optional): `'name'` renders a fixed letter;\n  `'value'` displays the measured angle.\n- `labelName` (string, optional): One of `['α','β','γ','δ','ε','ζ','η','θ',\n  'ι','κ','λ','μ','ν','ξ','ο','π','ρ','σ','τ','υ','φ','χ','ω','ϡ','ͳ','ϸ']`\n  when `labelStyle` is `'name'`.\n- `showOutsideAngle` (boolean, optional): When `true`, the displayed angle\n  wraps around the exterior.\n\n### Line Child (`\"_type\": \"line\"`)\n\n- `id` (number): Unique identifier within the shape.\n- `start`, `end` (object): Either `{ \"_type\": \"reference\", \"id\": <pointId> }`\n  to reuse a point or `{ \"_type\": \"absolute\", \"x\": number, \"y\": number }`\n  for an independent endpoint.\n- `lineWidth` (number, optional): Width of the line in px, should be one\n  of `1`, `2`, `3`, `5`, `7`.\n- `stroke` (string, optional): Palette color for the stroke.\n- `showLabel` (boolean, optional): When `true`, renders a length label\n  along the line.\n- `labelColor` (string, optional): Palette color for the line label.\n- `labelStyle` (string, optional): `'name'` renders a chosen letter;\n  `'value'` displays the live length.\n- `labelName` (string, optional): One of `['a','b','c','d','e','f','g','h',\n  'i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']`\n  when `labelStyle` is `'name'`.\n\n### Divider Line (`\"_type\": \"divider-line\"`)\n\n- `id` (number): Unique identifier.\n- `start`, `end` (object): Always absolute coordinate objects of the form\n  `{ \"_type\": \"absolute\", \"x\": number, \"y\": number }`.\n- `lineWidth`, `stroke`, `labelColor`, `showLabel`, `labelStyle`,\n  `labelName`: Same meaning and value sets as for regular lines. Divider\n  strokes are automatically rendered with a dashed pattern.\n\n### Palette Colors\n\n| Color  | Hex       |\n| ------ | --------- |\n| Black  | `#131316` |\n| Red    | `#dc2626` |\n| Orange | `#ea580c` |\n| Yellow | `#ca8a04` |\n| Lime   | `#65a30d` |\n| Green  | `#16a34a` |\n| Cyan   | `#0891b2` |\n| Blue   | `#2563eb` |\n| Violet | `#7c3aed` |\n| Pink   | `#db2777` |",
               "fieldName": "elements"
             },
             {
@@ -184,7 +123,7 @@
                 "text": "CanvasData['mode']"
               },
               "default": "'select'",
-              "description": "Active editing mode, accepting three possible values:\n- 'select': Move and connect objects\n- 'create': Create and connect objects\n- 'divider': Create divider lines",
+              "description": "Active editing mode, accepting three possible values:\n- `select`: Move and connect objects\n- `create`: Create and connect objects\n- `divider`: Create divider lines",
               "fieldName": "mode"
             },
             {
@@ -193,26 +132,35 @@
                 "text": "CanvasData['abstractRightAngle']"
               },
               "default": "false",
-              "description": "Whether right angles will be drawn as small squares instead of arcs.",
+              "description": "If set, right angles will be rendered as a square instead of a curved arc.",
               "fieldName": "abstractRightAngle"
             },
             {
-              "name": "showGrid",
+              "name": "hideGrid",
               "type": {
                 "text": "CanvasData['showGrid']"
               },
-              "default": "true",
-              "description": "Whether the grid is shown on the canvas.",
-              "fieldName": "showGrid"
+              "default": "false",
+              "description": "If set, the grid will not be rendered.",
+              "fieldName": "hideGrid"
             },
             {
-              "name": "snap",
+              "name": "disableSnapping",
               "type": {
                 "text": "CanvasData['snapping']"
               },
-              "default": "true",
-              "description": "Whether user interactions snap to the grid.",
-              "fieldName": "snap"
+              "default": "false",
+              "description": "If set, user interactions will not snap to the grid.\nDoes not depend on whether the grid is visible or hidden.",
+              "fieldName": "disableSnapping"
+            },
+            {
+              "name": "scale",
+              "type": {
+                "text": "number"
+              },
+              "default": "1",
+              "description": "Global scale factor for the entire canvas.\nImportantly, this does not effect the rendering of the shapes themselves, only the labels showing lengths and sizes.",
+              "fieldName": "scale"
             }
           ],
           "superclass": {
@@ -220,7 +168,9 @@
             "package": "@webwriter/lit"
           },
           "tagName": "ww-geometry-cloze",
-          "customElement": true
+          "customElement": true,
+          "modulePath": "src/ww-geometry-cloze.ts",
+          "definitionPath": "src/ww-geometry-cloze.ts"
         }
       ],
       "exports": [
