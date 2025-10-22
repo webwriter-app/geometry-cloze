@@ -11,6 +11,8 @@ import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
+import SHOELACE from '../helper/Shoelace';
+import { SELECTION_STYLE } from '../components/SelectionRect';
 
 export default class Shape extends Draggable {
   static createPolygon(manager: Manager, points: BasePoint[]): Shape;
@@ -468,7 +470,7 @@ export default class Shape extends Draggable {
       ctx.fill();
 
       if (this.selected) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillStyle = SELECTION_STYLE.fillOverlay;
         ctx.fill();
       }
     } else if (this.selected) {
@@ -488,7 +490,7 @@ export default class Shape extends Draggable {
 
     if (this.showLabel) {
       const labels = this.getLabel().split('|');
-      ctx.font = '24px Arial';
+      ctx.font = `24px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       const metrics = labels.map((label) => ctx.measureText(label));
       const fontHeight = metrics.map(
@@ -510,6 +512,16 @@ export default class Shape extends Draggable {
         offset += fontHeight[index];
       });
     }
+  }
+
+  protected drawChildren(ctx: CanvasRenderingContext2D): void {
+    // Render lines before points, so that points are on top of lines
+    this.children
+      .concat([])
+      .sort(
+        (a, b) => (a instanceof Line ? -1 : 1) - (b instanceof Line ? -1 : 1)
+      )
+      .forEach((child) => child.draw(ctx));
   }
 
   public showArea = false;
@@ -579,22 +591,33 @@ export default class Shape extends Draggable {
       data.children
         ?.filter((child) => child._type === 'point')
         .map((child) => Point.import(child as any, manager)) ?? [];
+
+    const importPoint = (pointData: any): MathPoint => {
+      if (pointData._type === 'reference')
+        return points.find((point) => point.id === pointData.id)!;
+      else return { x: pointData.x, y: pointData.y };
+    };
+
     const children =
       (data.children
         ?.map((child: any) => {
-          if (child._type === 'point')
-            return points.find((point) => point.id === child.id);
-          if (child._type === 'line')
-            return Line.import(
-              {
-                ...child,
-                start: points.find((point) => point.id === child.start.id),
-                end: points.find((point) => point.id === child.end.id)
-              },
-              manager
-            );
-          if (child._type === 'element') return null;
-          throw new Error('Invalid child type');
+          switch (child._type) {
+            case 'point':
+              return points.find((point) => point.id === child.id);
+            case 'line':
+              return Line.import(
+                {
+                  ...child,
+                  start: importPoint(child.start),
+                  end: importPoint(child.end)
+                },
+                manager
+              );
+            case 'element':
+              return null;
+            default:
+              throw new Error('Invalid child type');
+          }
         })
         .filter(Boolean) as (Point | Line)[]) ?? [];
     return new Shape(manager, children, data);

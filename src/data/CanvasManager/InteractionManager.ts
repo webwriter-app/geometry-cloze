@@ -7,11 +7,12 @@ import SelectionRect from '../components/SelectionRect';
 import EventManager from './EventManager';
 import DividerLine from '../elements/DividerLine';
 import CanvasManager from './CanvasManager';
+import SHOELACE from '../helper/Shoelace';
 
 const SNAP_SPACING = 50;
+
 export default class InteractionManager extends EventManager {
   private _mode: InteractionMode = 'select';
-  private modeChangeListeners: ((mode: InteractionMode) => void)[] = [];
   protected _snapSpacing: number | null = SNAP_SPACING;
   private snap<Value extends number | MathPoint>(value: Value): Value {
     if (this._snapSpacing === null || this.keys.alt) return value;
@@ -28,10 +29,10 @@ export default class InteractionManager extends EventManager {
   public get snapping() {
     return this._snapSpacing !== null;
   }
-  public toggleSnapping(snapping = !this.snapping) {
+  public toggleSnapping(snapping = !this.snapping, rerender = true) {
     this._snapSpacing = snapping ? SNAP_SPACING : null;
     // request redraw is not neccessary but requestRedraw also triggers an update (-> updates the attributes of the webcomponent)
-    this.requestRedraw();
+    if (rerender) this.requestRedraw();
   }
 
   private _showGrid = true;
@@ -48,6 +49,9 @@ export default class InteractionManager extends EventManager {
   public get scale() {
     return this._scale * this.baseScale;
   }
+  public get scaleFactor() {
+    return this._scale;
+  }
   public setScale(scale: number | null) {
     this._scale = scale || 1;
     this.requestRedraw();
@@ -57,7 +61,7 @@ export default class InteractionManager extends EventManager {
     super.redraw(ctx);
     if (this.showGrid) {
       const spacing = SNAP_SPACING;
-      ctx.strokeStyle = '#00000050';
+      ctx.strokeStyle = SHOELACE.color.neutral[300];
       ctx.lineWidth = 1;
       ctx.setLineDash([]);
       ctx.beginPath();
@@ -92,7 +96,7 @@ export default class InteractionManager extends EventManager {
     this: CanvasManager,
     {
       hit,
-      ctrlPressed,
+      shiftPressed,
       alreadySelected,
       isRightClick,
       coords
@@ -100,7 +104,7 @@ export default class InteractionManager extends EventManager {
       coords: MathPoint;
       hit: Draggable | null;
       alreadySelected: boolean;
-      ctrlPressed: boolean;
+      shiftPressed: boolean;
       isRightClick: boolean;
     }
   ) {
@@ -112,7 +116,7 @@ export default class InteractionManager extends EventManager {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
           );
-          this.select(newSelections, { keepSelection: ctrlPressed });
+          this.select(newSelections, { keepSelection: shiftPressed });
           this.selectionRect = null;
           this.requestRedraw();
           return;
@@ -126,24 +130,24 @@ export default class InteractionManager extends EventManager {
 
         if (hit) {
           if (alreadySelected) {
-            if (ctrlPressed) {
-              // when clicking on a selected element while holding ctrl, we want to deselect it
+            if (shiftPressed) {
+              // when clicking on a selected element while holding shift, we want to deselect it
               this.blur(hit);
             } else {
               // blur clicked element / blur everything
               this.blur(hit);
             }
           } else {
-            if (ctrlPressed) {
-              // when clicking on an unselected element while holding ctrl, we want to select it and keep the other elements selected
+            if (shiftPressed) {
+              // when clicking on an unselected element while holding shift, we want to select it and keep the other elements selected
               this.select(hit, { keepSelection: true });
             } else {
-              // when clicking on an unselected element while not holding ctrl, we want to select it and deselect the other elements
+              // when clicking on an unselected element while not holding shift, we want to select it and deselect the other elements
               this.select(hit, { keepSelection: false });
             }
           }
         } else {
-          if (!ctrlPressed) this.blur();
+          if (!shiftPressed) this.blur();
         }
         break;
       case 'create':
@@ -248,7 +252,7 @@ export default class InteractionManager extends EventManager {
       case 'select':
         // only draw selection rect if we're not dragging an element
         if (!hit) {
-          if (!this.keys.ctrl) this.blur();
+          if (!this.keys.shift) this.blur();
           this.selectionRect = new SelectionRect({
             x: start.x,
             y: start.y
@@ -354,7 +358,7 @@ export default class InteractionManager extends EventManager {
           const newSelections = this.selectionRect.getSelectedElements(
             this.getChildren()
           );
-          this.select(newSelections, { keepSelection: this.keys.ctrl });
+          this.select(newSelections, { keepSelection: this.keys.shift });
           this.selectionRect = null;
         }
         if (element) {
@@ -457,7 +461,7 @@ export default class InteractionManager extends EventManager {
             break;
           case 'a':
           case 'A':
-            if (this.keys.ctrl) {
+            if (this.keys.shift) {
               const toSelect = this.getChildren((child) =>
                 this.canSelect(child)
               );
@@ -529,18 +533,8 @@ export default class InteractionManager extends EventManager {
         (line) => this.blur(line)
       );
     }
-    this.modeChangeListeners.forEach((listener) => listener(mode));
+    this.dispatchEvent(new CustomEvent('modeupdate', { detail: mode }));
     this.requestRedraw();
-  }
-
-  public addModeChangeListener(listener: (mode: InteractionMode) => void) {
-    this.modeChangeListeners.push(listener);
-  }
-
-  public removeModeChangeListener(listener: (mode: InteractionMode) => void) {
-    const index = this.modeChangeListeners.indexOf(listener);
-    if (index < 0) return;
-    this.modeChangeListeners.splice(index, 1);
   }
 
   public export() {
@@ -548,14 +542,16 @@ export default class InteractionManager extends EventManager {
       ...super.export(),
       mode: this.mode,
       showGrid: this.showGrid,
-      snapping: this.snapping
+      snapping: this.snapping,
+      scaleFactor: this._scale
     };
   }
 
   public import(data: Partial<ReturnType<this['export']>>) {
-    super.import(data);
-    if (data.mode) this.mode = data.mode;
+    if (data.mode) this._mode = data.mode;
     if (data.showGrid !== undefined) this._showGrid = data.showGrid;
-    if (data.snapping !== undefined) this.toggleSnapping(data.snapping);
+    if (data.snapping !== undefined) this.toggleSnapping(data.snapping, false);
+    if (data.scaleFactor !== undefined) this._scale = data.scaleFactor;
+    super.import(data);
   }
 }

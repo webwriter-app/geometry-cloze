@@ -15,7 +15,14 @@ import '@shoelace-style/shoelace/dist/themes/light.css';
 import { WwGeomOptions } from './components/options/ww-geom-options';
 
 /**
- * Geometry cloze widget that renders the interactive canvas and manages localization/state wiring.
+ * The geometry cloze widgets allows for the creation and embedding of geometric
+ * figures. It provides a 1000 x 700 unit wide canvas which can contain
+ * arbitrary polygons, lines and points with custom styling, labels and
+ * measurements.
+ *
+ * If the widget is `contenteditable`, the user can interactively create and
+ * edit the shapes on the canvas. Otherwise, the canvas is rendered as a static
+ * image.
  */
 @localized()
 @customElement('ww-geometry-cloze')
@@ -26,11 +33,88 @@ export class WwGeometryCloze extends LitElementWw {
 
   protected localize = LOCALIZE;
 
-  private appliedLocale: string | null = null;
-  private pendingLocale: string | null = null;
-
   /**
-   * Serialized children describing the current canvas content provided by the host.
+   * A JSON-serialized list of all the objects that make up the canvas. Each
+   * object is either a polygon element or a divider line, described below.
+   *
+   * ### Elements
+   *
+   * - Represents a drawable object on the 1000×700 canvas.
+   * - Every object must include a `"_type"` field to indicate its type.
+   * - Every object must provide a numeric `id` that is unique across the entire
+   *   canvas.
+   *
+   * ### Polygon Object (`"_type": "element"`)
+   *
+   * - `id` (number): Unique identifier for the shape.
+   * - `fill` (string, optional): `'transparent'` or a palette color with a `50`
+   *   alpha suffix (for example `"#2563eb50"`).
+   * - `labelColor` (string, optional): Palette color applied to any label
+   *   rendered for the shape.
+   * - `showArea`, `showPerimeter` (boolean, optional): Enable live area and
+   *   perimeter labels respectively. When either is `true`, required child
+   *   labels are shown automatically.
+   * - `children` (array): Mix of point and line definitions describing the
+   *   polygon.
+   *
+   * ### Point Child (`"_type": "point"`)
+   *
+   * - `id` (number): Unique identifier within the shape.
+   * - `x`, `y` (number): Absolute coordinates on the canvas.
+   * - `fill` (string, optional): Palette color for the point marker. When
+   *   omitted, the point defaults to black.
+   * - `showLabel` (boolean, optional): When `true`, renders an angle marker
+   *   and label around the point.
+   * - `labelColor` (string, optional): Palette color for the angle label.
+   * - `labelStyle` (string, optional): `'name'` renders a fixed letter;
+   *   `'value'` displays the measured angle.
+   * - `labelName` (string, optional): One of `['α','β','γ','δ','ε','ζ','η','θ',
+   *   'ι','κ','λ','μ','ν','ξ','ο','π','ρ','σ','τ','υ','φ','χ','ω','ϡ','ͳ','ϸ']`
+   *   when `labelStyle` is `'name'`.
+   * - `showOutsideAngle` (boolean, optional): When `true`, the displayed angle
+   *   wraps around the exterior.
+   *
+   * ### Line Child (`"_type": "line"`)
+   *
+   * - `id` (number): Unique identifier within the shape.
+   * - `start`, `end` (object): Either `{ "_type": "reference", "id": <pointId> }`
+   *   to reuse a point or `{ "_type": "absolute", "x": number, "y": number }`
+   *   for an independent endpoint.
+   * - `lineWidth` (number, optional): Width of the line in px, should be one
+   *   of `1`, `2`, `3`, `5`, `7`.
+   * - `stroke` (string, optional): Palette color for the stroke.
+   * - `showLabel` (boolean, optional): When `true`, renders a length label
+   *   along the line.
+   * - `labelColor` (string, optional): Palette color for the line label.
+   * - `labelStyle` (string, optional): `'name'` renders a chosen letter;
+   *   `'value'` displays the live length.
+   * - `labelName` (string, optional): One of `['a','b','c','d','e','f','g','h',
+   *   'i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']`
+   *   when `labelStyle` is `'name'`.
+   *
+   * ### Divider Line (`"_type": "divider-line"`)
+   *
+   * - `id` (number): Unique identifier.
+   * - `start`, `end` (object): Always absolute coordinate objects of the form
+   *   `{ "_type": "absolute", "x": number, "y": number }`.
+   * - `lineWidth`, `stroke`, `labelColor`, `showLabel`, `labelStyle`,
+   *   `labelName`: Same meaning and value sets as for regular lines. Divider
+   *   strokes are automatically rendered with a dashed pattern.
+   *
+   * ### Palette Colors
+   *
+   * | Color  | Hex       |
+   * | ------ | --------- |
+   * | Black  | `#131316` |
+   * | Red    | `#dc2626` |
+   * | Orange | `#ea580c` |
+   * | Yellow | `#ca8a04` |
+   * | Lime   | `#65a30d` |
+   * | Green  | `#16a34a` |
+   * | Cyan   | `#0891b2` |
+   * | Blue   | `#2563eb` |
+   * | Violet | `#7c3aed` |
+   * | Pink   | `#db2777` |
    */
   @property({
     attribute: true,
@@ -41,9 +125,9 @@ export class WwGeometryCloze extends LitElementWw {
 
   /**
    * Active editing mode, accepting three possible values:
-   * - 'select': Move and connect objects
-   * - 'create': Create and connect objects
-   * - 'divider': Create divider lines
+   * - `select`: Move and connect objects
+   * - `create`: Create and connect objects
+   * - `divider`: Create divider lines
    */
   @property({
     attribute: true,
@@ -53,7 +137,7 @@ export class WwGeometryCloze extends LitElementWw {
   accessor mode: CanvasData['mode'] = 'select';
 
   /**
-   * Whether right angles will be drawn as small squares instead of arcs.
+   * If set, right angles will be rendered as a square instead of a curved arc.
    */
   @property({
     attribute: true,
@@ -63,91 +147,36 @@ export class WwGeometryCloze extends LitElementWw {
   accessor abstractRightAngle: CanvasData['abstractRightAngle'] = false;
 
   /**
-   * Whether the grid is shown on the canvas.
+   * If set, the grid will not be rendered.
    */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  accessor showGrid: CanvasData['showGrid'] = true;
+  accessor hideGrid: CanvasData['showGrid'] = false;
 
   /**
-   * Whether user interactions snap to the grid.
+   * If set, user interactions will not snap to the grid.
+   * Does not depend on whether the grid is visible or hidden.
    */
   @property({
     attribute: true,
     reflect: true,
     type: Boolean
   })
-  accessor snap: CanvasData['snapping'] = true;
+  accessor disableSnapping: CanvasData['snapping'] = false;
 
-  static override get observedAttributes() {
-    const attributes = super.observedAttributes ?? [];
-    return attributes.includes('lang') ? attributes : [...attributes, 'lang'];
-  }
-
-  override attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if (name === 'lang' && oldValue !== newValue) {
-      this.applyLocale(newValue);
-    }
-  }
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    const initialLocale =
-      this.getAttribute('lang') ||
-      document.documentElement.lang ||
-      navigator.language ||
-      null;
-    this.applyLocale(initialLocale);
-  }
-
-  private async applyLocale(locale: string | null) {
-    const normalized = this.normalizeLocale(locale);
-    if (!normalized) return;
-    if (normalized === this.appliedLocale && !this.pendingLocale) return;
-    this.pendingLocale = normalized;
-    try {
-      await LOCALIZE.setLocale(normalized);
-      if (this.pendingLocale === normalized) {
-        this.appliedLocale = normalized;
-        this.pendingLocale = null;
-      }
-    } catch (error) {
-      console.warn(
-        `Failed to load locale "${normalized}" – falling back to default locale.`,
-        error
-      );
-      if (normalized !== 'en') {
-        try {
-          await LOCALIZE.setLocale('en');
-          if (this.pendingLocale === normalized) {
-            this.appliedLocale = 'en';
-            this.pendingLocale = null;
-          }
-        } catch (fallbackError) {
-          console.error('Failed to load fallback locale "en".', fallbackError);
-        }
-      }
-    } finally {
-      if (this.pendingLocale === normalized) {
-        this.pendingLocale = null;
-      }
-    }
-  }
-
-  private normalizeLocale(locale: string | null): string {
-    if (!locale) return 'en';
-    const trimmed = locale.trim();
-    if (!trimmed) return 'en';
-    return trimmed;
-  }
+  /**
+   * Global scale factor for the entire canvas.
+   * Importantly, this does not effect the rendering of the shapes themselves, only the labels showing lengths and sizes.
+   */
+  @property({
+    attribute: true,
+    reflect: true,
+    type: Number
+  })
+  accessor scale: number = 1;
 
   render() {
     return html` ${this.isContentEditable
@@ -163,6 +192,7 @@ export class WwGeometryCloze extends LitElementWw {
   protected updated(
     changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
+    if (!this.manager) return;
     if (changedProperties.has('elements')) {
       if (!this.manager || !this.elements) return;
       const exportData = this.manager.export();
@@ -170,25 +200,39 @@ export class WwGeometryCloze extends LitElementWw {
         this.manager.import({
           children: this.elements
         });
-    } else if (changedProperties.has('mode')) {
-      if (this.manager) this.manager.mode = this.mode;
-    } else if (changedProperties.has('abstractRightAngle'.toLowerCase())) {
-      if (this.manager)
-        this.manager.abstractRightAngle = this.abstractRightAngle;
-    } else if (changedProperties.has('showGrid'.toLowerCase())) {
-      if (this.manager) this.manager.toggleGrid(this.showGrid);
-    } else if (changedProperties.has('snap')) {
-      if (this.manager) this.manager.toggleSnapping(this.snap);
     }
+
+    if (changedProperties.has('mode') && this.mode !== this.manager.mode)
+      this.manager.mode = this.mode;
+
+    if (
+      changedProperties.has('abstractRightAngle') &&
+      this.abstractRightAngle !== this.manager.abstractRightAngle
+    )
+      this.manager.abstractRightAngle = this.abstractRightAngle;
+
+    if (
+      changedProperties.has('hideGrid') &&
+      this.hideGrid !== !this.manager.showGrid
+    )
+      this.manager.toggleGrid(!this.hideGrid);
+
+    if (
+      changedProperties.has('disableSnapping') &&
+      this.disableSnapping !== !this.manager.snapping
+    )
+      this.manager.toggleSnapping(!this.disableSnapping);
   }
 
-  private onCanvasValueChange(value: CanvasData) {
+  private onCanvasValueChange: EventListener = (event: Event) => {
+    const value = (event as CustomEvent<CanvasData>).detail;
     this.elements = value.children;
     this.mode = value.mode;
     this.abstractRightAngle = value.abstractRightAngle;
-    this.showGrid = value.showGrid;
-    this.snap = value.snapping;
-  }
+    this.hideGrid = !value.showGrid;
+    this.disableSnapping = !value.snapping;
+    this.scale = value.scaleFactor;
+  };
 
   firstUpdated() {
     if (this.canvas) {
@@ -200,12 +244,16 @@ export class WwGeometryCloze extends LitElementWw {
         this.canvas,
         this.renderRoot as HTMLElement
       );
-      this.manager.addUpdateListener(this.onCanvasValueChange.bind(this));
+      this.manager.addEventListener('dataupdate', this.onCanvasValueChange);
 
       if (this.elements) {
         this.manager.import({
           children: this.elements,
-          mode: this.mode
+          mode: this.mode,
+          abstractRightAngle: this.abstractRightAngle,
+          showGrid: !this.hideGrid,
+          snapping: !this.disableSnapping,
+          scaleFactor: this.scale
         });
       } else {
         const polygon = Shape.createPolygon(this.manager, [
@@ -227,7 +275,7 @@ export class WwGeometryCloze extends LitElementWw {
 
   disconnectedCallback(): void {
     if (this.manager) {
-      this.manager.removeUpdateListener(this.onCanvasValueChange);
+      this.manager.removeEventListener('dataupdate', this.onCanvasValueChange);
       this.manager.unmount();
     }
     super.disconnectedCallback();
@@ -253,6 +301,9 @@ export class WwGeometryCloze extends LitElementWw {
       display: block;
 
       width: 100%;
+
+      color: var(--sl-color-neutral-900);
+      background-color: var(--sl-color-neutral-0);
 
       border: solid 1px var(--sl-color-neutral-300);
       border-radius: var(--sl-border-radius-medium);

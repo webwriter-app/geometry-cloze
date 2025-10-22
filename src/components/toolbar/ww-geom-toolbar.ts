@@ -30,22 +30,22 @@ import WwLetterPicker from './ww-letter-picker';
 import TypeIcon from '../icons/type';
 import RulerIcon from '../icons/ruler';
 import AngleIcon from '../icons/angle';
+import WwKbd from '../ui/ww-kbd';
 
 @localized()
-@customElement('ww-geom-toolbar')
 export class WwGeomToolbar extends LitElementWw {
   @property({ type: Object })
   accessor manager: CanvasManager | null = null;
 
   @state()
   private accessor mode: InteractionMode = 'select';
-  private modeChangeListener = (newMode: InteractionMode) =>
-    (this.mode = newMode);
+  private modeEventListener = (event: Event) =>
+    (this.mode = (event as CustomEvent<InteractionMode>).detail);
 
   @state()
   private accessor selection: Draggable[] = [];
-  private selectionChangeListener = (newSelection: Draggable[]) =>
-    (this.selection = newSelection);
+  private selectionEventListener = (event: Event) =>
+    (this.selection = (event as CustomEvent<Draggable[]>).detail);
 
   render() {
     return html`
@@ -61,17 +61,17 @@ export class WwGeomToolbar extends LitElementWw {
         ${this.ModeButton(
           'select',
           CursorIcon,
-          html`${msg('Select and move objects')} <kbd>S</kbd>`
+          html`${msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
           PolygonIcon,
-          html`${msg('Create and connect objects')} <kbd>C</kbd>`
+          html`${msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
           DividerLineIcon,
-          html`${msg('Create divider lines')} <kbd>D</kbd>`
+          html`${msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
     `;
@@ -295,7 +295,8 @@ export class WwGeomToolbar extends LitElementWw {
 
   private LineStrokeButton() {
     const lineElement = this.selection.find((e) => e instanceof Line);
-    const color = lineElement?.stroke ?? DEFAULT_STYLE.stroke;
+    let color = lineElement?.stroke ?? DEFAULT_STYLE.stroke;
+    if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
     const width = lineElement?.lineWidth ?? DEFAULT_STYLE.lineWidth;
 
     const sliderValue = WwGeomToolbar.LINE_WIDTHS.indexOf(width) ?? 2;
@@ -348,9 +349,7 @@ export class WwGeomToolbar extends LitElementWw {
   private ShapeFillButton() {
     const shapeElement = this.selection.find((e) => e instanceof Shape);
     let color = shapeElement?.fill ?? 'transparent';
-    if (color.startsWith('#') && color.length === 9) {
-      color = color.slice(0, 7); // Remove alpha channel for display
-    }
+    if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
 
     return html`
       <sl-dropdown>
@@ -390,7 +389,8 @@ export class WwGeomToolbar extends LitElementWw {
     return html`
       <sl-tooltip placement="bottom">
         <span slot="content">
-          ${msg('Delete selected objects')} <kbd>⟵</kbd> / <kbd>Del</kbd>
+          ${msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
+          <ww-kbd>Del</ww-kbd>
         </span>
         <sl-button
           size="small"
@@ -424,14 +424,14 @@ export class WwGeomToolbar extends LitElementWw {
   }
 
   private managerAttached(manager: CanvasManager) {
-    manager.addModeChangeListener(this.modeChangeListener);
-    manager.addSelectionChangeListener(this.selectionChangeListener);
+    manager.addEventListener('modeupdate', this.modeEventListener);
+    manager.addEventListener('selectionupdate', this.selectionEventListener);
     this.mode = manager.mode;
   }
 
   private managerDetached(manager: CanvasManager) {
-    manager.removeModeChangeListener(this.modeChangeListener);
-    manager.removeSelectionChangeListener(this.selectionChangeListener);
+    manager.removeEventListener('modeupdate', this.modeEventListener);
+    manager.removeEventListener('selectionupdate', this.selectionEventListener);
   }
 
   static styles = css`
@@ -451,21 +451,6 @@ export class WwGeomToolbar extends LitElementWw {
         display: flex;
         align-items: center;
       }
-    }
-
-    /* Inspired by the <kbd> styling on shoelace.style */
-    kbd {
-      display: inline-block;
-      background: var(--sl-color-neutral-600);
-      border: solid 1px var(--sl-color-neutral-500);
-      box-shadow:
-        inset 0 1px 0 0 var(--sl-color-neutral-700),
-        inset 0 -1px 0 0 var(--sl-color-neutral-500);
-      font-family: var(--sl-font-mono);
-      font-size: 0.9125em;
-      border-radius: var(--sl-border-radius-small);
-      color: var(--sl-color-neutral-100);
-      padding: 0.125em 0.4em;
     }
 
     sl-menu-label::part(base),
@@ -529,6 +514,7 @@ export class WwGeomToolbar extends LitElementWw {
     return {
       'ww-color-picker': WwColorPicker,
       'ww-letter-picker': WwLetterPicker,
+      'ww-kbd': WwKbd,
       'sl-button': SlButton,
       'sl-tooltip': SlTooltip,
       'sl-button-group': SlButtonGroup,

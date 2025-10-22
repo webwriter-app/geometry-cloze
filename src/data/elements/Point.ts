@@ -12,15 +12,19 @@ import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { msg } from '@lit/localize';
 import { SELECTION_STYLE } from '../components/SelectionRect';
+import SHOELACE from '../helper/Shoelace';
 
 export type BasePoint = MathPoint & NamedElement;
 
 export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
   fill: DEFAULT_STYLE.stroke,
-  size: 5
+  size: 7,
+  lineWidth: 0
 }) as any;
 
 export default class Point extends Draggable {
+  protected clickTargetSize = 2;
+
   protected get defaultStyle() {
     return DEFAULT_POINT_STYLE;
   }
@@ -44,10 +48,7 @@ export default class Point extends Draggable {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    // We actually don't want to draw the stroke, but for now we still need to extend the radius by it
-    // for the line rendering to not look weird.
-    // TODO: Fix this properly by changing the line rendering logic
-    ctx.arc(this.x, this.y, this.size + this.lineWidth / 2, 0, 2 * Math.PI);
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
     ctx.fill();
 
     if (this.selected) {
@@ -66,7 +67,7 @@ export default class Point extends Draggable {
     }
 
     if (this.showLabel) {
-      ctx.font = '18px Arial';
+      ctx.font = `18px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       ctx.strokeStyle = this.labelColor;
       const label = this.getLabel();
@@ -74,7 +75,11 @@ export default class Point extends Draggable {
       const neighbors = this.getNeighborPoints();
       // To prevent flickering when a point is moved and the angle changes rapidly,
       // we measure the maximum space the angle label could take and always reserve that.
-      const metrics = ctx.measureText((angle < 100 ? '00.0' : '000.0') + '°');
+      const measureText =
+        this.labelStyle === 'name'
+          ? 'ω'
+          : (angle < 100 ? '00.0' : '000.0') + '°';
+      const metrics = ctx.measureText(measureText);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (angle !== -1 && neighbors) {
@@ -87,21 +92,16 @@ export default class Point extends Draggable {
         if (angle === 90 && this.manager.abstractRightAngle) {
           vec1 = Vector.scale(vec1, this.size * 2 + textPadding);
           vec2 = Vector.scale(vec2, this.size * 2 + textPadding);
+          ctx.beginPath();
           ctx.moveTo(this.x + vec1.x, this.y + vec2.x);
           ctx.lineTo(this.x + vec1.x + vec2.x, this.y + vec1.y + vec2.y);
           ctx.lineTo(this.x + vec2.x, this.y + vec2.y);
           ctx.stroke();
         } else {
-          // get vector inwards of polygon
+          // Get vector that points to the middle of the angle mark
           let middle = Vector.normalize(Vector.add(vec1, vec2));
           if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
-          if (
-            Calc.isPointInPolygon(
-              Vector.add(this, middle),
-              (this.parent as Shape).getPoints()
-            ) === this.showOutsideAngle
-          )
-            middle = Vector.multiply(middle, -1);
+          if (angle >= 180) middle = Vector.scale(middle, -1);
 
           middle = Vector.normalize(middle, this.size + textPadding);
           const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);

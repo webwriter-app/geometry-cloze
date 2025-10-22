@@ -7,24 +7,14 @@ export default class CanvasManager extends InteractionManager {
     500,
     2000
   );
-  requestRedraw(originallyScheduledAt?: number) {
-    super.requestRedraw(originallyScheduledAt);
+  requestRedraw() {
+    super.requestRedraw();
     this.updateDebouncer.call();
   }
 
   private sendUpdate() {
     const exportedData = this.export();
-    this.updateListeners.forEach((listener) => listener(exportedData));
-  }
-
-  private updateListeners: ((exportedData: CanvasData) => void)[] = [];
-  public addUpdateListener(listener: (exportedData: any) => void) {
-    this.updateListeners.push(listener);
-  }
-  public removeUpdateListener(listener: (exportedData: CanvasData) => void) {
-    const index = this.updateListeners.indexOf(listener);
-    if (index < 0) return;
-    this.updateListeners.splice(index, 1);
+    this.dispatchEvent(new CustomEvent('dataupdate', { detail: exportedData }));
   }
 
   private _abstractRightAngle = false;
@@ -44,10 +34,9 @@ export default class CanvasManager extends InteractionManager {
   }
 
   public import(data: Partial<ReturnType<this['export']>>) {
+    if (data.abstractRightAngle !== undefined)
+      this._abstractRightAngle = data.abstractRightAngle;
     super.import(data);
-    if (data.abstractRightAngle !== undefined) {
-      this.abstractRightAngle = data.abstractRightAngle;
-    }
   }
 }
 

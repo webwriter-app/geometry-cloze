@@ -4,10 +4,10 @@ import DividerLine from '../elements/DividerLine';
 import Shape from '../elements/Shape';
 import { Child } from './ChildrenTypes';
 import InteractionManager from './InteractionManager';
+import Point from '../elements/Point';
+import Line from '../elements/Line';
 
-export default abstract class ChildrenManager {
-  private static FRAME_RATE = 60;
-
+export default abstract class ChildrenManager extends EventTarget {
   private _canvas: HTMLCanvasElement;
   private _ctx: CanvasRenderingContext2D;
 
@@ -16,6 +16,7 @@ export default abstract class ChildrenManager {
   private children: Child[] = [];
 
   constructor(canvas: HTMLCanvasElement) {
+    super();
     this._canvas = canvas;
     this._ctx = this._canvas.getContext('2d')!;
   }
@@ -30,45 +31,48 @@ export default abstract class ChildrenManager {
   }
 
   protected getElementAt(point: { x: number; y: number }): Draggable | null {
+    const scoreElement = (element: Draggable) => {
+      if (element instanceof Shape) return 1;
+      if (element instanceof Line) return 2;
+      if (element instanceof Point) return 3;
+      return 0;
+    };
+
     const hit = this.children.reduce<Draggable | null>((cur, shape) => {
-      if (cur) return cur;
       if (shape instanceof Draggable) {
         const hit = shape.getHit(point)[0] ?? null;
-        if (this instanceof InteractionManager) {
-          if (this.canSelect(hit)) return hit;
-        } else return hit;
+        if (hit && this instanceof InteractionManager && this.canSelect(hit)) {
+          if (!cur) return hit;
+          // return the element with the highest score
+          return scoreElement(hit) > scoreElement(cur) ? hit : cur;
+        }
       }
-      return null;
+      return cur;
     }, null);
     return hit;
   }
 
-  /**
-   * first timestamp where we requested a redraw for current batch
-   */
-  private firstRequestTimestamp: number | null = null;
-  /**
-   * last timestamp where we actually redrew
-   */
-  private lastRedrawTimestamp: number = 0;
-  requestRedraw(originallyScheduledAt?: number) {
-    const now = performance.now();
-    if (!originallyScheduledAt) originallyScheduledAt = now;
+  /** Request a redraw on the next animation frame */
+  private needsRender = false;
+  /** Whether the redraw loop is currently running */
+  private running = false;
 
-    // check if we've already redrawn since this was scheduled
-    if (originallyScheduledAt < this.lastRedrawTimestamp) return;
-
-    if (!this.firstRequestTimestamp)
-      this.firstRequestTimestamp = performance.now();
-
-    if (now - this.firstRequestTimestamp > 1000 / ChildrenManager.FRAME_RATE) {
-      this.lastRedrawTimestamp = now;
+  private _renderLoop = () => {
+    if (this.needsRender) {
+      this.needsRender = false;
       this.redraw(this._ctx);
-      this.firstRequestTimestamp = null;
-    } else
-      requestAnimationFrame(
-        this.requestRedraw.bind(this, originallyScheduledAt)
-      );
+      requestAnimationFrame(this._renderLoop);
+    } else {
+      this.running = false;
+    }
+  };
+
+  requestRedraw() {
+    this.needsRender = true;
+    if (!this.running) {
+      this.running = true;
+      requestAnimationFrame(this._renderLoop);
+    }
   }
 
   public addChild(ele: Child, preventRedraw?: boolean) {

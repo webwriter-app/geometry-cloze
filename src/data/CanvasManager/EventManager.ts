@@ -11,7 +11,6 @@ export default abstract class EventManager extends ChildrenManager {
    * Currently selected element
    */
   private _selected: Draggable[] = [];
-  private selectionChangeListeners: ((selection: Draggable[]) => void)[] = [];
 
   private _resizeObserver = new ResizeObserver(
     this.handleCanvasResize.bind(this)
@@ -141,7 +140,7 @@ export default abstract class EventManager extends ChildrenManager {
       const wasSelected = this._selected.includes(hit);
 
       if (!wasSelected && this.onSelect(hit))
-        this.select(hit, { keepSelection: event.ctrlKey });
+        this.select(hit, { keepSelection: event.shiftKey });
 
       this.mouseDownTarget = {
         element: hit,
@@ -183,7 +182,7 @@ export default abstract class EventManager extends ChildrenManager {
         coords: this.getRelativeCoordinates(event),
         hit,
         alreadySelected,
-        ctrlPressed: event.ctrlKey,
+        shiftPressed: event.shiftKey,
         isRightClick
       });
     }
@@ -245,8 +244,9 @@ export default abstract class EventManager extends ChildrenManager {
     ctrl: false
   };
   private _handleKeyboardEvent(event: KeyboardEvent) {
-    // ctrl+z is bubbled up to be handle outside this widget
-    if (event.key.toLowerCase() === 'z' && event.ctrlKey) return;
+    // ctrl/cmd+z is bubbled up to be handle outside this widget
+    if (event.key.toLowerCase() === 'z' && (event.ctrlKey || event.metaKey))
+      return;
     event.stopPropagation();
     event.preventDefault();
     this.keys = {
@@ -268,7 +268,7 @@ export default abstract class EventManager extends ChildrenManager {
     coords: MathPoint;
     hit: Draggable | null;
     alreadySelected: boolean;
-    ctrlPressed: boolean;
+    shiftPressed: boolean;
     isRightClick: boolean;
   }): void;
   protected abstract handleMouseMove(_event: { current: MathPoint }): void;
@@ -342,22 +342,8 @@ export default abstract class EventManager extends ChildrenManager {
   }
 
   private onSelectionChange() {
-    this.selectionChangeListeners.forEach((listener) =>
-      listener(this._selected)
+    this.dispatchEvent(
+      new CustomEvent('selectionupdate', { detail: this._selected })
     );
-  }
-
-  public addSelectionChangeListener(
-    listener: (selection: Draggable[]) => void
-  ) {
-    this.selectionChangeListeners.push(listener);
-  }
-
-  public removeSelectionChangeListener(
-    listener: (selection: Draggable[]) => void
-  ) {
-    const index = this.selectionChangeListeners.indexOf(listener);
-    if (index < 0) return;
-    this.selectionChangeListeners.splice(index, 1);
   }
 }

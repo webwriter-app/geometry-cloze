@@ -9,6 +9,7 @@ import Point from './Point';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
 import { SELECTION_STYLE } from '../components/SelectionRect';
+import SHOELACE from '../helper/Shoelace';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -57,30 +58,8 @@ export default class Line extends Draggable {
     if (this.hidden) return;
     super.draw(ctx);
     ctx.beginPath();
-    const vector = {
-      x: this._end.x - this._start.x,
-      y: this._end.y - this._start.y
-    };
-    const normalized = Vector.normalize(vector);
-    const start = {
-      x: this._start.x,
-      y: this._start.y
-    };
-    if (this.start instanceof Point) {
-      start.x += normalized.x * this.start.size;
-      start.y += normalized.y * this.start.size;
-    }
-    ctx.moveTo(start.x, start.y);
-
-    const end = {
-      x: this._end.x,
-      y: this._end.y
-    };
-    if (this.end instanceof Point) {
-      end.x -= normalized.x * this.end.size;
-      end.y -= normalized.y * this.end.size;
-    }
-    ctx.lineTo(end.x, end.y);
+    ctx.moveTo(this._start.x, this._start.y);
+    ctx.lineTo(this._end.x, this._end.y);
 
     if (this.selected) {
       ctx.globalAlpha = SELECTION_STYLE.alpha;
@@ -98,17 +77,22 @@ export default class Line extends Draggable {
     if (this.showLabel) {
       const padding = 5;
       const middlePoint = {
-        x: (start.x + end.x) / 2,
-        y: (start.y + end.y) / 2
+        x: (this._start.x + this._end.x) / 2,
+        y: (this._start.y + this._end.y) / 2
       };
       const label = this.getLabel();
-      ctx.font = '24px Arial';
+      ctx.font = `24px ${SHOELACE.font.sans}`;
       ctx.fillStyle = this.labelColor;
       const metrics = ctx.measureText(label);
       const fontHeight =
         metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
       if (this.parent && 'getPoints' in this.parent) {
-        const ortho = Vector.orthogonal(normalized);
+        const ortho = Vector.orthogonal(
+          Vector.normalize({
+            x: this._end.x - this._start.x,
+            y: this._end.y - this._start.y
+          })
+        );
         const point1 = Vector.add(
           middlePoint,
           Vector.scale(ortho, fontHeight / 2)
@@ -209,16 +193,14 @@ export default class Line extends Draggable {
     return {
       ...super.export(),
       _type: 'line' as const,
-      start: {
-        x: this._start.x,
-        y: this._start.y,
-        ...(this._start instanceof Point && { id: this._start.id })
-      },
-      end: {
-        x: this._end.x,
-        y: this._end.y,
-        ...(this._end instanceof Point && { id: this._end.id })
-      }
+      start:
+        this._start instanceof Point
+          ? { _type: 'reference' as const, id: this._start.id }
+          : { _type: 'absolute' as const, x: this._start.x, y: this._start.y },
+      end:
+        this._end instanceof Point
+          ? { _type: 'reference' as const, id: this._end.id }
+          : { _type: 'absolute' as const, x: this._end.x, y: this._end.y }
     };
   }
 
