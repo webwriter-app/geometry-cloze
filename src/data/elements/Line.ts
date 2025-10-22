@@ -3,7 +3,7 @@ import Vector from '../helper/Vector';
 
 import Element, { NamedElement } from './base/Element';
 import { StylableData } from './base/Stylable';
-import Draggable, { DraggableData } from './base/Draggable';
+import Draggable, { DraggableData, MoveCoords } from './base/Draggable';
 import Point from './Point';
 
 import Numbers from '../helper/Numbers';
@@ -31,17 +31,14 @@ export default class Line extends Draggable {
     this._y = data.start.y;
   }
 
-  public move(coords: {
-    x?: number | undefined;
-    y?: number | undefined;
-    relative: boolean;
-  }): void {
-    const relativeCoords = coords.relative
+  public move(coords: MoveCoords): void {
+    const relativeCoords: MoveCoords = coords.relative
       ? coords
       : {
           x: (coords?.x ?? this._x) - this._x,
           y: (coords?.y ?? this._y) - this._y,
-          relative: true
+          relative: true,
+          moveToken: coords.moveToken
         };
     super.move(relativeCoords);
     if (this._start instanceof Point) this._start.move(relativeCoords);
@@ -106,24 +103,12 @@ export default class Line extends Draggable {
           middlePoint,
           Vector.scale(ortho, fontHeight * factor * angleFactor)
         );
-        ctx.clearRect(
-          startPoint.x - metrics.width / 2 - padding,
-          startPoint.y - fontHeight / 2 - padding,
-          metrics.width + 2 * padding,
-          fontHeight + 2 * padding
-        );
         ctx.fillText(
           label,
           startPoint.x - metrics.width / 2,
           startPoint.y + fontHeight / 4
         );
       } else {
-        ctx.clearRect(
-          middlePoint.x - metrics.width / 2 - padding,
-          middlePoint.y - fontHeight / 2 - padding,
-          metrics.width + 2 * padding,
-          fontHeight + 2 * padding
-        );
         ctx.fillText(
           label,
           middlePoint.x - metrics.width / 2,

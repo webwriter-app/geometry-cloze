@@ -2,7 +2,7 @@ import Manager from '../CanvasManager/Abstracts';
 import { MathPoint } from '../helper/Calc';
 import Line, { BaseLine } from './Line';
 import Point from './Point';
-import Draggable, { DraggableData } from './base/Draggable';
+import Draggable, { DraggableData, MoveCoords } from './base/Draggable';
 import { StylableData } from './base/Stylable';
 
 export default class DividerLine extends Line {
@@ -41,17 +41,14 @@ export default class DividerLine extends Line {
     return normalStroke;
   }
 
-  public move(coords: {
-    x?: number | undefined;
-    y?: number | undefined;
-    relative: boolean;
-  }): void {
-    const relativeCoords = coords.relative
+  public move(coords: MoveCoords): void {
+    const relativeCoords: MoveCoords = coords.relative
       ? coords
       : {
           x: (coords?.x ?? this._x) - this._x,
           y: (coords?.y ?? this._y) - this._y,
-          relative: true
+          relative: true,
+          moveToken: coords.moveToken
         };
     if (this.start instanceof Point) this.start.move(relativeCoords);
     if (this.end instanceof Point) this.end.move(relativeCoords);
