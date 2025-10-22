@@ -32,7 +32,7 @@ export class WwGeomOptions extends LitElementWw {
     );
     if (scaleValue === -1) scaleValue = 5; // Default to 1:1
 
-    return html`<div class="options">
+    return html`
       <sl-checkbox
         .checked=${this.manager?.showGrid ?? false}
         @sl-change=${() => this.manager?.toggleGrid()}>
@@ -83,6 +83,7 @@ export class WwGeomOptions extends LitElementWw {
           const scale = WwGeomOptions.SCALE_VALUES[value];
           return `${scale * 100} %`;
         }}
+        tooltip="bottom"
         @sl-input=${(e: SlInputEvent) => {
           const value = Math.min(
             Math.max((e.target as SlRange)?.value, 0),
@@ -91,7 +92,7 @@ export class WwGeomOptions extends LitElementWw {
           const scale = WwGeomOptions.SCALE_VALUES[value];
           this.manager?.setScale(scale);
         }}></sl-range>
-    </div>`;
+    `;
   }
 
   private updateWidget = () => this.requestUpdate();
@@ -126,10 +127,12 @@ export class WwGeomOptions extends LitElementWw {
   }
 
   static styles = css`
-    .options {
+    :host {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      /* Required for the range tooltip to not get clipped */
+      padding: 0 0.8rem;
     }
 
     .checkbox-info-container {
