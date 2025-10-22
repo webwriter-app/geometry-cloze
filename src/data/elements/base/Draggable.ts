@@ -6,6 +6,13 @@ export interface DraggableData {
   selected?: boolean;
 }
 
+export interface MoveCoords {
+  x?: number;
+  y?: number;
+  relative: boolean;
+  moveToken?: symbol;
+}
+
 export default class Draggable extends Stylable {
   private _selected: boolean;
   protected clickTargetSize = 0;
@@ -29,13 +36,14 @@ export default class Draggable extends Stylable {
     });
   }
 
-  public move(coords: { x?: number; y?: number; relative: boolean }): void {
-    const change = coords.relative
+  public move(coords: MoveCoords): void {
+    const change: MoveCoords = coords.relative
       ? coords
       : {
-          x: coords.x ? coords.x - this.x : 0,
-          y: coords.y ? coords.y - this.y : 0,
-          relative: true
+          x: coords.x !== undefined ? coords.x - this.x : 0,
+          y: coords.y !== undefined ? coords.y - this.y : 0,
+          relative: true,
+          moveToken: coords.moveToken
         };
 
     this._x += change.x ?? 0;

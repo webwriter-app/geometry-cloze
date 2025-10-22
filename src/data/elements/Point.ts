@@ -4,7 +4,7 @@ import Arrays from '../helper/Arrays';
 
 import { NamedElement } from './base/Element';
 import { DEFAULT_STYLE, StylableData } from './base/Stylable';
-import Draggable, { DraggableData } from './base/Draggable';
+import Draggable, { DraggableData, MoveCoords } from './base/Draggable';
 
 import Shape from './Shape';
 
@@ -41,6 +41,19 @@ export default class Point extends Draggable {
     if (data.showOutsideAngle) this.showOutsideAngle = data.showOutsideAngle;
     this._x = data.x;
     this._y = data.y;
+  }
+
+  private _lastMoveToken: symbol | undefined;
+
+  public move(coords: MoveCoords): void {
+    if (coords.moveToken) {
+      // Prevent processing the same move multiple times
+      if (this._lastMoveToken === coords.moveToken) return;
+      this._lastMoveToken = coords.moveToken;
+    } else {
+      this._lastMoveToken = undefined;
+    }
+    super.move(coords);
   }
 
   public showOutsideAngle = false;

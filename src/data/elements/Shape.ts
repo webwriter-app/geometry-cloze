@@ -2,7 +2,7 @@ import Calc, { MathPoint } from '../helper/Calc';
 import Arrays from '../helper/Arrays';
 
 import Element from './base/Element';
-import Draggable, { DraggableData } from './base/Draggable';
+import Draggable, { DraggableData, MoveCoords } from './base/Draggable';
 import Point, { BasePoint } from './Point';
 import Line, { BaseLine } from './Line';
 
@@ -119,18 +119,15 @@ export default class Shape extends Draggable {
     this.checkShapeValidity();
   }
 
-  public move(coords: {
-    x?: number | undefined;
-    y?: number | undefined;
-    relative: boolean;
-  }): void {
+  public move(coords: MoveCoords): void {
     const points = this.getPoints();
-    const relativeCoords = coords.relative
+    const relativeCoords: MoveCoords = coords.relative
       ? coords
       : {
           x: (coords?.x ?? this._x) - this._x,
           y: (coords?.y ?? this._y) - this._y,
-          relative: true
+          relative: true,
+          moveToken: coords.moveToken
         };
 
     this._x += relativeCoords.x ?? 0;

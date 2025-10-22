@@ -313,6 +313,7 @@ export default class InteractionManager extends EventManager {
             y: current.y - start.y
           };
 
+          const moveToken = Symbol('dragging-step');
           this.selected.forEach((shape, index) => {
             const startCoords = dragStart.startPositions[index];
             const x = this.snap(startCoords.x + change.x);
@@ -320,7 +321,7 @@ export default class InteractionManager extends EventManager {
 
             // prevent moving element twice (move element and its parent)
             if (!this.selected.some((child) => child.hasChild(shape)))
-              shape.move({ x, y, relative: false });
+              shape.move({ x, y, relative: false, moveToken });
           });
 
           this.requestRedraw();
