@@ -103,24 +103,12 @@ export default class Line extends Draggable {
           middlePoint,
           Vector.scale(ortho, fontHeight * factor * angleFactor)
         );
-        ctx.clearRect(
-          startPoint.x - metrics.width / 2 - padding,
-          startPoint.y - fontHeight / 2 - padding,
-          metrics.width + 2 * padding,
-          fontHeight + 2 * padding
-        );
         ctx.fillText(
           label,
           startPoint.x - metrics.width / 2,
           startPoint.y + fontHeight / 4
         );
       } else {
-        ctx.clearRect(
-          middlePoint.x - metrics.width / 2 - padding,
-          middlePoint.y - fontHeight / 2 - padding,
-          metrics.width + 2 * padding,
-          fontHeight + 2 * padding
-        );
         ctx.fillText(
           label,
           middlePoint.x - metrics.width / 2,

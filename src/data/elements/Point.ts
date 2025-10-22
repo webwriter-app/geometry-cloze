@@ -146,12 +146,6 @@ export default class Point extends Draggable {
         }
       } else {
         // fallback to simple label
-        ctx.clearRect(
-          this.x + 10,
-          this.y - 30,
-          metrics.width + 10,
-          fontHeight + 10
-        );
         ctx.fillText(label, this.x + 10, this.y - 10);
       }
     }
