@@ -274,9 +274,11 @@ export default class Shape extends Draggable {
       nextLine instanceof Line &&
       this.children.length >= 5 // at least three points and two lines
     ) {
-      const start = previousLine.start;
-      const end = nextLine.end;
-      // check if these points are already connected
+      // Lines may point in either direction (e.g. after an edge was removed
+      // and reconnected), so take the endpoint that isn't the removed point.
+      const start =
+        previousLine.start === point ? previousLine.end : previousLine.start;
+      const end = nextLine.end === point ? nextLine.start : nextLine.end;
       const newLine = new Line(this.manager, {
         start,
         end
