@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violet`,
+      'hcf3a5f37275a5412': html`Az igazítás ideiglenes kikapcsolásához tartsa lenyomva az <ww-kbd>Alt</ww-kbd> billentyűt az elem húzása közben.`,
+'s020ef25c40d67e92': `Nincs betű`,
+'s109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Szög átfordítása`,
 's202fffd5a2e1c595': `Hosszúság`,
 's24d82e0bdc4ea31f': `Mutasd a kerületet`,
 's2706a162264c46f1': `Skála`,
 's2dae9bc7aa02bab7': `Minden hosszúság és méret címkéjét skálázza.`,
+'s30ef01663a587b8a': `Átméretezi a hosszúság- és méretfeliratokat.`,
 's3b627b7632baa8d7': `Választóvonalak létrehozása`,
 's3d0296b47fe6323c': `Mész`,
 's447b301ca02b353e': `Kerület: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Fekete`,
 's6751f51ab77310e5': `Megjelenítési terület`,
 's6baf78886c99db89': `Sárga`,
+'s712cf78df85cba7a': `Nincs megvalósítva`,
 's71f4a89a7cd714ee': `Terület: `,
 's73c0e4814878d26e': `Rácsra kattintás`,
+'s7c233329e117db1d': `Igazítás kikapcsolása`,
+'s8818af2947b74b9b': `Rács elrejtése`,
 's8a347fce9c8f6045': `Objektumok kijelölése és mozgatása`,
 's8f450dd0b7bdb8cb': `Narancs`,
 's997f2252dabae00f': `Kitöltés színe`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Rács megjelenítése`,
 'sf8f55cf0946dcb38': `Vonal színe`,
 'sf9f816447b409e1c': `Ha engedélyezve van, a derékszögek kis négyzetként rajzolódnak ki.`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violett`,
+      'hcf3a5f37275a5412': html`Håll ned <ww-kbd>Alt</ww-kbd> när du drar ett objekt för att tillfälligt stänga av fästningen.`,
+'s020ef25c40d67e92': `Ingen bokstav`,
+'s109991b0423f1512': `Violett`,
+'s166e43ffaa91f881': `Vänd vinkeln`,
 's202fffd5a2e1c595': `Längd`,
 's24d82e0bdc4ea31f': `Visa omkrets`,
 's2706a162264c46f1': `Skala`,
 's2dae9bc7aa02bab7': `Skalar alla etiketter i olika längder och storlekar.`,
+'s30ef01663a587b8a': `Skalar etiketter för längder och storlekar.`,
 's3b627b7632baa8d7': `Skapa skiljelinjer`,
 's3d0296b47fe6323c': `Lime`,
 's447b301ca02b353e': `Perimeter: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Svart`,
 's6751f51ab77310e5': `Visa område`,
 's6baf78886c99db89': `Gul`,
+'s712cf78df85cba7a': `Inte implementerat`,
 's71f4a89a7cd714ee': `Område: `,
 's73c0e4814878d26e': `Fäst i rutnätet`,
+'s7c233329e117db1d': `Stäng av fästning`,
+'s8818af2947b74b9b': `Dölj rutnätet`,
 's8a347fce9c8f6045': `Markera och flytta objekt`,
 's8f450dd0b7bdb8cb': `Orange`,
 's997f2252dabae00f': `Fyll färg`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Visa rutnät`,
 'sf8f55cf0946dcb38': `Linjefärg`,
 'sf9f816447b409e1c': `När den är aktiverad ritas räta vinklar som en liten kvadrat`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

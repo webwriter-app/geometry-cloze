@@ -147,7 +147,7 @@ export class WwGeomToolbar extends LitElementWw {
     } else if (element instanceof Point) {
       return this.PointLabelMenu(element);
     } else {
-      return html`<sl-menu-label>Unimplemented</sl-menu-label>`;
+      return html`<sl-menu-label>${this.msg('Unimplemented')}</sl-menu-label>`;
     }
   }
 
@@ -193,6 +193,7 @@ export class WwGeomToolbar extends LitElementWw {
       <sl-menu-label>${this.msg('Line label')}</sl-menu-label>
       <ww-letter-picker
         .value=${labelValue}
+        .noLetterLabel=${this.msg('No letter')}
         alphabet="latin-lowercase"
         special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {
@@ -230,10 +231,11 @@ export class WwGeomToolbar extends LitElementWw {
           this.manager?.requestRedraw();
           this.requestUpdate();
         }}>
-        Flip angle
+        ${this.msg('Flip angle')}
       </sl-checkbox>
       <ww-letter-picker
         .value=${labelValue}
+        .noLetterLabel=${this.msg('No letter')}
         alphabet="greek-lowercase"
         special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {

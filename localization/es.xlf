@@ -161,6 +161,15 @@
 <trans-unit id="s30ef01663a587b8a">
   <source>Scales labels for lengths and sizes.</source>
 <target>Ajusta la escala de las etiquetas de longitud y tamaño.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>Sin implementar</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>Sin letra</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>Invertir el ángulo</target></trans-unit>
 </body>
   </file>
 </xliff>

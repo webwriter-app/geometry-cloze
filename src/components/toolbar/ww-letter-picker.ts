@@ -14,6 +14,9 @@ export default class WwLetterPicker extends LitElementWw {
   @property({ type: String, attribute: 'special' })
   accessor special: string | null = null;
 
+  @property({ attribute: false })
+  accessor noLetterLabel = '';
+
   public static LETTERS = {
     'latin-lowercase': 'abcdefghijklmnopqrstuvwxyz'.split(''),
     'latin-uppercase': 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
@@ -29,7 +32,7 @@ export default class WwLetterPicker extends LitElementWw {
       <button
         class=${classMap({ current: this.value === 'none' })}
         @click=${onClick.bind(this, 'none')}
-        title="No letter">
+        title=${this.noLetterLabel}>
         ${NoneIcon}
       </button>
       ${this.special

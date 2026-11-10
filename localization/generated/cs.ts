@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violet`,
+      'hcf3a5f37275a5412': html`Při přetahování prvku podržte <ww-kbd>Alt</ww-kbd>, abyste přichytávání dočasně vypnuli.`,
+'s020ef25c40d67e92': `Bez písmene`,
+'s109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Převrátit úhel`,
 's202fffd5a2e1c595': `Délka`,
 's24d82e0bdc4ea31f': `Zobrazit obvod`,
 's2706a162264c46f1': `Měřítko`,
 's2dae9bc7aa02bab7': `Váhy všech označení délek a velikostí.`,
+'s30ef01663a587b8a': `Mění měřítko popisků délek a velikostí.`,
 's3b627b7632baa8d7': `Vytvoření dělících čar`,
 's3d0296b47fe6323c': `Lime`,
 's447b301ca02b353e': `Obvod: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Černá`,
 's6751f51ab77310e5': `Výstavní plocha`,
 's6baf78886c99db89': `Žlutý`,
+'s712cf78df85cba7a': `Neimplementováno`,
 's71f4a89a7cd714ee': `Oblast: `,
 's73c0e4814878d26e': `Přichycení k mřížce`,
+'s7c233329e117db1d': `Vypnout přichytávání`,
+'s8818af2947b74b9b': `Skrýt mřížku`,
 's8a347fce9c8f6045': `Výběr a přesun objektů`,
 's8f450dd0b7bdb8cb': `Orange`,
 's997f2252dabae00f': `Barva výplně`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Zobrazit mřížku`,
 'sf8f55cf0946dcb38': `Barva čáry`,
 'sf9f816447b409e1c': `Pokud je tato funkce povolena, pravé úhly se vykreslí jako malý čtverec.`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

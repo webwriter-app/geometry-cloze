@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="cy" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="sf6f1d2fce4cc2014">
+  <source>Show grid</source>
+<target>Dangos y grid</target></trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>Snapio i’r grid</target></trans-unit>
+<trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>Gallwch ddiffodd snapio dros dro drwy ddal <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> wrth lusgo elfen.</target></trans-unit>
+<trans-unit id="s4fd35ef13079b962">
+  <source>Abstract right angle</source>
+<target>Marc ongl sgwâr</target></trans-unit>
+<trans-unit id="sf9f816447b409e1c">
+  <source>When enabled, right angles will be drawn as a small square</source>
+<target>Pan fydd hwn ymlaen, caiff onglau sgwâr eu dangos â sgwâr bach.</target></trans-unit>
+<trans-unit id="s2706a162264c46f1">
+  <source>Scale</source>
+<target>Graddfa</target></trans-unit>
+<trans-unit id="s2dae9bc7aa02bab7">
+  <source>Scales all labels of lengths and sizes.</source>
+<target>Newid graddfa pob label hyd a maint.</target></trans-unit>
+<trans-unit id="s5e3cb80d43a34044">
+  <source>Black</source>
+<target>Du</target></trans-unit>
+<trans-unit id="s9ff1de19feac1b7c">
+  <source>Red</source>
+<target>Coch</target></trans-unit>
+<trans-unit id="s8f450dd0b7bdb8cb">
+  <source>Orange</source>
+<target>Oren</target></trans-unit>
+<trans-unit id="s6baf78886c99db89">
+  <source>Yellow</source>
+<target>Melyn</target></trans-unit>
+<trans-unit id="s3d0296b47fe6323c">
+  <source>Lime</source>
+<target>Gwyrdd leim</target></trans-unit>
+<trans-unit id="scf00d78fd5953f1c">
+  <source>Green</source>
+<target>Gwyrdd</target></trans-unit>
+<trans-unit id="s9b3c2f9cc32d565a">
+  <source>Cyan</source>
+<target>Gwyrddlas</target></trans-unit>
+<trans-unit id="secf3d3a7c1693e2d">
+  <source>Blue</source>
+<target>Glas</target></trans-unit>
+<trans-unit id="s109991b0423f1512">
+  <source>Violet</source>
+<target>Fioled</target></trans-unit>
+<trans-unit id="se9beed19c6a38fed">
+  <source>Pink</source>
+<target>Pinc</target></trans-unit>
+<trans-unit id="sd0e945b97c0c46d1">
+  <source>Transparent</source>
+<target>Tryloyw</target></trans-unit>
+<trans-unit id="s8a347fce9c8f6045">
+  <source>Select and move objects</source>
+<target>Dewis a symud gwrthrychau</target></trans-unit>
+<trans-unit id="sc76449099e8dab8e">
+  <source>Create and connect objects</source>
+<target>Creu a chysylltu gwrthrychau</target></trans-unit>
+<trans-unit id="s3b627b7632baa8d7">
+  <source>Create divider lines</source>
+<target>Creu llinellau rhannu</target></trans-unit>
+<trans-unit id="sc641744471095036">
+  <source>Label color</source>
+<target>Lliw’r label</target></trans-unit>
+<trans-unit id="sb6055dddb583f562">
+  <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
+<target>Gwrthrychau wedi’u dewis: <x id="0" equiv-text="${this.selection.length}" /></target></trans-unit>
+<trans-unit id="s5246434aaa760348">
+  <source>Shape label</source>
+<target>Label y siâp</target></trans-unit>
+<trans-unit id="s6751f51ab77310e5">
+  <source>Show Area</source>
+<target>Dangos yr arwynebedd</target></trans-unit>
+<trans-unit id="s24d82e0bdc4ea31f">
+  <source>Show Perimeter</source>
+<target>Dangos y perimedr</target></trans-unit>
+<trans-unit id="sbaf7984effccc73d">
+  <source>Line label</source>
+<target>Label y llinell</target></trans-unit>
+<trans-unit id="s202fffd5a2e1c595">
+  <source>Length</source>
+<target>Hyd</target></trans-unit>
+<trans-unit id="s44f0e16cc86358e2">
+  <source>Point color</source>
+<target>Lliw’r pwynt</target></trans-unit>
+<trans-unit id="s5cda68f59fd34ebf">
+  <source>Line width</source>
+<target>Lled y llinell</target></trans-unit>
+<trans-unit id="sf8f55cf0946dcb38">
+  <source>Line color</source>
+<target>Lliw’r llinell</target></trans-unit>
+<trans-unit id="s997f2252dabae00f">
+  <source>Fill color</source>
+<target>Lliw llenwi</target></trans-unit>
+<trans-unit id="s4585ad5504d24a6b">
+  <source>Delete selected objects</source>
+<target>Dileu’r gwrthrychau a ddewiswyd</target></trans-unit>
+<trans-unit id="s71f4a89a7cd714ee">
+  <source>Area: </source>
+<target>Arwynebedd: </target></trans-unit>
+<trans-unit id="s447b301ca02b353e">
+  <source>Perimeter: </source>
+<target>Perimedr: </target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>Cuddio’r grid</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>Diffodd snapio</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>Newid graddfa pob label hyd a maint.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>Heb ei weithredu</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>Dim llythyren</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>Gwrthdroi’r ongl</target></trans-unit>
+</body>
+</file>
+</xliff>

@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violeta`,
+      'hcf3a5f37275a5412': html`Velkot elementu, turiet nospiestu <ww-kbd>Alt</ww-kbd>, lai īslaicīgi izslēgtu piesaisti.`,
+'s020ef25c40d67e92': `Bez burta`,
+'s109991b0423f1512': `Violeta`,
+'s166e43ffaa91f881': `Apvērst leņķi`,
 's202fffd5a2e1c595': `Garums`,
 's24d82e0bdc4ea31f': `Rādīt perimetru`,
 's2706a162264c46f1': `Mērogs`,
 's2dae9bc7aa02bab7': `Pārsver visas garuma un izmēru etiķetes.`,
+'s30ef01663a587b8a': `Mērogo garumu un izmēru etiķetes.`,
 's3b627b7632baa8d7': `Izveidojiet dalījuma līnijas`,
 's3d0296b47fe6323c': `Laima`,
 's447b301ca02b353e': `Perimetrs: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Black`,
 's6751f51ab77310e5': `Izstāžu zona`,
 's6baf78886c99db89': `Dzeltenais`,
+'s712cf78df85cba7a': `Nav ieviests`,
 's71f4a89a7cd714ee': `Teritorija: `,
 's73c0e4814878d26e': `Piespiešana pie režģa`,
+'s7c233329e117db1d': `Izslēgt piesaisti`,
+'s8818af2947b74b9b': `Paslēpt režģi`,
 's8a347fce9c8f6045': `Objektu atlasīšana un pārvietošana`,
 's8f450dd0b7bdb8cb': `Orange`,
 's997f2252dabae00f': `Aizpildījuma krāsa`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Rādīt režģi`,
 'sf8f55cf0946dcb38': `Līnijas krāsa`,
 'sf9f816447b409e1c': `Ja šī opcija ir iespējota, taisnie leņķi tiks zīmēti kā neliels kvadrāts.`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

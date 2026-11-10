@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violet`,
+      'hcf3a5f37275a5412': html`Houd <ww-kbd>Alt</ww-kbd> ingedrukt terwijl je een element sleept om vastklikken tijdelijk uit te schakelen.`,
+'s020ef25c40d67e92': `Geen letter`,
+'s109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Hoek omkeren`,
 's202fffd5a2e1c595': `Lengte`,
 's24d82e0bdc4ea31f': `Omtrek tonen`,
 's2706a162264c46f1': `Schaal`,
 's2dae9bc7aa02bab7': `Weegt alle labels van lengtes en maten.`,
+'s30ef01663a587b8a': `Schaalt de labels voor lengtes en afmetingen.`,
 's3b627b7632baa8d7': `Scheidingslijnen maken`,
 's3d0296b47fe6323c': `Kalk`,
 's447b301ca02b353e': `Omtrek: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Zwart`,
 's6751f51ab77310e5': `Toon gebied`,
 's6baf78886c99db89': `Geel`,
+'s712cf78df85cba7a': `Niet geïmplementeerd`,
 's71f4a89a7cd714ee': `Gebied: `,
 's73c0e4814878d26e': `Vastmaken aan raster`,
+'s7c233329e117db1d': `Vastklikken uitschakelen`,
+'s8818af2947b74b9b': `Raster verbergen`,
 's8a347fce9c8f6045': `Objecten selecteren en verplaatsen`,
 's8f450dd0b7bdb8cb': `Oranje`,
 's997f2252dabae00f': `Vulkleur`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Toon rooster`,
 'sf8f55cf0946dcb38': `Lijnkleur`,
 'sf9f816447b409e1c': `Indien ingeschakeld, worden rechte hoeken getekend als een klein vierkantje`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

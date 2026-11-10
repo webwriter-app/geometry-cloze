@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `紫羅蘭`,
+      'hcf3a5f37275a5412': html`拖曳元素時按住 <ww-kbd>Alt</ww-kbd> 鍵可暫時停用貼齊。`,
+'s020ef25c40d67e92': `無字母`,
+'s109991b0423f1512': `紫羅蘭`,
+'s166e43ffaa91f881': `翻轉角度`,
 's202fffd5a2e1c595': `長度`,
 's24d82e0bdc4ea31f': `顯示周長`,
 's2706a162264c46f1': `規模`,
 's2dae9bc7aa02bab7': `標示所有長度和尺寸的標籤。`,
+'s30ef01663a587b8a': `縮放長度和尺寸的標籤。`,
 's3b627b7632baa8d7': `建立分割線`,
 's3d0296b47fe6323c': `青檸`,
 's447b301ca02b353e': `周界： `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `黑色`,
 's6751f51ab77310e5': `展示區`,
 's6baf78886c99db89': `黃色`,
+'s712cf78df85cba7a': `尚未實作`,
 's71f4a89a7cd714ee': `區域： `,
 's73c0e4814878d26e': `擷取至網格`,
+'s7c233329e117db1d': `停用貼齊`,
+'s8818af2947b74b9b': `隱藏格線`,
 's8a347fce9c8f6045': `選擇並移動物件`,
 's8f450dd0b7bdb8cb': `橙色`,
 's997f2252dabae00f': `填充顏色`,
@@ -45,9 +52,4 @@
 'sf6f1d2fce4cc2014': `顯示網格`,
 'sf8f55cf0946dcb38': `線條顏色`,
 'sf9f816447b409e1c': `啟用時，直角會繪製成小方格。`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };

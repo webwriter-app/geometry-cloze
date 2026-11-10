@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violet`,
+      'hcf3a5f37275a5412': html`Haakimise ajutiseks väljalülitamiseks hoia elemendi lohistamise ajal all klahvi <ww-kbd>Alt</ww-kbd>.`,
+'s020ef25c40d67e92': `Tähiseta`,
+'s109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Pööra nurk ümber`,
 's202fffd5a2e1c595': `Pikkus`,
 's24d82e0bdc4ea31f': `Näita ümbermõõtu`,
 's2706a162264c46f1': `Skaala`,
 's2dae9bc7aa02bab7': `Kaalub kõik pikkuste ja suuruste sildid.`,
+'s30ef01663a587b8a': `Muudab pikkuste ja suuruste siltide mõõtkava.`,
 's3b627b7632baa8d7': `Loo eraldusjooned`,
 's3d0296b47fe6323c': `Lime`,
 's447b301ca02b353e': `Perimeter: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Must`,
 's6751f51ab77310e5': `Näita ala`,
 's6baf78886c99db89': `Kollane`,
+'s712cf78df85cba7a': `Rakendamata`,
 's71f4a89a7cd714ee': `Piirkond: `,
 's73c0e4814878d26e': `Ruudustikule kinnitus`,
+'s7c233329e117db1d': `Lülita haakimine välja`,
+'s8818af2947b74b9b': `Peida ruudustik`,
 's8a347fce9c8f6045': `Objektide valimine ja liigutamine`,
 's8f450dd0b7bdb8cb': `Oranž`,
 's997f2252dabae00f': `Täitevärv`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Näita ruudustikku`,
 'sf8f55cf0946dcb38': `Joonte värvus`,
 'sf9f816447b409e1c': `Kui see on lubatud, joonistatakse täisnurksed nurgad väikese ruuduna.`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

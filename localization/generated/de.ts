@@ -10,7 +10,9 @@
 
     export const templates = {
       'hcf3a5f37275a5412': html`Beim Ziehen eines Elements lässt sich das Einrasten mit <ww-kbd>Alt</ww-kbd> vorübergehend deaktivieren.`,
+'s020ef25c40d67e92': `Kein Buchstabe`,
 's109991b0423f1512': `Violett`,
+'s166e43ffaa91f881': `Winkel umkehren`,
 's202fffd5a2e1c595': `Länge`,
 's24d82e0bdc4ea31f': `Umfang anzeigen`,
 's2706a162264c46f1': `Skala`,
@@ -27,6 +29,7 @@
 's5e3cb80d43a34044': `Schwarz`,
 's6751f51ab77310e5': `Fläche anzeigen`,
 's6baf78886c99db89': `Gelb`,
+'s712cf78df85cba7a': `Nicht implementiert`,
 's71f4a89a7cd714ee': `Fläche: `,
 's73c0e4814878d26e': `Am Gitter einrasten`,
 's7c233329e117db1d': `Einrasten deaktivieren`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Linienfarbe`,
 'sf9f816447b409e1c': `Wenn aktiviert, werden rechte Winkel als kleines Quadrat gezeichnet`,
     };
-  

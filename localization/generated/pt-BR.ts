@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `Violeta`,
+      'hcf3a5f37275a5412': html`Mantenha <ww-kbd>Alt</ww-kbd> pressionada enquanto arrasta um elemento para desativar temporariamente o encaixe.`,
+'s020ef25c40d67e92': `Sem letra`,
+'s109991b0423f1512': `Violeta`,
+'s166e43ffaa91f881': `Inverter o ângulo`,
 's202fffd5a2e1c595': `Comprimento`,
 's24d82e0bdc4ea31f': `Mostrar perímetro`,
 's2706a162264c46f1': `Escala`,
 's2dae9bc7aa02bab7': `Escala todos os rótulos de comprimentos e tamanhos.`,
+'s30ef01663a587b8a': `Redimensiona os rótulos de comprimentos e tamanhos.`,
 's3b627b7632baa8d7': `Criar linhas divisórias`,
 's3d0296b47fe6323c': `Cal`,
 's447b301ca02b353e': `Perímetro: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `Preto`,
 's6751f51ab77310e5': `Área de exposição`,
 's6baf78886c99db89': `Amarelo`,
+'s712cf78df85cba7a': `Não implementado`,
 's71f4a89a7cd714ee': `Área: `,
 's73c0e4814878d26e': `Ajustar à grade`,
+'s7c233329e117db1d': `Desativar encaixe`,
+'s8818af2947b74b9b': `Ocultar grade`,
 's8a347fce9c8f6045': `Selecionar e mover objetos`,
 's8f450dd0b7bdb8cb': `Laranja`,
 's997f2252dabae00f': `Cor de preenchimento`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `Exibir grade`,
 'sf8f55cf0946dcb38': `Cor da linha`,
 'sf9f816447b409e1c': `Quando ativado, os ângulos retos serão desenhados como um pequeno quadrado`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

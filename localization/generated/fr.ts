@@ -10,7 +10,9 @@
 
     export const templates = {
       'hcf3a5f37275a5412': html`Pour désactiver temporairement l’accrochage, maintenez <ww-kbd>Alt</ww-kbd> enfoncée pendant le déplacement d’un élément.`,
+'s020ef25c40d67e92': `Aucune lettre`,
 's109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Inverser l’angle`,
 's202fffd5a2e1c595': `Longueur`,
 's24d82e0bdc4ea31f': `Afficher le périmètre`,
 's2706a162264c46f1': `Échelle`,
@@ -27,6 +29,7 @@
 's5e3cb80d43a34044': `Noir`,
 's6751f51ab77310e5': `Zone d'exposition`,
 's6baf78886c99db89': `Jaune`,
+'s712cf78df85cba7a': `Non implémenté`,
 's71f4a89a7cd714ee': `Zone : `,
 's73c0e4814878d26e': `Accrochage à la grille`,
 's7c233329e117db1d': `Désactiver l’accrochage`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Couleur de la ligne`,
 'sf9f816447b409e1c': `Lorsque cette option est activée, les angles droits sont dessinés sous la forme d'un petit carré.`,
     };
-  

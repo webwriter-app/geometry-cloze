@@ -9,11 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      's109991b0423f1512': `바이올렛`,
+      'hcf3a5f37275a5412': html`요소를 끌면서 <ww-kbd>Alt</ww-kbd> 키를 누르고 있으면 맞춤을 일시적으로 끌 수 있습니다.`,
+'s020ef25c40d67e92': `문자 없음`,
+'s109991b0423f1512': `바이올렛`,
+'s166e43ffaa91f881': `각도 뒤집기`,
 's202fffd5a2e1c595': `길이`,
 's24d82e0bdc4ea31f': `경계 표시`,
 's2706a162264c46f1': `규모`,
 's2dae9bc7aa02bab7': `길이와 크기의 모든 라벨의 크기를 조정합니다.`,
+'s30ef01663a587b8a': `길이와 크기 레이블의 배율을 조절합니다.`,
 's3b627b7632baa8d7': `구분선 만들기`,
 's3d0296b47fe6323c': `Lime`,
 's447b301ca02b353e': `경계: `,
@@ -25,8 +29,11 @@
 's5e3cb80d43a34044': `블랙`,
 's6751f51ab77310e5': `영역 표시`,
 's6baf78886c99db89': `노란색`,
+'s712cf78df85cba7a': `구현되지 않음`,
 's71f4a89a7cd714ee': `영역: `,
 's73c0e4814878d26e': `그리드에 스냅`,
+'s7c233329e117db1d': `맞춤 끄기`,
+'s8818af2947b74b9b': `격자 숨기기`,
 's8a347fce9c8f6045': `개체 선택 및 이동`,
 's8f450dd0b7bdb8cb': `오렌지`,
 's997f2252dabae00f': `채우기 색상`,
@@ -45,10 +52,4 @@
 'sf6f1d2fce4cc2014': `그리드 표시`,
 'sf8f55cf0946dcb38': `선 색상`,
 'sf9f816447b409e1c': `활성화하면 직각이 작은 정사각형으로 그려집니다.`,
-'s8818af2947b74b9b': `Hide grid`,
-'s7c233329e117db1d': `Disable snapping`,
-'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
-'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
-                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
-  

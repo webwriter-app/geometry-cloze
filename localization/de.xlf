@@ -161,6 +161,15 @@
 <trans-unit id="s30ef01663a587b8a">
   <source>Scales labels for lengths and sizes.</source>
 <target>Skaliert Beschriftungen für Längen und Größen.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>Nicht implementiert</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>Kein Buchstabe</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>Winkel umkehren</target></trans-unit>
 </body>
   </file>
 </xliff>
