@@ -1,4 +1,5 @@
-import { localized, msg } from '@lit/localize';
+import type { MsgFn } from '@lit/localize';
+import { effectiveLanguage, localizeElement, nativeLanguageAttributes } from '../../../localization/localizer';
 import { LitElementWw } from '@webwriter/lit';
 import { html, css } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -9,9 +10,14 @@ import SHOELACE, { hslToHex } from '../../data/helper/Shoelace';
  * A simple color picker component that displays a grid of color options.
  * Emits an `input` event with the selected color when a color is clicked.
  */
-@localized()
 export default class WwColorPicker extends LitElementWw {
-  public static get COLORS() {
+  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+
+  override get lang(): string { return effectiveLanguage(this); }
+  override set lang(value: string) { this.setAttribute("lang", value); }
+  private readonly msg = localizeElement(this);
+
+  private colors(msg: MsgFn) {
     return [
       {
         label: msg('Black'),
@@ -56,13 +62,13 @@ export default class WwColorPicker extends LitElementWw {
     ] as const;
   }
 
-  public static get COLORS_WITH_TRANSPARENT() {
+  private colorsWithTransparent(msg: MsgFn) {
     return [
       {
         label: msg('Transparent'),
         color: 'transparent'
       },
-      ...WwColorPicker.COLORS
+      ...this.colors(msg)
     ] as const;
   }
 
@@ -77,8 +83,8 @@ export default class WwColorPicker extends LitElementWw {
 
   render() {
     const colors = this.includeTransparent
-      ? WwColorPicker.COLORS_WITH_TRANSPARENT
-      : WwColorPicker.COLORS;
+      ? this.colorsWithTransparent(this.msg)
+      : this.colors(this.msg);
 
     return html`${colors.map(({ label, color }) => {
       return html`<button

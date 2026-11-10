@@ -1,7 +1,6 @@
 import Manager from '../../CanvasManager/Abstracts';
 import SHOELACE, { hslToHex } from '../../helper/Shoelace';
 import Element, { NamedElement } from './Element';
-import { msg } from '@lit/localize';
 
 export interface StylableData {
   lineWidth?: number;

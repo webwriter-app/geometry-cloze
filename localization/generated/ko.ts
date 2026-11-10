@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`스냅을 일시적으로 비활성화할 수도 있습니다.
-          <sl-tag size="small">Alt
-          </sl-tag> 를 눌러 일시적으로 스냅을 비활성화할 수도 있습니다.
-        `,
-'s109991b0423f1512': `바이올렛`,
+      's109991b0423f1512': `바이올렛`,
 's202fffd5a2e1c595': `길이`,
 's24d82e0bdc4ea31f': `경계 표시`,
 's2706a162264c46f1': `규모`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `그리드 표시`,
 'sf8f55cf0946dcb38': `선 색상`,
 'sf9f816447b409e1c': `활성화하면 직각이 작은 정사각형으로 그려집니다.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

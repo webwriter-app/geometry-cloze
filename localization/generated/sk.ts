@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Prichytávanie môžete dočasne vypnúť aj stlačením
-          <sl-tag size="small">Alt
-          </sl-tag> počas ťahania prvku
-        `,
-'s109991b0423f1512': `Violet`,
+      's109991b0423f1512': `Violet`,
 's202fffd5a2e1c595': `Dĺžka`,
 's24d82e0bdc4ea31f': `Zobraziť obvod`,
 's2706a162264c46f1': `Stupnica`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Zobraziť mriežku`,
 'sf8f55cf0946dcb38': `Farba čiary`,
 'sf9f816447b409e1c': `Ak je táto možnosť zapnutá, pravé uhly sa vykreslia ako malý štvorec.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

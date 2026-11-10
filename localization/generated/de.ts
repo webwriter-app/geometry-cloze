@@ -9,15 +9,13 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Sie können das Einrasten auch vorübergehend deaktivieren, indem Sie die
-          <sl-tag size="small">Alt
-          </sl-tag> drücken, während Sie ein Element ziehen
-        `,
+      'hcf3a5f37275a5412': html`Beim Ziehen eines Elements lässt sich das Einrasten mit <ww-kbd>Alt</ww-kbd> vorübergehend deaktivieren.`,
 's109991b0423f1512': `Violett`,
 's202fffd5a2e1c595': `Länge`,
 's24d82e0bdc4ea31f': `Umfang anzeigen`,
 's2706a162264c46f1': `Skala`,
 's2dae9bc7aa02bab7': `Skaliert alle Beschriftungen von Längen und Größen.`,
+'s30ef01663a587b8a': `Skaliert Beschriftungen für Längen und Größen.`,
 's3b627b7632baa8d7': `Trennlinien erstellen`,
 's3d0296b47fe6323c': `Limette`,
 's447b301ca02b353e': `Umfang: `,
@@ -31,6 +29,8 @@
 's6baf78886c99db89': `Gelb`,
 's71f4a89a7cd714ee': `Fläche: `,
 's73c0e4814878d26e': `Am Gitter einrasten`,
+'s7c233329e117db1d': `Einrasten deaktivieren`,
+'s8818af2947b74b9b': `Raster ausblenden`,
 's8a347fce9c8f6045': `Objekte auswählen und verschieben`,
 's8f450dd0b7bdb8cb': `Orange`,
 's997f2252dabae00f': `Füllfarbe`,

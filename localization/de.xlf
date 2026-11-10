@@ -1,4 +1,5 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="de">
     <body>
       <trans-unit id="s5e3cb80d43a34044">
@@ -102,9 +103,9 @@
         <target>Farbe der Beschriftung</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
-          <x id="0" equiv-text="${this.selection.length}"/> ausgewählte Objekte
+          <x id="0" equiv-text="${this.selection.length}" /> ausgewählte Objekte
         </target>
       </trans-unit>
       <trans-unit id="s5246434aaa760348">
@@ -141,12 +142,25 @@
       </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
-                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
         <target>Sie können das Einrasten auch vorübergehend deaktivieren, indem Sie die
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> drücken, während Sie ein Element ziehen
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;" /> drücken, während Sie ein Element ziehen
         </target>
       </trans-unit>
-    </body>
+    <trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>Beim Ziehen eines Elements lässt sich das Einrasten mit <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> vorübergehend deaktivieren.</target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>Raster ausblenden</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>Einrasten deaktivieren</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>Skaliert Beschriftungen für Längen und Größen.</target></trans-unit>
+</body>
   </file>
 </xliff>

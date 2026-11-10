@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Átmenetileg letilthatja a pattintást is, ha megnyomja a
-          <sl-tag size="small">Alt
-          </sl-tag> megnyomásával egy elem húzása közben
-        `,
-'s109991b0423f1512': `Violet`,
+      's109991b0423f1512': `Violet`,
 's202fffd5a2e1c595': `Hosszúság`,
 's24d82e0bdc4ea31f': `Mutasd a kerületet`,
 's2706a162264c46f1': `Skála`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Rács megjelenítése`,
 'sf8f55cf0946dcb38': `Vonal színe`,
 'sf9f816447b409e1c': `Ha engedélyezve van, a derékszögek kis négyzetként rajzolódnak ki.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

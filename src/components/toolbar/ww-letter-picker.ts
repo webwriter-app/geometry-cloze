@@ -1,11 +1,9 @@
-import { localized } from '@lit/localize';
 import { LitElementWw } from '@webwriter/lit';
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import NoneIcon from '../icons/none';
 
-@localized()
 export default class WwLetterPicker extends LitElementWw {
   @property({ type: String, attribute: true })
   accessor value: string | null = null;

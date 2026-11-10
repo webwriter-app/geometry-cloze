@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Anda juga dapat menonaktifkan gertakan untuk sementara waktu dengan menekan
-          <sl-tag size="small">Alt
-          </sl-tag> sambil menyeret elemen
-        `,
-'s109991b0423f1512': `Violet`,
+      's109991b0423f1512': `Violet`,
 's202fffd5a2e1c595': `Panjang`,
 's24d82e0bdc4ea31f': `Tampilkan Perimeter`,
 's2706a162264c46f1': `Skala`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Tampilkan kisi`,
 'sf8f55cf0946dcb38': `Warna garis`,
 'sf9f816447b409e1c': `Apabila diaktifkan, sudut siku-siku akan digambar sebagai kotak kecil`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

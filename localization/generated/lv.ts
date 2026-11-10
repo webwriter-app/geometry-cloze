@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Varat arī uz laiku atslēgt pieķeršanos, nospiežot
-          <sl-tag size="small">Alt
-          </sl-tag> velkot elementu
-        `,
-'s109991b0423f1512': `Violeta`,
+      's109991b0423f1512': `Violeta`,
 's202fffd5a2e1c595': `Garums`,
 's24d82e0bdc4ea31f': `Rādīt perimetru`,
 's2706a162264c46f1': `Mērogs`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Rādīt režģi`,
 'sf8f55cf0946dcb38': `Līnijas krāsa`,
 'sf9f816447b409e1c': `Ja šī opcija ir iespējota, taisnie leņķi tiks zīmēti kā neliels kvadrāts.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

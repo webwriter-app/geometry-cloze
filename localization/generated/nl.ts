@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Je kunt het vastpakken ook tijdelijk uitschakelen door op
-          <sl-tag size="small">Alt
-          </sl-tag> te drukken terwijl je een element sleept
-        `,
-'s109991b0423f1512': `Violet`,
+      's109991b0423f1512': `Violet`,
 's202fffd5a2e1c595': `Lengte`,
 's24d82e0bdc4ea31f': `Omtrek tonen`,
 's2706a162264c46f1': `Schaal`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Toon rooster`,
 'sf8f55cf0946dcb38': `Lijnkleur`,
 'sf9f816447b409e1c': `Indien ingeschakeld, worden rechte hoeken getekend als een klein vierkantje`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

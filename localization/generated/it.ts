@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`È anche possibile disabilitare temporaneamente lo snap premendo
-          <sl-tag size="small">Alt
-          </sl-tag> mentre si trascina un elemento
-        `,
-'s109991b0423f1512': `Viola`,
+      's109991b0423f1512': `Viola`,
 's202fffd5a2e1c595': `Lunghezza`,
 's24d82e0bdc4ea31f': `Mostra il perimetro`,
 's2706a162264c46f1': `Scala`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Mostra griglia`,
 'sf8f55cf0946dcb38': `Colore della linea`,
 'sf9f816447b409e1c': `Se abilitato, gli angoli retti saranno disegnati come un piccolo quadrato.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

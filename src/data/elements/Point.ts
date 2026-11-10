@@ -10,7 +10,6 @@ import Shape from './Shape';
 
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
-import { msg } from '@lit/localize';
 import { SELECTION_STYLE } from '../components/SelectionRect';
 import SHOELACE from '../helper/Shoelace';
 

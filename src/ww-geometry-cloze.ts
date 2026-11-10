@@ -1,10 +1,9 @@
-// @ts-ignore
-import LOCALIZE from '../localization/generated/index.js';
+import type { MsgFn } from "@lit/localize";
+import { effectiveLanguage, localizeElement, nativeLanguageAttributes, sourceMsg } from "../localization/localizer";
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { localized } from '@lit/localize';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
@@ -24,24 +23,34 @@ import { readData, writeData } from './data-block';
  * edit the shapes on the canvas. Otherwise, the canvas is rendered as a static
  * image.
  */
-@localized()
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
+  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+
+  override get lang(): string { return effectiveLanguage(this); }
+  override set lang(value: string) { this.setAttribute("lang", value); }
+  public readonly msg = localizeElement(this, true, () => this.manager?.requestRedraw());
   @query('canvas') private accessor canvas!: HTMLCanvasElement;
 
   private manager: CanvasManager | null = null;
 
-  static options = {
-    hideGrid: { type: Boolean, label: { _: 'Hide grid', de: 'Raster ausblenden' } },
-    disableSnapping: { type: Boolean, label: { _: 'Disable snapping', de: 'Einrasten deaktivieren' } },
-    abstractRightAngle: { type: Boolean, label: { _: 'Abstract right angle', de: 'Rechten Winkel als Quadrat zeichnen' } },
-    scale: {
-      type: Number, control: 'range', min: 0.01, max: 10,
-      steps: [0.01, 0.1, 0.125, 0.25, 0.75, 1, 1.5, 2, 3, 5, 10],
-      label: { _: 'Scale', de: 'Maßstab' },
-      description: { _: 'Scales labels for lengths and sizes.', de: 'Skaliert Beschriftungen für Längen und Größen.' }
-    }
-  } as const;
+  readonly options = WwGeometryCloze.buildOptions(this.msg);
+
+  static get options() { return this.buildOptions(sourceMsg); }
+
+  private static buildOptions(msg: MsgFn) {
+    return {
+      hideGrid: { type: Boolean, label: { get _() { return msg('Hide grid'); } } },
+      disableSnapping: { type: Boolean, label: { get _() { return msg('Disable snapping'); } } },
+      abstractRightAngle: { type: Boolean, label: { get _() { return msg('Abstract right angle'); } } },
+      scale: {
+        type: Number, control: 'range', min: 0.01, max: 10,
+        steps: [0.01, 0.1, 0.125, 0.25, 0.75, 1, 1.5, 2, 3, 5, 10],
+        label: { get _() { return msg('Scale'); } },
+        description: { get _() { return msg('Scales labels for lengths and sizes.'); } }
+      }
+    } as const;
+  }
 
   /**
    * A JSON-serialized list of all the objects that make up the canvas. Each
@@ -146,8 +155,6 @@ export class WwGeometryCloze extends LitElementWw {
     this.elementsObserver.observe(this, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['slot', 'type', 'src'] });
     if (this.hasUpdated) this.setupCanvas();
   }
-
-  protected localize = LOCALIZE;
 
   /**
    * Active editing mode, accepting three possible values:
@@ -264,7 +271,8 @@ export class WwGeometryCloze extends LitElementWw {
       }
       this.manager = new CanvasManager(
         this.canvas,
-        this.renderRoot as HTMLElement
+        this.renderRoot as HTMLElement,
+        this.msg
       );
       this.requestUpdate();
       this.manager.addEventListener('dataupdate', this.onCanvasValueChange);

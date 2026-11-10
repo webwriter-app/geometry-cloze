@@ -9,11 +9,7 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Taip pat galite laikinai išjungti fiksavimą paspausdami
-          <sl-tag size="small">Alt
-          </sl-tag> vilkdami elementą
-        `,
-'s109991b0423f1512': `Violetinė`,
+      's109991b0423f1512': `Violetinė`,
 's202fffd5a2e1c595': `Ilgis`,
 's24d82e0bdc4ea31f': `Rodyti perimetrą`,
 's2706a162264c46f1': `Skalė`,
@@ -49,5 +45,10 @@
 'sf6f1d2fce4cc2014': `Rodyti tinklelį`,
 'sf8f55cf0946dcb38': `Linijos spalva`,
 'sf9f816447b409e1c': `Kai ši funkcija įjungta, stačiakampiai bus piešiami kaip mažas kvadratas.`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
     };
   

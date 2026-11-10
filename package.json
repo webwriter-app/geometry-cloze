@@ -41,8 +41,13 @@
     "widget-lang-ko",
     "widget-lang-ja",
     "widget-lang-id",
-    "widget-lang-zh-hans",
-    "widget-lang-zh-hant"
+    "widget-lang-zh-Hans",
+    "widget-lang-zh-Hant",
+    "widget-lang-en-US",
+    "widget-lang-en-GB",
+    "widget-lang-en-CA",
+    "widget-lang-en-AU",
+    "widget-lang-en-IN"
   ],
   "license": "MIT",
   "author": "Florin Große (https://der-grosse.de)",
@@ -78,6 +83,6 @@
     "./editing-config.json": "./editing-config.json",
     "./custom-elements.json": "./custom-elements.json"
   },
-  "editingConfig": {},
-  "customElements": "custom-elements.json"
+  "customElements": "custom-elements.json",
+  "editingConfig": {}
 }

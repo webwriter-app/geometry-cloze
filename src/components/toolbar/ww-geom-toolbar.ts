@@ -1,7 +1,8 @@
+import { effectiveLanguage, localizeElement, nativeLanguageAttributes } from "../../../localization/localizer";
 import { LitElementWw } from '@webwriter/lit';
 import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { localized, msg, str } from '@lit/localize';
+import { str } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -32,8 +33,12 @@ import RulerIcon from '../icons/ruler';
 import AngleIcon from '../icons/angle';
 import WwKbd from '../ui/ww-kbd';
 
-@localized()
 export class WwGeomToolbar extends LitElementWw {
+  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+
+  override get lang(): string { return effectiveLanguage(this); }
+  override set lang(value: string) { this.setAttribute("lang", value); }
+  private readonly msg = localizeElement(this);
   @property({ type: Object })
   accessor manager: CanvasManager | null = null;
 
@@ -61,17 +66,17 @@ export class WwGeomToolbar extends LitElementWw {
         ${this.ModeButton(
           'select',
           CursorIcon,
-          html`${msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
+          html`${this.msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
           PolygonIcon,
-          html`${msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
+          html`${this.msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
           DividerLineIcon,
-          html`${msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
+          html`${this.msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
     `;
@@ -112,7 +117,7 @@ export class WwGeomToolbar extends LitElementWw {
         <sl-menu>
           ${this.CurrentLabelMenu()}
           <sl-divider></sl-divider>
-          <sl-menu-label>${msg('Label color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Label color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             @input=${(e: CustomEvent) => {
@@ -130,7 +135,7 @@ export class WwGeomToolbar extends LitElementWw {
   private CurrentLabelMenu() {
     if (this.selection.length > 1) {
       return html`<sl-menu-label>
-        ${msg(str`${this.selection.length} objects selected`)}
+        ${this.msg(str`${this.selection.length} objects selected`)}
       </sl-menu-label>`;
     }
 
@@ -154,7 +159,7 @@ export class WwGeomToolbar extends LitElementWw {
     };
 
     return html`
-      <sl-menu-label>${msg('Shape label')}</sl-menu-label>
+      <sl-menu-label>${this.msg('Shape label')}</sl-menu-label>
       <div class="menu-padding">
         <sl-checkbox
           size="small"
@@ -163,7 +168,7 @@ export class WwGeomToolbar extends LitElementWw {
             shape.showArea = (e.target as SlCheckbox).checked;
             labelChanged();
           }}>
-          ${msg('Show Area')}
+          ${this.msg('Show Area')}
         </sl-checkbox>
         <br />
         <sl-checkbox
@@ -173,7 +178,7 @@ export class WwGeomToolbar extends LitElementWw {
             shape.showPerimeter = (e.target as SlCheckbox).checked;
             labelChanged();
           }}>
-          ${msg('Show Perimeter')}
+          ${this.msg('Show Perimeter')}
         </sl-checkbox>
       </div>
     `;
@@ -185,11 +190,11 @@ export class WwGeomToolbar extends LitElementWw {
     else if (line.labelStyle == 'value') labelValue = 'special';
 
     return html`
-      <sl-menu-label>${msg('Line label')}</sl-menu-label>
+      <sl-menu-label>${this.msg('Line label')}</sl-menu-label>
       <ww-letter-picker
         .value=${labelValue}
         alphabet="latin-lowercase"
-        special=${msg('Length')}
+        special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {
           if (e.detail === 'none') {
             line.shouldShowLabel(false);
@@ -230,7 +235,7 @@ export class WwGeomToolbar extends LitElementWw {
       <ww-letter-picker
         .value=${labelValue}
         alphabet="greek-lowercase"
-        special=${msg('Length')}
+        special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {
           if (e.detail === 'none') {
             point.shouldShowLabel(false);
@@ -277,7 +282,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Point color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Point color')}</sl-menu-label>
           <ww-color-picker
             .color=${color}
             @input=${(e: CustomEvent) => {
@@ -315,7 +320,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Line width')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Line width')}</sl-menu-label>
           <sl-range
             class="menu-padding"
             min="0"
@@ -332,7 +337,7 @@ export class WwGeomToolbar extends LitElementWw {
             }}>
           </sl-range>
           <sl-divider></sl-divider>
-          <sl-menu-label>${msg('Line color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Line color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             @input=${(e: CustomEvent) => {
@@ -368,7 +373,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Fill color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Fill color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             include-transparent
@@ -389,7 +394,7 @@ export class WwGeomToolbar extends LitElementWw {
     return html`
       <sl-tooltip placement="bottom">
         <span slot="content">
-          ${msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
+          ${this.msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
           <ww-kbd>Del</ww-kbd>
         </span>
         <sl-button

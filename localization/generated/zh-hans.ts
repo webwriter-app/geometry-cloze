@@ -37,13 +37,16 @@
 'sf8f55cf0946dcb38': `Line color`,
 's997f2252dabae00f': `Fill color`,
 's4585ad5504d24a6b': `Delete selected objects`,
+'s8818af2947b74b9b': `Hide grid`,
+'s7c233329e117db1d': `Disable snapping`,
+'s4fd35ef13079b962': `Abstract right angle`,
+'s2706a162264c46f1': `Scale`,
+'s30ef01663a587b8a': `Scales labels for lengths and sizes.`,
 'sf6f1d2fce4cc2014': `Show grid`,
 's73c0e4814878d26e': `Snap to grid`,
-'hcf737b9b198de693': html`You can also temporarily disable snapping by pressing
-                  <sl-tag size="small">Alt</sl-tag> while dragging an element`,
-'s4fd35ef13079b962': `Abstract right angle`,
+'hcf3a5f37275a5412': html`You can also temporarily disable snapping by pressing
+                  <ww-kbd>Alt</ww-kbd> while dragging an element`,
 'sf9f816447b409e1c': `When enabled, right angles will be drawn as a small square`,
-'s2706a162264c46f1': `Scale`,
 's2dae9bc7aa02bab7': `Scales all labels of lengths and sizes.`,
     };
   
