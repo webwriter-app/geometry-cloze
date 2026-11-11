@@ -105,7 +105,16 @@
       "so": "Samee oo eeg layliyada joomatariga oo leh xulashooyin midab, qaab iyo summad.",
       "ti": "ብናይ ሕብሪ፡ ቅዲን መለለዪን ኣማራጺታት ልምምዳት ጂኦሜትሪ ፍጠሩን ርኣዩን።",
       "sw": "Unda na uangalie mazoezi ya jiometri yenye chaguo za rangi, mtindo na lebo.",
-      "ha": "Ƙirƙira kuma duba atisayen lissafin siffofi tare da zaɓuɓɓukan launi, salo da lakabi."
+      "ha": "Ƙirƙira kuma duba atisayen lissafin siffofi tare da zaɓuɓɓukan launi, salo da lakabi.",
+      "yue-Hans": "制作同浏览几何练习，提供填色、样式同标签选项。",
+      "yue-Hant": "製作同瀏覽幾何練習，提供填色、樣式同標籤選項。",
+      "kmr": "Biferînin û bibînin pratîkên geometrîyê bi vebijarkên rengkirin, şêwazdan û etîketkirinê.",
+      "kmr-Latn": "Biferînin û bibînin pratîkên geometrîyê bi vebijarkên rengkirin, şêwazdan û etîketkirinê.",
+      "kmr-Arab": "بفەرینن ئوو ببینن پراتیکێن گەۆمەترییێ ب ڤەبژارکێن رەنگکرن, شێوازدان ئوو ئەتیکەتکرنێ.",
+      "ckb": "ڕاهێنانی ئەندازە دروست بکە و بیبینە، لەگەڵ هەڵبژاردەکانی ڕەنگکردنەوە، ستایل‌دان و ناونان.",
+      "ckb-Arab": "ڕاهێنانی ئەندازە دروست بکە و بیبینە، لەگەڵ هەڵبژاردەکانی ڕەنگکردنەوە، ستایل‌دان و ناونان.",
+      "af-ZA": "Skep en bekyk meetkunde-oefeninge met keuses vir kleur, styl en etikette.",
+      "af-NA": "Skep en bekyk meetkunde-oefeninge met keuses vir kleur, styl en etikette."
     },
     "label": {
       "_": "Geometry Cloze",
@@ -210,7 +219,16 @@
       "so": "Layliyada joomatariga",
       "ti": "ልምምዳት ጂኦሜትሪ",
       "sw": "Mazoezi ya jiometri",
-      "ha": "Atisayen lissafin siffofi"
+      "ha": "Atisayen lissafin siffofi",
+      "yue-Hans": "几何填空练习",
+      "yue-Hant": "幾何填空練習",
+      "kmr": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Latn": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Arab": "گەۆمەترییا ب ڤالاهیێن تژیکرنێ",
+      "ckb": "هەندەسەی خانەبەتاڵ",
+      "ckb-Arab": "هەندەسەی خانەبەتاڵ",
+      "af-ZA": "Meetkunde-invuloefening",
+      "af-NA": "Meetkunde-invuloefening"
     }
   },
   "./snippets/geometry-cloze": {
@@ -319,7 +337,16 @@
       "so": "Layliyada joomatariga",
       "ti": "ልምምዳት ጂኦሜትሪ",
       "sw": "Mazoezi ya jiometri",
-      "ha": "Atisayen lissafin siffofi"
+      "ha": "Atisayen lissafin siffofi",
+      "yue-Hans": "几何填空练习",
+      "yue-Hant": "幾何填空練習",
+      "kmr": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Latn": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Arab": "گەۆمەترییا ب ڤالاهیێن تژیکرنێ",
+      "ckb": "هەندەسەی خانەبەتاڵ",
+      "ckb-Arab": "هەندەسەی خانەبەتاڵ",
+      "af-ZA": "Meetkunde-invuloefening",
+      "af-NA": "Meetkunde-invuloefening"
     }
   },
   "./snippets/polygon": {
@@ -428,7 +455,16 @@
       "so": "Geesoole",
       "ti": "ብዙሕ ጎኒ ዘለዎ ቅርጺ",
       "sw": "Poligoni",
-      "ha": "Siffar mai kusurwoyi da yawa"
+      "ha": "Siffar mai kusurwoyi da yawa",
+      "yue-Hans": "多边形",
+      "yue-Hant": "多邊形",
+      "kmr": "Pirgoşe",
+      "kmr-Latn": "Pirgoşe",
+      "kmr-Arab": "پرگۆشە",
+      "ckb": "چەندگۆشە",
+      "ckb-Arab": "چەندگۆشە",
+      "af-ZA": "Veelhoek",
+      "af-NA": "Veelhoek"
     }
   },
   "./snippets/right-triangle": {
@@ -537,7 +573,16 @@
       "so": "Saddex-xagal qumman",
       "ti": "ቅኑዕ ኩርናዕ ዘለዎ ሰለስተ ኩርናዕ",
       "sw": "Pembetatu yenye pembe mraba",
-      "ha": "Alwatika mai kusurwar 90°"
+      "ha": "Alwatika mai kusurwar 90°",
+      "yue-Hans": "直角三角形",
+      "yue-Hant": "直角三角形",
+      "kmr": "Sêgoşeya rast",
+      "kmr-Latn": "Sêgoşeya rast",
+      "kmr-Arab": "سێگۆشەیا راست",
+      "ckb": "سێگۆشەی ڕاستەگۆشە",
+      "ckb-Arab": "سێگۆشەی ڕاستەگۆشە",
+      "af-ZA": "Reghoekige driehoek",
+      "af-NA": "Reghoekige driehoek"
     }
   },
   "./widgets/ww-geometry-cloze": {
@@ -644,7 +689,16 @@
       "so": "Layliyada joomatariga",
       "ti": "ልምምዳት ጂኦሜትሪ",
       "sw": "Mazoezi ya jiometri",
-      "ha": "Atisayen lissafin siffofi"
+      "ha": "Atisayen lissafin siffofi",
+      "yue-Hans": "几何填空练习",
+      "yue-Hant": "幾何填空練習",
+      "kmr": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Latn": "Geometrîya bi valahiyên tijîkirinê",
+      "kmr-Arab": "گەۆمەترییا ب ڤالاهیێن تژیکرنێ",
+      "ckb": "هەندەسەی خانەبەتاڵ",
+      "ckb-Arab": "هەندەسەی خانەبەتاڵ",
+      "af-ZA": "Meetkunde-invuloefening",
+      "af-NA": "Meetkunde-invuloefening"
     }
   }
 }
