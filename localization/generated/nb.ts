@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Du kan også midlertidig deaktivere snapping ved å trykke på
-          <sl-tag size="small">Alt
-          </sl-tag> mens du drar et element
-        `,
+      'hcf3a5f37275a5412': html`Hold inne <ww-kbd>Alt</ww-kbd> mens du drar et element for å slå av festing midlertidig.`,
+'s020ef25c40d67e92': `Ingen bokstav`,
 's109991b0423f1512': `Fiolett`,
+'s166e43ffaa91f881': `Snu vinkelen`,
 's202fffd5a2e1c595': `Lengde`,
 's24d82e0bdc4ea31f': `Vis omkrets`,
 's2706a162264c46f1': `Skala`,
 's2dae9bc7aa02bab7': `Skalerer alle etiketter med lengder og størrelser.`,
+'s30ef01663a587b8a': `Skalerer etiketter for lengder og størrelser.`,
 's3b627b7632baa8d7': `Opprett skillelinjer`,
 's3d0296b47fe6323c': `Kalk`,
 's447b301ca02b353e': `Perimeter: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Svart`,
 's6751f51ab77310e5': `Vis område`,
 's6baf78886c99db89': `Gul`,
+'s712cf78df85cba7a': `Ikke implementert`,
 's71f4a89a7cd714ee': `Område: `,
 's73c0e4814878d26e': `Fest til rutenettet`,
+'s7c233329e117db1d': `Slå av festing`,
+'s8818af2947b74b9b': `Skjul rutenettet`,
 's8a347fce9c8f6045': `Velg og flytt objekter`,
 's8f450dd0b7bdb8cb': `Oransje`,
 's997f2252dabae00f': `Fyll farge`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Linjefarge`,
 'sf9f816447b409e1c': `Når denne funksjonen er aktivert, tegnes rette vinkler som en liten firkant`,
     };
-  

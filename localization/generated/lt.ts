@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Taip pat galite laikinai išjungti fiksavimą paspausdami
-          <sl-tag size="small">Alt
-          </sl-tag> vilkdami elementą
-        `,
+      'hcf3a5f37275a5412': html`Vilkite elementą laikydami nuspaudę <ww-kbd>Alt</ww-kbd>, kad laikinai išjungtumėte pritraukimą.`,
+'s020ef25c40d67e92': `Be raidės`,
 's109991b0423f1512': `Violetinė`,
+'s166e43ffaa91f881': `Apversti kampą`,
 's202fffd5a2e1c595': `Ilgis`,
 's24d82e0bdc4ea31f': `Rodyti perimetrą`,
 's2706a162264c46f1': `Skalė`,
 's2dae9bc7aa02bab7': `Svarsto visas ilgių ir dydžių etiketes.`,
+'s30ef01663a587b8a': `Keičia ilgio ir dydžio žymų mastelį.`,
 's3b627b7632baa8d7': `Sukurti skiriamąsias linijas`,
 's3d0296b47fe6323c': `Lime`,
 's447b301ca02b353e': `Perimetras: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Juoda`,
 's6751f51ab77310e5': `Parodos teritorija`,
 's6baf78886c99db89': `Geltona`,
+'s712cf78df85cba7a': `Neįdiegta`,
 's71f4a89a7cd714ee': `Teritorija: `,
 's73c0e4814878d26e': `Prisijungimas prie tinklelio`,
+'s7c233329e117db1d': `Išjungti pritraukimą`,
+'s8818af2947b74b9b': `Slėpti tinklelį`,
 's8a347fce9c8f6045': `Pasirinkite ir perkelkite objektus`,
 's8f450dd0b7bdb8cb': `Oranžinė`,
 's997f2252dabae00f': `Užpildymo spalva`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Linijos spalva`,
 'sf9f816447b409e1c': `Kai ši funkcija įjungta, stačiakampiai bus piešiami kaip mažas kvadratas.`,
     };
-  

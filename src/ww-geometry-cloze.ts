@@ -1,10 +1,9 @@
-// @ts-ignore
-import LOCALIZE from '../localization/generated/index.js';
+import type { MsgFn } from "@lit/localize";
+import { effectiveLanguage, localizeElement, nativeLanguageAttributes, sourceMsg } from "../localization/localizer";
 import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { localized } from '@lit/localize';
 import { WwGeomToolbar } from './components/toolbar/ww-geom-toolbar';
 import Shape from './data/elements/Shape';
 import CanvasManager, { CanvasData } from './data/CanvasManager/CanvasManager';
@@ -12,7 +11,7 @@ import Objects from './data/helper/Objects';
 import { LitElement } from 'lit';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
-import { WwGeomOptions } from './components/options/ww-geom-options';
+import { readData, writeData } from './data-block';
 
 /**
  * The geometry cloze widgets allows for the creation and embedding of geometric
@@ -24,14 +23,34 @@ import { WwGeomOptions } from './components/options/ww-geom-options';
  * edit the shapes on the canvas. Otherwise, the canvas is rendered as a static
  * image.
  */
-@localized()
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends LitElementWw {
+  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+
+  override get lang(): string { return effectiveLanguage(this); }
+  override set lang(value: string) { this.setAttribute("lang", value); }
+  public readonly msg = localizeElement(this, true, () => this.manager?.requestRedraw());
   @query('canvas') private accessor canvas!: HTMLCanvasElement;
 
   private manager: CanvasManager | null = null;
 
-  protected localize = LOCALIZE;
+  readonly options = WwGeometryCloze.buildOptions(this.msg);
+
+  static get options() { return this.buildOptions(sourceMsg); }
+
+  private static buildOptions(msg: MsgFn) {
+    return {
+      hideGrid: { type: Boolean, label: { get _() { return msg('Hide grid'); } } },
+      disableSnapping: { type: Boolean, label: { get _() { return msg('Disable snapping'); } } },
+      abstractRightAngle: { type: Boolean, label: { get _() { return msg('Abstract right angle'); } } },
+      scale: {
+        type: Number, control: 'range', min: 0.01, max: 10,
+        steps: [0.01, 0.1, 0.125, 0.25, 0.75, 1, 1.5, 2, 3, 5, 10],
+        label: { get _() { return msg('Scale'); } },
+        description: { get _() { return msg('Scales labels for lengths and sizes.'); } }
+      }
+    } as const;
+  }
 
   /**
    * A JSON-serialized list of all the objects that make up the canvas. Each
@@ -116,12 +135,26 @@ export class WwGeometryCloze extends LitElementWw {
    * | Violet | `#7c3aed` |
    * | Pink   | `#db2777` |
    */
-  @property({
-    attribute: true,
-    reflect: true,
-    type: Array
-  })
-  accessor elements: CanvasData['children'];
+  private get elements(): CanvasData['children'] {
+    const { elements } = readData<{ elements: CanvasData['children'] }>(this);
+    return Array.isArray(elements) ? elements : [];
+  }
+
+  private syncElements() {
+    if (!this.manager) return;
+    const children = this.elements;
+    if (!Objects.deepEqual(this.manager.export().children, children)) {
+      this.manager.import({ children });
+    }
+  }
+
+  private elementsObserver = new MutationObserver(() => this.syncElements());
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.elementsObserver.observe(this, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['slot', 'type', 'src'] });
+    if (this.hasUpdated) this.setupCanvas();
+  }
 
   /**
    * Active editing mode, accepting three possible values:
@@ -183,24 +216,14 @@ export class WwGeometryCloze extends LitElementWw {
         ? html`<ww-geom-toolbar
             .manager=${this.manager as any}></ww-geom-toolbar>`
         : nothing}
-      <canvas tabindex="0"></canvas>
-      <ww-geom-options
-        part="options"
-        .manager=${this.manager as any}></ww-geom-options>`;
+      <canvas tabindex="0"></canvas>`;
   }
 
   protected updated(
     changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
     if (!this.manager) return;
-    if (changedProperties.has('elements')) {
-      if (!this.manager || !this.elements) return;
-      const exportData = this.manager.export();
-      if (!Objects.deepEqual(exportData.children, this.elements))
-        this.manager.import({
-          children: this.elements
-        });
-    }
+    if (changedProperties.has('scale')) this.manager.setScale(this.scale ?? 1);
 
     if (changedProperties.has('mode') && this.mode !== this.manager.mode)
       this.manager.mode = this.mode;
@@ -226,7 +249,9 @@ export class WwGeometryCloze extends LitElementWw {
 
   private onCanvasValueChange: EventListener = (event: Event) => {
     const value = (event as CustomEvent<CanvasData>).detail;
-    this.elements = value.children;
+    if (!Objects.deepEqual(this.elements, value.children)) {
+      writeData(this, { elements: value.children });
+    }
     this.mode = value.mode;
     this.abstractRightAngle = value.abstractRightAngle;
     this.hideGrid = !value.showGrid;
@@ -235,6 +260,10 @@ export class WwGeometryCloze extends LitElementWw {
   };
 
   firstUpdated() {
+    this.setupCanvas();
+  }
+
+  private setupCanvas() {
     if (this.canvas) {
       if (this.manager) {
         console.warn('Prevented creating multiple CanvasManager');
@@ -242,7 +271,8 @@ export class WwGeometryCloze extends LitElementWw {
       }
       this.manager = new CanvasManager(
         this.canvas,
-        this.renderRoot as HTMLElement
+        this.renderRoot as HTMLElement,
+        this.msg
       );
       this.requestUpdate();
       this.manager.addEventListener('dataupdate', this.onCanvasValueChange);
@@ -253,15 +283,17 @@ export class WwGeometryCloze extends LitElementWw {
         abstractRightAngle: this.abstractRightAngle,
         showGrid: !this.hideGrid,
         snapping: !this.disableSnapping,
-        scaleFactor: this.scale
+        scaleFactor: this.scale ?? 1
       });
     } else console.warn('No canvas context');
   }
 
   disconnectedCallback(): void {
+    this.elementsObserver.disconnect();
     if (this.manager) {
       this.manager.removeEventListener('dataupdate', this.onCanvasValueChange);
       this.manager.unmount();
+      this.manager = null;
     }
     super.disconnectedCallback();
   }
@@ -275,8 +307,7 @@ export class WwGeometryCloze extends LitElementWw {
   /** @internal */
   public static get scopedElements() {
     return {
-      'ww-geom-toolbar': WwGeomToolbar,
-      'ww-geom-options': WwGeomOptions
+      'ww-geom-toolbar': WwGeomToolbar
     };
   }
 

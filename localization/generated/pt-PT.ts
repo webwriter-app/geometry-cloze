@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Também é possível desativar temporariamente o encaixe premindo
-          <sl-tag size="small">Alt
-          </sl-tag> enquanto arrasta um elemento
-        `,
+      'hcf3a5f37275a5412': html`Mantenha <ww-kbd>Alt</ww-kbd> premido enquanto arrasta um elemento para desativar temporariamente o ajuste.`,
+'s020ef25c40d67e92': `Sem letra`,
 's109991b0423f1512': `Violeta`,
+'s166e43ffaa91f881': `Inverter o ângulo`,
 's202fffd5a2e1c595': `Comprimento`,
 's24d82e0bdc4ea31f': `Mostrar perímetro`,
 's2706a162264c46f1': `Escala`,
 's2dae9bc7aa02bab7': `Balança todas as etiquetas de comprimentos e tamanhos.`,
+'s30ef01663a587b8a': `Altera a escala das etiquetas de comprimentos e tamanhos.`,
 's3b627b7632baa8d7': `Criar linhas divisórias`,
 's3d0296b47fe6323c': `Cal`,
 's447b301ca02b353e': `Perímetro: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Preto`,
 's6751f51ab77310e5': `Área de espetáculo`,
 's6baf78886c99db89': `Amarelo`,
+'s712cf78df85cba7a': `Não implementado`,
 's71f4a89a7cd714ee': `Área: `,
 's73c0e4814878d26e': `Encaixar na grelha`,
+'s7c233329e117db1d': `Desativar ajuste`,
+'s8818af2947b74b9b': `Ocultar grelha`,
 's8a347fce9c8f6045': `Selecionar e mover objectos`,
 's8f450dd0b7bdb8cb': `Laranja`,
 's997f2252dabae00f': `Cor de preenchimento`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Cor da linha`,
 'sf9f816447b409e1c': `Quando ativado, os ângulos rectos serão desenhados como um pequeno quadrado`,
     };
-  

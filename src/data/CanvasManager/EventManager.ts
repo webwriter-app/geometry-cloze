@@ -1,3 +1,5 @@
+import type { MsgFn } from "@lit/localize";
+import { sourceMsg } from "../../../localization/localizer";
 import Calc, { MathPoint } from '../helper/Calc';
 import Draggable from '../elements/base/Draggable';
 import ChildrenManager from './ChildrenManager';
@@ -17,8 +19,8 @@ export default abstract class EventManager extends ChildrenManager {
   );
   private _currentDpr = window.devicePixelRatio || 1;
 
-  constructor(canvas: HTMLCanvasElement, rootEle: HTMLElement) {
-    super(canvas);
+  constructor(canvas: HTMLCanvasElement, rootEle: HTMLElement, msg: MsgFn = sourceMsg) {
+    super(canvas, msg);
     this.wrapper = canvas;
 
     this.clickTargetEle = canvas;

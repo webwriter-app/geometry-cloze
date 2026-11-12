@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="kmr-Arab" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="sf6f1d2fce4cc2014">
+  <source>Show grid</source>
+<target>تۆرارێ نیشان بدە</target></trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>ب تۆرێ ڤە بگرە</target></trans-unit>
+<trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>هەر وها دکاری ب دەمکی گرتنێ نەچالاک بکی ب پێلی <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> دەما کو هێمانا دگوهەزینی.</target></trans-unit>
+<trans-unit id="s4fd35ef13079b962">
+  <source>Abstract right angle</source>
+<target>گۆشەیا راست ئا ئابستراکت</target></trans-unit>
+<trans-unit id="sf9f816447b409e1c">
+  <source>When enabled, right angles will be drawn as a small square</source>
+<target>دەما چالاک بە, گۆشەیێن راست وەکی چارگۆشەیەک پچووک تێنە خێزکرن</target></trans-unit>
+<trans-unit id="s2706a162264c46f1">
+  <source>Scale</source>
+<target>پیڤان</target></trans-unit>
+<trans-unit id="s2dae9bc7aa02bab7">
+  <source>Scales all labels of lengths and sizes.</source>
+<target>هەموو ئەتیکەتێن درێژاهی ئوو مەزناهیان پیڤان دکە.</target></trans-unit>
+<trans-unit id="s5e3cb80d43a34044">
+  <source>Black</source>
+<target>رەش</target></trans-unit>
+<trans-unit id="s9ff1de19feac1b7c">
+  <source>Red</source>
+<target>سۆر</target></trans-unit>
+<trans-unit id="s8f450dd0b7bdb8cb">
+  <source>Orange</source>
+<target>پۆرتەقالی</target></trans-unit>
+<trans-unit id="s6baf78886c99db89">
+  <source>Yellow</source>
+<target>شین</target></trans-unit>
+<trans-unit id="s3d0296b47fe6323c">
+  <source>Lime</source>
+<target>کەسکێ لموو</target></trans-unit>
+<trans-unit id="scf00d78fd5953f1c">
+  <source>Green</source>
+<target>کەسک</target></trans-unit>
+<trans-unit id="s9b3c2f9cc32d565a">
+  <source>Cyan</source>
+<target>تورکواز</target></trans-unit>
+<trans-unit id="secf3d3a7c1693e2d">
+  <source>Blue</source>
+<target>شین</target></trans-unit>
+<trans-unit id="s109991b0423f1512">
+  <source>Violet</source>
+<target>مۆر</target></trans-unit>
+<trans-unit id="se9beed19c6a38fed">
+  <source>Pink</source>
+<target>پەمی</target></trans-unit>
+<trans-unit id="sd0e945b97c0c46d1">
+  <source>Transparent</source>
+<target>شەفاف</target></trans-unit>
+<trans-unit id="s8a347fce9c8f6045">
+  <source>Select and move objects</source>
+<target>تشتان هلبژێرە ئوو بگوهەزینە</target></trans-unit>
+<trans-unit id="sc76449099e8dab8e">
+  <source>Create and connect objects</source>
+<target>تشتان چێبکە ئوو گرێدە</target></trans-unit>
+<trans-unit id="s3b627b7632baa8d7">
+  <source>Create divider lines</source>
+<target>خێزێن جوداکەر چێبکە</target></trans-unit>
+<trans-unit id="sc641744471095036">
+  <source>Label color</source>
+<target>رەنگێ ئەتیکەتێ</target></trans-unit>
+<trans-unit id="sb6055dddb583f562">
+  <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
+<target><x id="0" equiv-text="${this.selection.length}" /> تشت هاتن هلبژارتن</target></trans-unit>
+<trans-unit id="s5246434aaa760348">
+  <source>Shape label</source>
+<target>ئەتیکەتا شکلێ</target></trans-unit>
+<trans-unit id="s6751f51ab77310e5">
+  <source>Show Area</source>
+<target>قادا نیشان بدە</target></trans-unit>
+<trans-unit id="s24d82e0bdc4ea31f">
+  <source>Show Perimeter</source>
+<target>دۆرچەرخا نیشان بدە</target></trans-unit>
+<trans-unit id="sbaf7984effccc73d">
+  <source>Line label</source>
+<target>ئەتیکەتا خێزێ</target></trans-unit>
+<trans-unit id="s202fffd5a2e1c595">
+  <source>Length</source>
+<target>درێژاهی</target></trans-unit>
+<trans-unit id="s44f0e16cc86358e2">
+  <source>Point color</source>
+<target>رەنگێ خالێ</target></trans-unit>
+<trans-unit id="s5cda68f59fd34ebf">
+  <source>Line width</source>
+<target>فرەهیا خێزێ</target></trans-unit>
+<trans-unit id="sf8f55cf0946dcb38">
+  <source>Line color</source>
+<target>رەنگێ خێزێ</target></trans-unit>
+<trans-unit id="s997f2252dabae00f">
+  <source>Fill color</source>
+<target>رەنگێ داگرتنێ</target></trans-unit>
+<trans-unit id="s4585ad5504d24a6b">
+  <source>Delete selected objects</source>
+<target>تشتێن هلبژارتی ژێ ببە</target></trans-unit>
+<trans-unit id="s71f4a89a7cd714ee">
+  <source>Area: </source>
+<target>قاد: </target></trans-unit>
+<trans-unit id="s447b301ca02b353e">
+  <source>Perimeter: </source>
+<target>دۆرچەرخ: </target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>تۆرارێ ڤەشێرە</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>گرتنێ نەچالاک بکە</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>ئەتیکەتێن درێژاهی ئوو مەزناهیان پیڤان دکە.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>هێ نەهاتیە پێکانین</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>تیپ تونە</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>گۆشەیێ بزڤینە</target></trans-unit>
+</body>
+</file>
+</xliff>

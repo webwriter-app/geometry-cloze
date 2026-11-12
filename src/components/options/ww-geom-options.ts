@@ -1,7 +1,7 @@
+import { effectiveLanguage, localizeElement, nativeLanguageAttributes } from "../../../localization/localizer";
 import { LitElementWw } from '@webwriter/lit';
 import { css, html, PropertyValues } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
-import { localized, msg } from '@lit/localize';
 import SlCheckbox from '@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js';
 import SlTooltip from '@shoelace-style/shoelace/dist/components/tooltip/tooltip.component.js';
 import SlTag from '@shoelace-style/shoelace/dist/components/tag/tag.component.js';
@@ -17,8 +17,12 @@ import { SlInputEvent } from '@shoelace-style/shoelace';
 /**
  * A widget to create and view geometry exercises.
  */
-@localized()
 export class WwGeomOptions extends LitElementWw {
+  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+
+  override get lang(): string { return effectiveLanguage(this); }
+  override set lang(value: string) { this.setAttribute("lang", value); }
+  private readonly msg = localizeElement(this);
   private static SCALE_VALUES = [
     0.01, 0.1, 0.125, 0.25, 0.75, 1, 1.5, 2, 3, 5, 10
   ];
@@ -36,17 +40,17 @@ export class WwGeomOptions extends LitElementWw {
       <sl-checkbox
         .checked=${this.manager?.showGrid ?? false}
         @sl-change=${() => this.manager?.toggleGrid()}>
-        ${msg('Show grid')}
+        ${this.msg('Show grid')}
       </sl-checkbox>
       <sl-checkbox
         .checked=${this.manager?.snapping ?? false}
         @sl-change=${() => this.manager?.toggleSnapping()}>
         <div class="checkbox-info-container">
-          ${msg('Snap to grid')}
+          ${this.msg('Snap to grid')}
           <sl-tooltip placement="left" hoist>
             <sl-icon src=${InfoSVG}></sl-icon>
             <span slot="content">
-              ${msg(
+              ${this.msg(
                 html`You can also temporarily disable snapping by pressing
                   <ww-kbd>Alt</ww-kbd> while dragging an element`
               )}
@@ -61,11 +65,11 @@ export class WwGeomOptions extends LitElementWw {
             this.manager.abstractRightAngle = !this.manager.abstractRightAngle;
         }}>
         <div class="checkbox-info-container">
-          ${msg('Abstract right angle')}
+          ${this.msg('Abstract right angle')}
           <sl-tooltip placement="left" hoist>
             <sl-icon src=${InfoSVG}></sl-icon>
             <span slot="content">
-              ${msg(
+              ${this.msg(
                 'When enabled, right angles will be drawn as a small square'
               )}
             </span>
@@ -77,8 +81,8 @@ export class WwGeomOptions extends LitElementWw {
         max=${WwGeomOptions.SCALE_VALUES.length - 1}
         step="1"
         .value=${scaleValue}
-        label=${msg('Scale')}
-        help-text=${msg('Scales all labels of lengths and sizes.')}
+        label=${this.msg('Scale')}
+        help-text=${this.msg('Scales all labels of lengths and sizes.')}
         .tooltipFormatter=${(value: number) => {
           const scale = WwGeomOptions.SCALE_VALUES[value];
           return `${scale * 100} %`;
