@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="ml" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="sf6f1d2fce4cc2014">
+  <source>Show grid</source>
+<target>ഗ്രിഡ് കാണിക്കുക</target></trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>ഗ്രിഡിനോട് ചേർക്കുക</target></trans-unit>
+<trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>ഒരു ഘടകം വലിക്കുമ്പോൾ <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> അമർത്തിപ്പിടിച്ചാൽ ഗ്രിഡിനോട് ചേർക്കുന്നത് താൽക്കാലികമായി നിർത്താം.</target></trans-unit>
+<trans-unit id="s4fd35ef13079b962">
+  <source>Abstract right angle</source>
+<target>മട്ടകോണിന്റെ അടയാളം</target></trans-unit>
+<trans-unit id="sf9f816447b409e1c">
+  <source>When enabled, right angles will be drawn as a small square</source>
+<target>ഇത് പ്രവർത്തനക്ഷമമാക്കിയാൽ മട്ടകോണുകൾ ചെറിയ സമചതുരം ഉപയോഗിച്ച് കാണിക്കും.</target></trans-unit>
+<trans-unit id="s2706a162264c46f1">
+  <source>Scale</source>
+<target>സ്കെയിൽ</target></trans-unit>
+<trans-unit id="s2dae9bc7aa02bab7">
+  <source>Scales all labels of lengths and sizes.</source>
+<target>നീളത്തിന്റെയും വലുപ്പത്തിന്റെയും എല്ലാ ലേബലുകളുടെയും സ്കെയിൽ മാറ്റുന്നു.</target></trans-unit>
+<trans-unit id="s5e3cb80d43a34044">
+  <source>Black</source>
+<target>കറുപ്പ്</target></trans-unit>
+<trans-unit id="s9ff1de19feac1b7c">
+  <source>Red</source>
+<target>ചുവപ്പ്</target></trans-unit>
+<trans-unit id="s8f450dd0b7bdb8cb">
+  <source>Orange</source>
+<target>ഓറഞ്ച്</target></trans-unit>
+<trans-unit id="s6baf78886c99db89">
+  <source>Yellow</source>
+<target>മഞ്ഞ</target></trans-unit>
+<trans-unit id="s3d0296b47fe6323c">
+  <source>Lime</source>
+<target>നാരങ്ങാപ്പച്ച</target></trans-unit>
+<trans-unit id="scf00d78fd5953f1c">
+  <source>Green</source>
+<target>പച്ച</target></trans-unit>
+<trans-unit id="s9b3c2f9cc32d565a">
+  <source>Cyan</source>
+<target>സയാൻ</target></trans-unit>
+<trans-unit id="secf3d3a7c1693e2d">
+  <source>Blue</source>
+<target>നീല</target></trans-unit>
+<trans-unit id="s109991b0423f1512">
+  <source>Violet</source>
+<target>വയലറ്റ്</target></trans-unit>
+<trans-unit id="se9beed19c6a38fed">
+  <source>Pink</source>
+<target>പിങ്ക്</target></trans-unit>
+<trans-unit id="sd0e945b97c0c46d1">
+  <source>Transparent</source>
+<target>സുതാര്യം</target></trans-unit>
+<trans-unit id="s8a347fce9c8f6045">
+  <source>Select and move objects</source>
+<target>വസ്തുക്കൾ തിരഞ്ഞെടുത്ത് നീക്കുക</target></trans-unit>
+<trans-unit id="sc76449099e8dab8e">
+  <source>Create and connect objects</source>
+<target>വസ്തുക്കൾ ഉണ്ടാക്കി ബന്ധിപ്പിക്കുക</target></trans-unit>
+<trans-unit id="s3b627b7632baa8d7">
+  <source>Create divider lines</source>
+<target>വിഭജനരേഖകൾ ഉണ്ടാക്കുക</target></trans-unit>
+<trans-unit id="sc641744471095036">
+  <source>Label color</source>
+<target>ലേബലിന്റെ നിറം</target></trans-unit>
+<trans-unit id="sb6055dddb583f562">
+  <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
+<target>തിരഞ്ഞെടുത്ത വസ്തുക്കൾ: <x id="0" equiv-text="${this.selection.length}" /></target></trans-unit>
+<trans-unit id="s5246434aaa760348">
+  <source>Shape label</source>
+<target>ആകൃതിയുടെ ലേബൽ</target></trans-unit>
+<trans-unit id="s6751f51ab77310e5">
+  <source>Show Area</source>
+<target>പരപ്പളവ് കാണിക്കുക</target></trans-unit>
+<trans-unit id="s24d82e0bdc4ea31f">
+  <source>Show Perimeter</source>
+<target>ചുറ്റളവ് കാണിക്കുക</target></trans-unit>
+<trans-unit id="sbaf7984effccc73d">
+  <source>Line label</source>
+<target>രേഖയുടെ ലേബൽ</target></trans-unit>
+<trans-unit id="s202fffd5a2e1c595">
+  <source>Length</source>
+<target>നീളം</target></trans-unit>
+<trans-unit id="s44f0e16cc86358e2">
+  <source>Point color</source>
+<target>ബിന്ദുവിന്റെ നിറം</target></trans-unit>
+<trans-unit id="s5cda68f59fd34ebf">
+  <source>Line width</source>
+<target>രേഖയുടെ വീതി</target></trans-unit>
+<trans-unit id="sf8f55cf0946dcb38">
+  <source>Line color</source>
+<target>രേഖയുടെ നിറം</target></trans-unit>
+<trans-unit id="s997f2252dabae00f">
+  <source>Fill color</source>
+<target>നിറയ്ക്കാനുള്ള നിറം</target></trans-unit>
+<trans-unit id="s4585ad5504d24a6b">
+  <source>Delete selected objects</source>
+<target>തിരഞ്ഞെടുത്ത വസ്തുക്കൾ ഇല്ലാതാക്കുക</target></trans-unit>
+<trans-unit id="s71f4a89a7cd714ee">
+  <source>Area: </source>
+<target>പരപ്പളവ്: </target></trans-unit>
+<trans-unit id="s447b301ca02b353e">
+  <source>Perimeter: </source>
+<target>ചുറ്റളവ്: </target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>ഗ്രിഡ് മറയ്ക്കുക</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>ഗ്രിഡിനോട് ചേർക്കുന്നത് നിർത്തുക</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>നീളത്തിന്റെയും വലുപ്പത്തിന്റെയും എല്ലാ ലേബലുകളുടെയും സ്കെയിൽ മാറ്റുന്നു.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>നടപ്പാക്കിയിട്ടില്ല</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>അക്ഷരമില്ല</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>കോൺ മറിക്കുക</target></trans-unit>
+</body>
+</file>
+</xliff>

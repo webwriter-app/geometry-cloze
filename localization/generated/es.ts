@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`También puede desactivar temporalmente el ajuste pulsando
-          <sl-tag size="small">Alt
-          </sl-tag> mientras arrastra un elemento
-        `,
+      'hcf3a5f37275a5412': html`También puedes desactivar temporalmente el ajuste manteniendo pulsada <ww-kbd>Alt</ww-kbd> mientras arrastras un elemento.`,
+'s020ef25c40d67e92': `Sin letra`,
 's109991b0423f1512': `Violeta`,
+'s166e43ffaa91f881': `Invertir el ángulo`,
 's202fffd5a2e1c595': `Longitud`,
 's24d82e0bdc4ea31f': `Mostrar perímetro`,
 's2706a162264c46f1': `Escala`,
 's2dae9bc7aa02bab7': `Escala todas las etiquetas de longitudes y tamaños.`,
+'s30ef01663a587b8a': `Ajusta la escala de las etiquetas de longitud y tamaño.`,
 's3b627b7632baa8d7': `Crear líneas divisorias`,
 's3d0296b47fe6323c': `Cal`,
 's447b301ca02b353e': `Perímetro: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Negro`,
 's6751f51ab77310e5': `Zona de espectáculos`,
 's6baf78886c99db89': `Amarillo`,
+'s712cf78df85cba7a': `Sin implementar`,
 's71f4a89a7cd714ee': `Zona: `,
 's73c0e4814878d26e': `Ajustar a la cuadrícula`,
+'s7c233329e117db1d': `Desactivar el ajuste`,
+'s8818af2947b74b9b': `Ocultar cuadrícula`,
 's8a347fce9c8f6045': `Seleccionar y mover objetos`,
 's8f450dd0b7bdb8cb': `Naranja`,
 's997f2252dabae00f': `Color de relleno`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Color de la línea`,
 'sf9f816447b409e1c': `Si está activada, los ángulos rectos se dibujarán como un pequeño cuadrado`,
     };
-  

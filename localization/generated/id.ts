@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Anda juga dapat menonaktifkan gertakan untuk sementara waktu dengan menekan
-          <sl-tag size="small">Alt
-          </sl-tag> sambil menyeret elemen
-        `,
+      'hcf3a5f37275a5412': html`Tahan <ww-kbd>Alt</ww-kbd> saat menyeret elemen untuk menonaktifkan penyelarasan sementara.`,
+'s020ef25c40d67e92': `Tanpa huruf`,
 's109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Balik sudut`,
 's202fffd5a2e1c595': `Panjang`,
 's24d82e0bdc4ea31f': `Tampilkan Perimeter`,
 's2706a162264c46f1': `Skala`,
 's2dae9bc7aa02bab7': `Menakar semua label panjang dan ukuran.`,
+'s30ef01663a587b8a': `Mengubah skala label panjang dan ukuran.`,
 's3b627b7632baa8d7': `Membuat garis pembatas`,
 's3d0296b47fe6323c': `Kapur`,
 's447b301ca02b353e': `Perimeter: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Hitam`,
 's6751f51ab77310e5': `Tampilkan Area`,
 's6baf78886c99db89': `Kuning`,
+'s712cf78df85cba7a': `Belum diterapkan`,
 's71f4a89a7cd714ee': `Area: `,
 's73c0e4814878d26e': `Jepret ke kisi-kisi`,
+'s7c233329e117db1d': `Nonaktifkan penyelarasan`,
+'s8818af2947b74b9b': `Sembunyikan kisi`,
 's8a347fce9c8f6045': `Memilih dan memindahkan objek`,
 's8f450dd0b7bdb8cb': `Oranye`,
 's997f2252dabae00f': `Isi warna`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Warna garis`,
 'sf9f816447b409e1c': `Apabila diaktifkan, sudut siku-siku akan digambar sebagai kotak kecil`,
     };
-  

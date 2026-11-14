@@ -1,6 +1,8 @@
+import type { MsgFn } from "@lit/localize";
 import { Child } from './ChildrenTypes';
 
 export default interface Manager {
+  msg: MsgFn;
   getChildren(): Child[];
   addChild(ele: Child): void;
   removeChild(ele: Child): void;

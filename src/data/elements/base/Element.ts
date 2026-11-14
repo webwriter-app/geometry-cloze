@@ -1,7 +1,6 @@
 import Shape from '../Shape';
 import IDManager from '../../CanvasManager/IDManager';
 import Manager from '../../CanvasManager/Abstracts';
-import { msg } from '@lit/localize';
 
 export interface NamedElement {
   name?: string;

@@ -1,4 +1,5 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="pt-PT">
     <body>
       <trans-unit id="s5e3cb80d43a34044">
@@ -102,9 +103,9 @@
         <target>Cor da etiqueta</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
-          <x id="0" equiv-text="${this.selection.length}"/> objectos selecionados
+          <x id="0" equiv-text="${this.selection.length}" /> objectos selecionados
         </target>
       </trans-unit>
       <trans-unit id="s5246434aaa760348">
@@ -141,12 +142,34 @@
       </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
-                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
         <target>Também é possível desativar temporariamente o encaixe premindo
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> enquanto arrasta um elemento
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;" /> enquanto arrasta um elemento
         </target>
       </trans-unit>
-    </body>
+    <trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>Mantenha <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> premido enquanto arrasta um elemento para desativar temporariamente o ajuste.</target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>Ocultar grelha</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>Desativar ajuste</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>Altera a escala das etiquetas de comprimentos e tamanhos.</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>Não implementado</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>Sem letra</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>Inverter o ângulo</target></trans-unit>
+</body>
   </file>
 </xliff>

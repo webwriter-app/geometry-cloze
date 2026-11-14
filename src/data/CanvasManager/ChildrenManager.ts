@@ -1,3 +1,4 @@
+import { sourceMsg } from "../../../localization/localizer";
 import Element from '../elements/base/Element';
 import Draggable from '../elements/base/Draggable';
 import DividerLine from '../elements/DividerLine';
@@ -15,7 +16,7 @@ export default abstract class ChildrenManager extends EventTarget {
 
   private children: Child[] = [];
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, readonly msg = sourceMsg) {
     super();
     this._canvas = canvas;
     this._ctx = this._canvas.getContext('2d')!;

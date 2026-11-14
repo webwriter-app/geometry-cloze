@@ -10,7 +10,6 @@ import Vector from '../helper/Vector';
 import Stylable, { StylableData } from './base/Stylable';
 import Numbers from '../helper/Numbers';
 import Manager from '../CanvasManager/Abstracts';
-import { msg } from '@lit/localize';
 import SHOELACE from '../helper/Shoelace';
 import { SELECTION_STYLE } from '../components/SelectionRect';
 
@@ -529,7 +528,7 @@ export default class Shape extends Draggable {
       const area = Calc.getAreaOfPolygon(this.getPoints());
       const scaledArea = area * this.manager.scale ** 2;
       const areaRounded = Numbers.round(scaledArea);
-      const prefix = this.showPerimeter ? msg('Area: ') : '';
+      const prefix = this.showPerimeter ? this.manager.msg('Area: ') : '';
       res.push(`${prefix}${areaRounded}`);
     }
     if (this.showPerimeter) {
@@ -537,7 +536,7 @@ export default class Shape extends Draggable {
         this.getPoints().map((p) => Vector.scale(p, this.manager.scale))
       );
       const perimeterRounded = Numbers.round(perimeter);
-      const prefix = msg('Perimeter: ');
+      const prefix = this.manager.msg('Perimeter: ');
       res.push(`${prefix}${perimeterRounded}`);
     }
     return res.join('|');

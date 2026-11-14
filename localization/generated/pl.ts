@@ -9,15 +9,15 @@
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Można również tymczasowo wyłączyć przyciąganie, naciskając klawisze
-          <sl-tag size="small">Alt
-          </sl-tag> podczas przeciągania elementu
-        `,
+      'hcf3a5f37275a5412': html`Przytrzymaj <ww-kbd>Alt</ww-kbd> podczas przeciągania elementu, aby tymczasowo wyłączyć przyciąganie.`,
+'s020ef25c40d67e92': `Bez litery`,
 's109991b0423f1512': `Fioletowy`,
+'s166e43ffaa91f881': `Odwróć kąt`,
 's202fffd5a2e1c595': `Długość`,
 's24d82e0bdc4ea31f': `Pokaż obwód`,
 's2706a162264c46f1': `Skala`,
 's2dae9bc7aa02bab7': `Waży wszystkie etykiety długości i rozmiarów.`,
+'s30ef01663a587b8a': `Zmienia skalę etykiet długości i rozmiarów.`,
 's3b627b7632baa8d7': `Tworzenie linii podziału`,
 's3d0296b47fe6323c': `Limonka`,
 's447b301ca02b353e': `Obwód: `,
@@ -29,8 +29,11 @@
 's5e3cb80d43a34044': `Czarny`,
 's6751f51ab77310e5': `Obszar pokazu`,
 's6baf78886c99db89': `Żółty`,
+'s712cf78df85cba7a': `Niezaimplementowane`,
 's71f4a89a7cd714ee': `Obszar: `,
 's73c0e4814878d26e': `Przyciąganie do siatki`,
+'s7c233329e117db1d': `Wyłącz przyciąganie`,
+'s8818af2947b74b9b': `Ukryj siatkę`,
 's8a347fce9c8f6045': `Wybieranie i przenoszenie obiektów`,
 's8f450dd0b7bdb8cb': `Pomarańczowy`,
 's997f2252dabae00f': `Kolor wypełnienia`,
@@ -50,4 +53,3 @@
 'sf8f55cf0946dcb38': `Kolor linii`,
 'sf9f816447b409e1c': `Po włączeniu, kąty proste będą rysowane jako mały kwadrat`,
     };
-  

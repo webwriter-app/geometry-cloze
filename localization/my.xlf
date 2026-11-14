@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<file target-language="my" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="sf6f1d2fce4cc2014">
+  <source>Show grid</source>
+<target>ကွက်ဇယား ပြပါ</target></trans-unit>
+<trans-unit id="s73c0e4814878d26e">
+  <source>Snap to grid</source>
+<target>ကွက်ဇယားနှင့် ချိန်ညှိပါ</target></trans-unit>
+<trans-unit id="hcf3a5f37275a5412">
+  <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+<target>အစိတ်အပိုင်းကို ဆွဲနေစဉ် <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> ကို ဖိထားပြီး ချိန်ညှိမှုကို ယာယီ ပိတ်နိုင်သည်။</target></trans-unit>
+<trans-unit id="s4fd35ef13079b962">
+  <source>Abstract right angle</source>
+<target>ထောင့်မှန် အမှတ်အသား</target></trans-unit>
+<trans-unit id="sf9f816447b409e1c">
+  <source>When enabled, right angles will be drawn as a small square</source>
+<target>ဖွင့်ထားပါက ထောင့်မှန်များကို စတုရန်းငယ်ဖြင့် ပြသည်။</target></trans-unit>
+<trans-unit id="s2706a162264c46f1">
+  <source>Scale</source>
+<target>စကေး</target></trans-unit>
+<trans-unit id="s2dae9bc7aa02bab7">
+  <source>Scales all labels of lengths and sizes.</source>
+<target>အလျားနှင့် အရွယ်အစား အညွှန်းအားလုံး၏ စကေးကို ပြောင်းသည်။</target></trans-unit>
+<trans-unit id="s5e3cb80d43a34044">
+  <source>Black</source>
+<target>အနက်</target></trans-unit>
+<trans-unit id="s9ff1de19feac1b7c">
+  <source>Red</source>
+<target>အနီ</target></trans-unit>
+<trans-unit id="s8f450dd0b7bdb8cb">
+  <source>Orange</source>
+<target>လိမ္မော်</target></trans-unit>
+<trans-unit id="s6baf78886c99db89">
+  <source>Yellow</source>
+<target>အဝါ</target></trans-unit>
+<trans-unit id="s3d0296b47fe6323c">
+  <source>Lime</source>
+<target>သံပရာစိမ်း</target></trans-unit>
+<trans-unit id="scf00d78fd5953f1c">
+  <source>Green</source>
+<target>အစိမ်း</target></trans-unit>
+<trans-unit id="s9b3c2f9cc32d565a">
+  <source>Cyan</source>
+<target>စိမ်းပြာ</target></trans-unit>
+<trans-unit id="secf3d3a7c1693e2d">
+  <source>Blue</source>
+<target>အပြာ</target></trans-unit>
+<trans-unit id="s109991b0423f1512">
+  <source>Violet</source>
+<target>ခရမ်း</target></trans-unit>
+<trans-unit id="se9beed19c6a38fed">
+  <source>Pink</source>
+<target>ပန်းရောင်</target></trans-unit>
+<trans-unit id="sd0e945b97c0c46d1">
+  <source>Transparent</source>
+<target>ဖောက်ထွင်းမြင်ရသော</target></trans-unit>
+<trans-unit id="s8a347fce9c8f6045">
+  <source>Select and move objects</source>
+<target>အရာဝတ္ထုများကို ရွေးပြီး ရွှေ့ပါ</target></trans-unit>
+<trans-unit id="sc76449099e8dab8e">
+  <source>Create and connect objects</source>
+<target>အရာဝတ္ထုများကို ဖန်တီးပြီး ချိတ်ဆက်ပါ</target></trans-unit>
+<trans-unit id="s3b627b7632baa8d7">
+  <source>Create divider lines</source>
+<target>ပိုင်းခြားမျဉ်းများ ဆွဲပါ</target></trans-unit>
+<trans-unit id="sc641744471095036">
+  <source>Label color</source>
+<target>အညွှန်းအရောင်</target></trans-unit>
+<trans-unit id="sb6055dddb583f562">
+  <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
+<target>ရွေးထားသော အရာဝတ္ထု <x id="0" equiv-text="${this.selection.length}" /> ခု</target></trans-unit>
+<trans-unit id="s5246434aaa760348">
+  <source>Shape label</source>
+<target>ပုံသဏ္ဌာန်အညွှန်း</target></trans-unit>
+<trans-unit id="s6751f51ab77310e5">
+  <source>Show Area</source>
+<target>ဧရိယာ ပြပါ</target></trans-unit>
+<trans-unit id="s24d82e0bdc4ea31f">
+  <source>Show Perimeter</source>
+<target>ပတ်လည်အနားအလျား ပြပါ</target></trans-unit>
+<trans-unit id="sbaf7984effccc73d">
+  <source>Line label</source>
+<target>မျဉ်းအညွှန်း</target></trans-unit>
+<trans-unit id="s202fffd5a2e1c595">
+  <source>Length</source>
+<target>အလျား</target></trans-unit>
+<trans-unit id="s44f0e16cc86358e2">
+  <source>Point color</source>
+<target>အမှတ်အရောင်</target></trans-unit>
+<trans-unit id="s5cda68f59fd34ebf">
+  <source>Line width</source>
+<target>မျဉ်းအထူ</target></trans-unit>
+<trans-unit id="sf8f55cf0946dcb38">
+  <source>Line color</source>
+<target>မျဉ်းအရောင်</target></trans-unit>
+<trans-unit id="s997f2252dabae00f">
+  <source>Fill color</source>
+<target>ဖြည့်စွက်အရောင်</target></trans-unit>
+<trans-unit id="s4585ad5504d24a6b">
+  <source>Delete selected objects</source>
+<target>ရွေးထားသော အရာဝတ္ထုများကို ဖျက်ပါ</target></trans-unit>
+<trans-unit id="s71f4a89a7cd714ee">
+  <source>Area: </source>
+<target>ဧရိယာ: </target></trans-unit>
+<trans-unit id="s447b301ca02b353e">
+  <source>Perimeter: </source>
+<target>ပတ်လည်အနားအလျား: </target></trans-unit>
+<trans-unit id="s8818af2947b74b9b">
+  <source>Hide grid</source>
+<target>ကွက်ဇယား ဖျောက်ပါ</target></trans-unit>
+<trans-unit id="s7c233329e117db1d">
+  <source>Disable snapping</source>
+<target>ချိန်ညှိမှု ပိတ်ပါ</target></trans-unit>
+<trans-unit id="s30ef01663a587b8a">
+  <source>Scales labels for lengths and sizes.</source>
+<target>အလျားနှင့် အရွယ်အစား အညွှန်းအားလုံး၏ စကေးကို ပြောင်းသည်။</target></trans-unit>
+<trans-unit id="s712cf78df85cba7a">
+  <source>Unimplemented</source>
+<target>မလုပ်ဆောင်ရသေးပါ</target></trans-unit>
+<trans-unit id="s020ef25c40d67e92">
+  <source>No letter</source>
+<target>အက္ခရာမရှိ</target></trans-unit>
+<trans-unit id="s166e43ffaa91f881">
+  <source>Flip angle</source>
+<target>ထောင့်ကို ပြောင်းပြန်လှန်ပါ</target></trans-unit>
+</body>
+</file>
+</xliff>
