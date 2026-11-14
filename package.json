@@ -133,15 +133,15 @@
   },
   "dependencies": {
     "@lit/localize": "^0.12.2",
-    "@shoelace-style/shoelace": "^2.14.0",
-    "@webcomponents/scoped-custom-element-registry": "^0.0.9",
-    "@webwriter/lit": "^2.0.0",
-    "lit": "^3.1.1"
+    "@shoelace-style/shoelace": "^2.20.1",
+    "@webwriter/lit": "^3.0.0",
+    "lit": "^3.3.3"
   },
   "devDependencies": {
-    "@lit/localize-tools": "^0.8.0",
-    "prettier": "^3.1.0",
-    "typescript": "^5.0.2"
+    "@webwriter/build": "^1.13.1",
+    "@lit/localize-tools": "^0.8.2",
+    "prettier": "^3.10.1",
+    "typescript": "^7.0.2"
   },
   "type": "module",
   "exports": {

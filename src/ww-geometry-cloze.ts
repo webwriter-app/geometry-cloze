@@ -1,6 +1,5 @@
 import type { MsgFn } from "@lit/localize";
 import { effectiveLanguage, localizeElement, nativeLanguageAttributes, sourceMsg } from "../localization/localizer";
-import '@webcomponents/scoped-custom-element-registry';
 import { LitElementWw } from '@webwriter/lit';
 import { PropertyValueMap, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
