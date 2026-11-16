@@ -2,7 +2,8 @@ import { LitElementWw } from '@webwriter/lit';
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import NoneIcon from '../icons/none';
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
+import banIcon from '@tabler/icons/outline/ban.svg';
 
 export default class WwLetterPicker extends LitElementWw {
   @property({ type: String, attribute: true })
@@ -33,7 +34,7 @@ export default class WwLetterPicker extends LitElementWw {
         class=${classMap({ current: this.value === 'none' })}
         @click=${onClick.bind(this, 'none')}
         title=${this.noLetterLabel}>
-        ${NoneIcon}
+        <sl-icon src=${banIcon}></sl-icon>
       </button>
       ${this.special
         ? html`
@@ -55,6 +56,10 @@ export default class WwLetterPicker extends LitElementWw {
         `;
       })}
     `;
+  }
+
+  static get scopedElements() {
+    return { 'sl-icon': SlIcon };
   }
 
   static styles = css`
@@ -91,7 +96,7 @@ export default class WwLetterPicker extends LitElementWw {
       color: var(--sl-color-neutral-0);
     }
 
-    svg {
+    sl-icon {
       display: block;
       width: 1.5em;
       height: 1.5em;

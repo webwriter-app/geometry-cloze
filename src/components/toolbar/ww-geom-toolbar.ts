@@ -1,5 +1,5 @@
-import { effectiveLanguage, localizeElement, nativeLanguageAttributes } from "../../../localization/localizer";
 import { LitElementWw } from '@webwriter/lit';
+import { widgetMsg } from '@webwriter/lit/localize';
 import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { str } from '@lit/localize';
@@ -14,31 +14,29 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuLabel from '@shoelace-style/shoelace/dist/components/menu-label/menu-label.component.js';
 import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
 import SlRange from '@shoelace-style/shoelace/dist/components/range/range.component.js';
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
 import SlCheckbox from '@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js';
 
-import CursorIcon from '../icons/cursor';
-import PolygonIcon from '../icons/polygon';
-import DividerLineIcon from '../icons/divider-line';
-import TrashIcon from '../icons/trash';
-import CanvasManager from '../../data/CanvasManager/CanvasManager';
-import Draggable from '../../data/elements/base/Draggable';
+import CanvasManager from '../canvas-manager/canvas-manager';
+import Draggable from '../elements/base/draggable';
 import WwColorPicker from './ww-color-picker';
-import Shape from '../../data/elements/Shape';
-import Line from '../../data/elements/Line';
-import Stylable, { DEFAULT_STYLE } from '../../data/elements/base/Stylable';
-import Point, { DEFAULT_POINT_STYLE } from '../../data/elements/Point';
+import Shape from '../elements/shape';
+import Line from '../elements/line';
+import Stylable, { DEFAULT_STYLE } from '../elements/base/stylable';
+import Point, { DEFAULT_POINT_STYLE } from '../elements/point';
 import WwLetterPicker from './ww-letter-picker';
-import TypeIcon from '../icons/type';
-import RulerIcon from '../icons/ruler';
-import AngleIcon from '../icons/angle';
 import WwKbd from '../ui/ww-kbd';
 
-export class WwGeomToolbar extends LitElementWw {
-  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
+import pointerIcon from '@tabler/icons/outline/pointer.svg';
+import polygonIcon from '@tabler/icons/outline/polygon.svg';
+import vectorIcon from '@tabler/icons/outline/vector.svg';
+import trashIcon from '@tabler/icons/outline/trash.svg';
+import typographyIcon from '@tabler/icons/outline/typography.svg';
+import rulerIcon from '@tabler/icons/outline/ruler.svg';
+import angleIcon from '@tabler/icons/outline/angle.svg';
 
-  override get lang(): string { return effectiveLanguage(this); }
-  override set lang(value: string) { this.setAttribute("lang", value); }
-  private readonly msg = localizeElement(this);
+export class WwGeomToolbar extends LitElementWw {
+  private readonly msg = widgetMsg(this);
   @property({ type: Object })
   accessor manager: CanvasManager | null = null;
 
@@ -65,17 +63,17 @@ export class WwGeomToolbar extends LitElementWw {
       <sl-button-group>
         ${this.ModeButton(
           'select',
-          CursorIcon,
+          pointerIcon,
           html`${this.msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
-          PolygonIcon,
+          polygonIcon,
           html`${this.msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
-          DividerLineIcon,
+          vectorIcon,
           html`${this.msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
@@ -84,7 +82,7 @@ export class WwGeomToolbar extends LitElementWw {
 
   private ModeButton(
     mode: InteractionMode,
-    icon: TemplateResult,
+    icon: string,
     tooltip: TemplateResult
   ) {
     return html`
@@ -96,7 +94,7 @@ export class WwGeomToolbar extends LitElementWw {
           @click=${() => {
             if (this.manager) this.manager.mode = mode;
           }}>
-          ${icon}
+          <sl-icon src=${icon}></sl-icon>
         </sl-button>
       </sl-tooltip>
     `;
@@ -112,7 +110,7 @@ export class WwGeomToolbar extends LitElementWw {
           size="small"
           caret
           ?disabled=${this.selection.length === 0 || this.mode !== 'select'}>
-          <div style="color: ${color}; display: contents;">${TypeIcon}</div>
+          <div style="color: ${color}; display: contents;"><sl-icon src=${typographyIcon}></sl-icon></div>
         </sl-button>
         <sl-menu>
           ${this.CurrentLabelMenu()}
@@ -210,7 +208,7 @@ export class WwGeomToolbar extends LitElementWw {
           }
           this.requestUpdate();
         }}>
-        ${RulerIcon}
+        <sl-icon src=${rulerIcon}></sl-icon>
       </ww-letter-picker>
     `;
   }
@@ -252,7 +250,7 @@ export class WwGeomToolbar extends LitElementWw {
           }
           this.requestUpdate();
         }}>
-        ${AngleIcon}
+        <sl-icon src=${angleIcon}></sl-icon>
       </ww-letter-picker>
     `;
   }
@@ -406,7 +404,7 @@ export class WwGeomToolbar extends LitElementWw {
             this.selection.forEach((element) => element.delete());
             this.selection = [];
           }}>
-          ${TrashIcon}
+          <sl-icon src=${trashIcon}></sl-icon>
         </sl-button>
       </sl-tooltip>
     `;
@@ -465,7 +463,7 @@ export class WwGeomToolbar extends LitElementWw {
       padding: 0 calc(2 * var(--sl-spacing-x-small));
     }
 
-    svg,
+    sl-icon,
     .icon-container {
       display: inline-block;
       height: 1.5em;
@@ -530,7 +528,8 @@ export class WwGeomToolbar extends LitElementWw {
       'sl-menu-label': SlMenuLabel,
       'sl-divider': SlDivider,
       'sl-range': SlRange,
-      'sl-checkbox': SlCheckbox
+      'sl-checkbox': SlCheckbox,
+      'sl-icon': SlIcon
     };
   }
 }

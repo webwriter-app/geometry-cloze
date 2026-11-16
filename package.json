@@ -126,34 +126,46 @@
   "license": "MIT",
   "author": "Florin Große (https://der-grosse.de)",
   "scripts": {
-    "prepublishOnly": "npx @webwriter/build",
-    "dev": "npx @webwriter/build dev",
-    "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build",
-    "format": "prettier --write ."
+    "prepublishOnly": "npx @webwriter/build --shared-dependencies",
+    "dev": "npx @webwriter/build dev --shared-dependencies",
+    "localize": "lit-localize extract && npx @webwriter/build localize && lit-localize build"
   },
   "dependencies": {
     "@lit/localize": "^0.12.2",
     "@shoelace-style/shoelace": "^2.20.1",
-    "@webwriter/lit": "^3.0.0",
-    "lit": "^3.3.3"
+    "@tabler/icons": "^3.52.0",
+    "@webwriter/lit": "^3.2.0",
+    "@webwriter/widget": "^1.2.0",
+    "lit": "^3.3.0"
   },
   "devDependencies": {
-    "@webwriter/build": "^1.13.1",
     "@lit/localize-tools": "^0.8.2",
-    "prettier": "^3.10.1",
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@webwriter/build": "^1.14.0",
+    "chai": "^6.3.0",
+    "mocha": "^12.0.3",
     "typescript": "^7.0.2"
   },
   "type": "module",
   "exports": {
     "./widgets/ww-geometry-cloze.*": {
-      "source": "./src/ww-geometry-cloze.ts",
+      "source": "./src/widgets/ww-geometry-cloze.ts",
       "default": "./dist/widgets/ww-geometry-cloze.*"
     },
-    "./snippets/geometry-cloze.html": "./src/snippets/polygon.html",
-    "./snippets/polygon.html": "./src/snippets/polygon2.html",
-    "./snippets/right-triangle.html": "./src/snippets/triangle.html",
+    "./snippets/geometry-cloze.html": "./snippets/polygon.html",
+    "./snippets/polygon.html": "./snippets/polygon2.html",
+    "./snippets/right-triangle.html": "./snippets/triangle.html",
     "./package.json": "./package.json",
     "./icon": "./icon.svg",
+    "./tests/shortcuts.*": {
+      "source": "./tests/shortcuts.test.ts",
+      "default": "./dist/tests/shortcuts.*"
+    },
+    "./tests/data-settings.*": {
+      "source": "./tests/data-settings.test.ts",
+      "default": "./dist/tests/data-settings.*"
+    },
     "./editing-config.json": "./editing-config.json",
     "./custom-elements.json": "./custom-elements.json"
   },

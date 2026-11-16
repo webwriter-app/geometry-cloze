@@ -1,21 +1,17 @@
 import type { MsgFn } from '@lit/localize';
-import { effectiveLanguage, localizeElement, nativeLanguageAttributes } from '../../../localization/localizer';
 import { LitElementWw } from '@webwriter/lit';
+import { widgetMsg } from '@webwriter/lit/localize';
 import { html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import SHOELACE, { hslToHex } from '../../data/helper/Shoelace';
+import SHOELACE, { hslToHex } from '../shoelace';
 
 /**
  * A simple color picker component that displays a grid of color options.
  * Emits an `input` event with the selected color when a color is clicked.
  */
 export default class WwColorPicker extends LitElementWw {
-  static override get observedAttributes() { return nativeLanguageAttributes(this, super.observedAttributes); }
-
-  override get lang(): string { return effectiveLanguage(this); }
-  override set lang(value: string) { this.setAttribute("lang", value); }
-  private readonly msg = localizeElement(this);
+  private readonly msg = widgetMsg(this);
 
   private colors(msg: MsgFn) {
     return [
