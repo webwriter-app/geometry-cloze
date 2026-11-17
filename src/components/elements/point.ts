@@ -6,8 +6,6 @@ import { NamedElement } from './base/element';
 import { DEFAULT_STYLE, StylableData } from './base/stylable';
 import Draggable, { DraggableData, MoveCoords } from './base/draggable';
 
-import Shape from './shape';
-
 import Numbers from '../../model/numbers';
 import Manager from '../../model/abstracts';
 import { SELECTION_STYLE } from '../selection-rect';

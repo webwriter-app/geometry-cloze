@@ -7,7 +7,7 @@ import Point, { BasePoint } from './point';
 import Line, { BaseLine } from './line';
 
 import Vector from '../../model/vector';
-import Stylable, { StylableData } from './base/stylable';
+import { StylableData } from './base/stylable';
 import Numbers from '../../model/numbers';
 import Manager from '../../model/abstracts';
 import SHOELACE from '../shoelace';

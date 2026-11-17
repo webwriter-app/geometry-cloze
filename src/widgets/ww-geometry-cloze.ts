@@ -8,7 +8,6 @@ import { Shortcuts } from '@webwriter/lit/shortcuts';
 import { PropertyValues, css, html, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { WwGeomToolbar } from '../components/toolbar/ww-geom-toolbar';
-import Shape from '../components/elements/shape';
 import CanvasManager, { CanvasData } from '../components/canvas-manager/canvas-manager';
 import Objects from '../model/objects';
 import { LitElement } from 'lit';

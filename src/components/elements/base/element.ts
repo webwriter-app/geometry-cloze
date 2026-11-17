@@ -44,9 +44,11 @@ export default class Element {
     this.parent = null;
   }
 
+  private onChildRedraw = () => this.requestRedraw();
+
   protected addChildAt(this: Shape, child: Element, index: number) {
     this._children.splice(index, 0, child);
-    child.addEventListener('request-redraw', this.requestRedraw.bind(this));
+    child.addEventListener('request-redraw', this.onChildRedraw);
     child.registerParent(this);
   }
 
@@ -54,14 +56,14 @@ export default class Element {
     this._children.push(...children);
     children.forEach((child) => {
       if (this instanceof Shape) child.registerParent(this);
-      child.addEventListener('request-redraw', this.requestRedraw.bind(this));
+      child.addEventListener('request-redraw', this.onChildRedraw);
     });
   }
   protected removeChild(child: Element) {
     const index = this._children.indexOf(child);
     if (index === -1) return;
     this._children.splice(index, 1);
-    child.removeEventListener('request-redraw', this.requestRedraw.bind(this));
+    child.removeEventListener('request-redraw', this.onChildRedraw);
     child.unregisterParent();
   }
   protected resortChildren(sort: (children: Element[]) => Element[]) {

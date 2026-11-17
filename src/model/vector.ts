@@ -26,10 +26,6 @@ export default class Vector {
     return { x: vector1.x - vector2.x, y: vector1.y - vector2.y };
   }
 
-  static multiply(vector: MathPoint, scalar: number): MathPoint {
-    return { x: vector.x * scalar, y: vector.y * scalar };
-  }
-
   static angle(vector1: MathPoint, vector2: MathPoint): number {
     return Math.atan2(vector2.y, vector2.x) - Math.atan2(vector1.y, vector1.x);
   }

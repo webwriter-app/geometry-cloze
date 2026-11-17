@@ -1,7 +1,7 @@
 import { LitElementWw } from '@webwriter/lit';
 import { widgetMsg } from '@webwriter/lit/localize';
-import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, PropertyValues, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
 import { str } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
@@ -22,7 +22,7 @@ import Draggable from '../elements/base/draggable';
 import WwColorPicker from './ww-color-picker';
 import Shape from '../elements/shape';
 import Line from '../elements/line';
-import Stylable, { DEFAULT_STYLE } from '../elements/base/stylable';
+import { DEFAULT_STYLE } from '../elements/base/stylable';
 import Point, { DEFAULT_POINT_STYLE } from '../elements/point';
 import WwLetterPicker from './ww-letter-picker';
 import WwKbd from '../ui/ww-kbd';

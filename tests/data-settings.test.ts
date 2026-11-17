@@ -122,6 +122,26 @@ describe("<ww-geometry-cloze> data, settings and localization", function () {
       assert.isNull(el.manager);
     });
   });
+
+  describe("drawing", function () {
+    it("draws once per frame when a shape moves", async function () {
+      const el = await mount(false);
+      const manager = el.manager;
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      let draws = 0;
+      const ctx = el.shadowRoot.querySelector("canvas").getContext("2d");
+      const clearRect = ctx.clearRect;
+      ctx.clearRect = function (...args: number[]) {
+        draws++;
+        return clearRect.apply(this, args);
+      };
+      manager.getChildren()[0].move({ x: 10, y: 10, relative: true });
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      ctx.clearRect = clearRect;
+      assert.isAtLeast(draws, 1);
+      assert.isAtMost(draws, 2);
+    });
+  });
 });
 
 mocha.run();

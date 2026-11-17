@@ -72,7 +72,6 @@ export default class Line extends Draggable {
 
     // draw label
     if (this.showLabel) {
-      const padding = 5;
       const middlePoint = {
         x: (this._start.x + this._end.x) / 2,
         y: (this._start.y + this._end.y) / 2

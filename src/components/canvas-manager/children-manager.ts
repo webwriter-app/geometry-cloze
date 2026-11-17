@@ -70,12 +70,19 @@ export default abstract class ChildrenManager extends EventTarget {
   };
 
   requestRedraw() {
+    this.scheduleRedraw();
+  }
+
+  /** Redraw requests of children only batch the drawing; they do not count as a data change. */
+  private scheduleRedraw() {
     this.needsRender = true;
     if (!this.running) {
       this.running = true;
       requestAnimationFrame(this._renderLoop);
     }
   }
+
+  private onChildRedraw = () => this.scheduleRedraw();
 
   /** The concrete subclasses implement the rest of the Manager interface. */
   private get asManager() {
@@ -87,13 +94,14 @@ export default abstract class ChildrenManager extends EventTarget {
     if (!preventRedraw) this.requestRedraw();
 
     ele.registerParent(this.asManager);
-    ele.addEventListener('request-redraw', this.redraw.bind(this, this._ctx));
+    ele.addEventListener('request-redraw', this.onChildRedraw);
   }
 
   public removeChild(element: Child) {
     const index = this.children.indexOf(element);
     if (index < 0) return;
     this.children.splice(index, 1);
+    element.removeEventListener('request-redraw', this.onChildRedraw);
     this.requestRedraw();
   }
 

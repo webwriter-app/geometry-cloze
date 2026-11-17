@@ -5,12 +5,6 @@ export type MathLine = {
 };
 export type MathRect = { x1: number; y1: number; x2: number; y2: number };
 
-export enum IsAbove {
-  Above = 1,
-  On = 0,
-  Below = -1
-}
-
 export default class Calc {
   /**
    * Calculate the distance between a line and a point
@@ -71,20 +65,6 @@ export default class Calc {
           : point
       ) ?? null
     );
-  }
-
-  /**
-   * Calculate if a point is above a line
-   */
-  static isPointAboveLine(line: MathLine, point: MathPoint): IsAbove {
-    const { x: x1, y: y1 } = line.start;
-    const { x: x2, y: y2 } = line.end;
-    const { x: x3, y: y3 } = point;
-
-    const d = (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
-    if (d > 0) return IsAbove.Above;
-    if (d < 0) return IsAbove.Below;
-    return IsAbove.On;
   }
 
   /**
@@ -204,18 +184,6 @@ export default class Calc {
       area += polygon[i].x * polygon[j].y - polygon[j].x * polygon[i].y;
     }
     return Math.abs(area / 2);
-  }
-
-  static getAreaOfTriangle(
-    p1: MathPoint,
-    p2: MathPoint,
-    p3: MathPoint
-  ): number {
-    return (
-      Math.abs(
-        (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y)) / 2
-      ) || 0
-    );
   }
 
   static getPerimeterOfPolygon(polygon: MathPoint[]): number {

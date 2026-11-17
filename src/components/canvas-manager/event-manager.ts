@@ -230,7 +230,7 @@ export default abstract class EventManager extends ChildrenManager {
   protected upadateCursor(_coords: MathPoint): CSSStyleDeclaration['cursor'] {
     return 'default';
   }
-  protected onSelect(element: Draggable): boolean {
+  protected onSelect(_element: Draggable): boolean {
     return true;
   }
 
