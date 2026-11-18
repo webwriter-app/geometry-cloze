@@ -1,4 +1,5 @@
 import type { MsgFn } from "@lit/localize";
+import { str } from "@lit/localize";
 import { LitElementWw } from '@webwriter/lit';
 import { jsonData } from '@webwriter/lit/data';
 import { localizer } from '@webwriter/lit/localize';
@@ -6,10 +7,11 @@ import { Permissions } from '@webwriter/lit/permissions';
 import { Settings } from '@webwriter/lit/settings';
 import { Shortcuts } from '@webwriter/lit/shortcuts';
 import { PropertyValues, css, html, nothing } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { WwGeomToolbar } from '../components/toolbar/ww-geom-toolbar';
 import CanvasManager, { CanvasData } from '../components/canvas-manager/canvas-manager';
 import Objects from '../model/objects';
+import { readFigure } from '../model/figure-json';
 import { LitElement } from 'lit';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
@@ -27,6 +29,39 @@ type Texts = { msg: MsgFn };
  * If the widget is `contenteditable`, the user can interactively create and
  * edit the shapes on the canvas. Otherwise, the canvas is rendered as a static
  * image.
+ *
+ * ### Input
+ *
+ * The canvas takes mouse, pen and touch input (pointer events). A long press
+ * with touch does what a right click does. With the keyboard: Tab reaches the
+ * toolbar and the canvas; on the canvas the arrow keys move the selection (or a
+ * cursor when nothing is selected, in steps of the snapping grid, Alt for fine
+ * steps), Enter or Space acts at the cursor like a click, Page Up and Page Down
+ * step through the objects, and S, C, D, Shift+A, Delete and Escape work as
+ * before.
+ *
+ * ### Theme
+ *
+ * The text color follows `--ww-text-color`, the font of the labels follows
+ * `--ww-font-family`, and the selection and the keyboard cursor use
+ * `--ww-theme-accent-1`. The colors of the drawn objects are authored data and
+ * stay as they are.
+ *
+ * ### Conversions
+ *
+ * - Export `image/svg+xml`: the objects as an SVG picture of 1000 x 700 units,
+ *   without grid, selection or keyboard cursor. Lossy: the picture cannot be
+ *   edited again.
+ * - Convert to `img`: the same SVG as a data URL.
+ * - Import and export `.json`: the `elements` list of the data block
+ *   (described at `elements`). Settings such as `scale` are attributes and are
+ *   not part of the file. A file with the list alone is accepted too.
+ *
+ * ### Print
+ *
+ * The toolbar is hidden and the canvas prints as the picture shown on screen.
+ *
+ * @part canvas - The drawing area.
  */
 @customElement('ww-geometry-cloze')
 export class WwGeometryCloze extends Settings(LitElementWw, {
@@ -47,8 +82,12 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
       display: block;
 
       width: 100%;
+      min-width: 300px;
+      max-width: 2100px;
+      min-height: 12rem;
 
-      color: var(--sl-color-neutral-900);
+      color: var(--ww-text-color, var(--sl-color-neutral-900));
+      font-family: var(--ww-font-family, inherit);
       background-color: var(--sl-color-neutral-0);
 
       border: solid 1px var(--sl-color-neutral-300);
@@ -67,7 +106,37 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
       display: block;
       width: 100%;
       aspect-ratio: 10 / 7;
-      outline: none !important;
+    }
+    canvas:focus {
+      outline: none;
+    }
+    canvas:focus-visible {
+      outline: 2px solid var(--ww-theme-accent-1, var(--sl-focus-ring-color));
+      outline-offset: -2px;
+    }
+    /* Only the editing canvas starts drags; a reader can scroll the page over it. */
+    canvas.editing {
+      touch-action: none;
+    }
+    .status {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    @media print {
+      :host {
+        min-width: 0;
+        max-width: none;
+        break-inside: avoid;
+        z-index: auto;
+      }
+      ww-geom-toolbar,
+      .status {
+        display: none;
+      }
     }
   `;
 
@@ -84,13 +153,26 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
     delegatesFocus: true
   };
 
+  static convertFrom = { '.json': 'importJson' };
+  static convertTo = {
+    'image/svg+xml': 'exportSvg',
+    '.json': 'exportJson',
+    img: 'toImage'
+  };
+
   static override actions = {
     selectTool: { label: 'Select and move objects', shortcut: 'S', can: 'edit', hidden: true },
     createTool: { label: 'Create and connect objects', shortcut: 'C', can: 'edit', hidden: true },
     dividerTool: { label: 'Create divider lines', shortcut: 'D', can: 'edit', hidden: true },
     deleteSelection: { label: 'Delete selected objects', shortcut: ['Delete', 'Backspace'], can: 'edit', hidden: true },
     cancel: { label: 'Cancel the current step', shortcut: 'Escape', can: 'edit', hidden: true },
-    selectAll: { label: 'Select all objects', shortcut: 'Shift+A', can: 'edit', hidden: true }
+    selectAll: { label: 'Select all objects', shortcut: 'Shift+A', can: 'edit', hidden: true },
+    clear: {
+      label: (widget: Texts) => widget.msg('Clear canvas'),
+      confirm: (widget: Texts) => widget.msg('Remove all objects from the canvas?'),
+      intent: 'danger' as const,
+      can: 'edit'
+    }
   };
 
   protected localize = localizer(this, {
@@ -214,8 +296,15 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
 
   private locale = this.localize.getLocale();
 
+  #lifetime = new AbortController();
+
+  @state() private accessor status = '';
+
   connectedCallback() {
+    if (this.#lifetime.signal.aborted) this.#lifetime = new AbortController();
     super.connectedCallback();
+    window.addEventListener('beforeprint', this.onBeforePrint, { signal: this.#lifetime.signal });
+    window.addEventListener('afterprint', this.onAfterPrint, { signal: this.#lifetime.signal });
     // After the Shortcuts listener of the host, which skips a key that is already handled.
     this.addEventListener('keydown', this.onKeyDown);
     this.addEventListener('keyup', this.onKeyUp);
@@ -261,8 +350,11 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
   disconnectedCallback(): void {
     this.removeEventListener('keydown', this.onKeyDown);
     this.removeEventListener('keyup', this.onKeyUp);
+    this.#lifetime.abort();
     if (this.manager) {
       this.manager.removeEventListener('dataupdate', this.onCanvasValueChange);
+      this.manager.removeEventListener('selectionupdate', this.onSelectionAnnounce);
+      this.manager.removeEventListener('modeupdate', this.onModeAnnounce);
       this.manager.unmount();
       this.manager = null;
     }
@@ -275,6 +367,8 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
       this.manager = new CanvasManager(this.canvas, this.msg);
       this.requestUpdate();
       this.manager.addEventListener('dataupdate', this.onCanvasValueChange);
+      this.manager.addEventListener('selectionupdate', this.onSelectionAnnounce);
+      this.manager.addEventListener('modeupdate', this.onModeAnnounce);
 
       this.manager.import({
         children: this.elements || [],
@@ -302,6 +396,60 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
   cancel() { this.manager?.cancel(); }
   selectAll() { this.manager?.selectAll(); }
 
+  clear() {
+    this.#data.set({ elements: [] });
+    this.syncElements();
+  }
+
+  /** The objects as drawn now; the data block lags the canvas by a short delay. */
+  private currentElements(): NonNullable<CanvasData['children']> {
+    return this.manager?.export().children ?? this.elements ?? [];
+  }
+
+  exportSvg(): File | null {
+    const manager = this.manager;
+    if (!manager || !this.currentElements().length) return null;
+    return new File([manager.toSvg()], 'geometry-cloze.svg', {
+      type: 'image/svg+xml'
+    });
+  }
+
+  toImage(): HTMLImageElement | null {
+    const manager = this.manager;
+    if (!manager || !this.currentElements().length) return null;
+    const image = document.createElement('img');
+    image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(manager.toSvg());
+    image.alt = this.msg('Geometry canvas');
+    image.style.maxWidth = '100%';
+    image.style.height = 'auto';
+    return image;
+  }
+
+  exportJson(): File {
+    return new File(
+      [JSON.stringify({ elements: this.currentElements() }, null, 2)],
+      'geometry-cloze.json',
+      { type: 'application/json' }
+    );
+  }
+
+  async importJson(file: File): Promise<() => void> {
+    const figure = readFigure(await file.text());
+    if ('error' in figure)
+      throw new Error(
+        figure.error === 'syntax'
+          ? this.msg('The file is not valid JSON.')
+          : this.msg('The file does not describe a geometry figure.')
+      );
+    const elements = figure.elements as CanvasData['children'];
+    if (!CanvasManager.accepts(elements, this.msg))
+      throw new Error(this.msg('The file does not describe a geometry figure.'));
+    return () => {
+      this.#data.set({ elements });
+      this.syncElements();
+    };
+  }
+
   private onCanvasValueChange: EventListener = (event: Event) => {
     const value = (event as CustomEvent<CanvasData>).detail;
     if (!Objects.deepEqual(this.elements, value.children)) {
@@ -314,18 +462,40 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
     this.scale = value.scaleFactor as this['scale'];
   };
 
+  private onBeforePrint = () => this.manager?.beginPrint();
+  private onAfterPrint = () => this.manager?.endPrint();
+
+  private onSelectionAnnounce: EventListener = (event: Event) => {
+    const count = (event as CustomEvent<unknown[]>).detail.length;
+    this.status = count ? this.msg(str`${count} objects selected`) : '';
+  };
+
+  private onModeAnnounce: EventListener = (event: Event) => {
+    const texts = {
+      select: this.msg('Select and move objects'),
+      create: this.msg('Create and connect objects'),
+      divider: this.msg('Create divider lines')
+    };
+    this.status = texts[(event as CustomEvent<CanvasData['mode']>).detail] ?? '';
+  };
+
   /**
    * Keeps the modifier keys for snapping and multi-select, and keeps a key
-   * that is pressed in the widget away from the editor, as before.
-   * Ctrl/Cmd+Z stays with the editor.
+   * that is pressed on the canvas away from the editor, as before. Tab and the
+   * keys of the toolbar controls keep their own behavior. Ctrl/Cmd+Z stays
+   * with the editor.
    */
   private onKeyDown = (event: KeyboardEvent) => {
-    if (!event.composedPath().includes(this.renderRoot)) return;
+    const path = event.composedPath();
+    if (!path.includes(this.renderRoot)) return;
+    if (event.key === 'Tab') return;
     if (event.key.toLowerCase() === 'z' && (event.ctrlKey || event.metaKey))
       return;
     event.stopPropagation();
+    if (path[0] !== this.canvas) return;
     event.preventDefault();
     this.manager?.setKeys(event);
+    if (this.#permissions.editing) this.manager?.handleKey(event);
   };
 
   private onKeyUp = (event: KeyboardEvent) => {
@@ -334,11 +504,21 @@ export class WwGeometryCloze extends Settings(LitElementWw, {
   };
 
   render() {
-    return html` ${this.#permissions.editing
+    const editing = this.#permissions.editing;
+    return html` ${editing
         ? html`<ww-geom-toolbar
             .manager=${this.manager}></ww-geom-toolbar>`
         : nothing}
-      <canvas tabindex="0" data-ww-can="edit" data-ww-can-mode="disable"></canvas>`;
+      <canvas
+        part="canvas"
+        class=${editing ? 'editing' : ''}
+        tabindex="0"
+        role=${editing ? 'application' : 'img'}
+        aria-label=${this.msg('Geometry canvas')}
+        @blur=${() => this.manager?.hideKeyboardCursor()}
+        data-ww-can="edit"
+        data-ww-can-mode="disable"></canvas>
+      <output class="status" aria-live="polite">${this.status}</output>`;
   }
 }
 

@@ -64,16 +64,19 @@ export class WwGeomToolbar extends LitElementWw {
         ${this.ModeButton(
           'select',
           pointerIcon,
+          this.msg('Select and move objects'),
           html`${this.msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
           polygonIcon,
+          this.msg('Create and connect objects'),
           html`${this.msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
           vectorIcon,
+          this.msg('Create divider lines'),
           html`${this.msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
@@ -83,6 +86,7 @@ export class WwGeomToolbar extends LitElementWw {
   private ModeButton(
     mode: InteractionMode,
     icon: string,
+    label: string,
     tooltip: TemplateResult
   ) {
     return html`
@@ -95,6 +99,7 @@ export class WwGeomToolbar extends LitElementWw {
             if (this.manager) this.manager.mode = mode;
           }}>
           <sl-icon src=${icon}></sl-icon>
+          <span class="visually-hidden">${label}</span>
         </sl-button>
       </sl-tooltip>
     `;
@@ -104,13 +109,14 @@ export class WwGeomToolbar extends LitElementWw {
     const color = this.selection[0]?.labelColor ?? DEFAULT_STYLE.labelColor;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           ?disabled=${this.selection.length === 0 || this.mode !== 'select'}>
           <div style="color: ${color}; display: contents;"><sl-icon src=${typographyIcon}></sl-icon></div>
+          <span class="visually-hidden">${this.msg('Labels')}</span>
         </sl-button>
         <sl-menu>
           ${this.CurrentLabelMenu()}
@@ -269,12 +275,13 @@ export class WwGeomToolbar extends LitElementWw {
     const color = pointElement?.fill ?? DEFAULT_POINT_STYLE.fill;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!pointElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Point color')}</span>
           <div class="icon-container">
             <div
               class="icon-point-fill"
@@ -307,12 +314,13 @@ export class WwGeomToolbar extends LitElementWw {
     const sliderValue = WwGeomToolbar.LINE_WIDTHS.indexOf(width) ?? 2;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!lineElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Line color')}</span>
           <div class="icon-container">
             <div
               class="icon-line-stroke"
@@ -357,12 +365,13 @@ export class WwGeomToolbar extends LitElementWw {
     if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!shapeElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Fill color')}</span>
           <div class="icon-container">
             ${color === 'transparent'
               ? html`<div
@@ -405,6 +414,7 @@ export class WwGeomToolbar extends LitElementWw {
             this.selection = [];
           }}>
           <sl-icon src=${trashIcon}></sl-icon>
+          <span class="visually-hidden">${this.msg('Delete selected objects')}</span>
         </sl-button>
       </sl-tooltip>
     `;
@@ -421,6 +431,8 @@ export class WwGeomToolbar extends LitElementWw {
   }
 
   protected updated(changed: PropertyValues<this>) {
+    this.setAttribute('role', 'toolbar');
+    this.setAttribute('aria-label', this.msg('Drawing tools'));
     if (changed.has('manager')) {
       const old = changed.get('manager');
       if (old) this.managerDetached(old as CanvasManager);
@@ -441,14 +453,19 @@ export class WwGeomToolbar extends LitElementWw {
 
   static styles = css`
     :host {
-      display: block;
       display: flex;
+      flex-wrap: wrap;
       padding: var(--sl-spacing-x-small);
       gap: var(--sl-spacing-x-small);
     }
 
     .spacer {
       flex-grow: 1;
+    }
+
+    sl-button::part(base):focus-visible,
+    sl-dropdown::part(trigger):focus-visible {
+      outline: var(--sl-focus-ring);
     }
 
     sl-button {
@@ -508,6 +525,15 @@ export class WwGeomToolbar extends LitElementWw {
         )
         0 0 / 10px 10px;
       background-position: center;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
 
     sl-checkbox {

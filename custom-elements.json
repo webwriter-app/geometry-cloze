@@ -8,9 +8,33 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "The geometry cloze widgets allows for the creation and embedding of geometric\nfigures. It provides a 1000 x 700 unit wide canvas which can contain\narbitrary polygons, lines and points with custom styling, labels and\nmeasurements.\n\nIf the widget is `contenteditable`, the user can interactively create and\nedit the shapes on the canvas. Otherwise, the canvas is rendered as a static\nimage.",
+          "description": "The geometry cloze widgets allows for the creation and embedding of geometric\nfigures. It provides a 1000 x 700 unit wide canvas which can contain\narbitrary polygons, lines and points with custom styling, labels and\nmeasurements.\n\nIf the widget is `contenteditable`, the user can interactively create and\nedit the shapes on the canvas. Otherwise, the canvas is rendered as a static\nimage.\n\n### Input\n\nThe canvas takes mouse, pen and touch input (pointer events). A long press\nwith touch does what a right click does. With the keyboard: Tab reaches the\ntoolbar and the canvas; on the canvas the arrow keys move the selection (or a\ncursor when nothing is selected, in steps of the snapping grid, Alt for fine\nsteps), Enter or Space acts at the cursor like a click, Page Up and Page Down\nstep through the objects, and S, C, D, Shift+A, Delete and Escape work as\nbefore.\n\n### Theme\n\nThe text color follows `--ww-text-color`, the font of the labels follows\n`--ww-font-family`, and the selection and the keyboard cursor use\n`--ww-theme-accent-1`. The colors of the drawn objects are authored data and\nstay as they are.\n\n### Conversions\n\n- Export `image/svg+xml`: the objects as an SVG picture of 1000 x 700 units,\n  without grid, selection or keyboard cursor. Lossy: the picture cannot be\n  edited again.\n- Convert to `img`: the same SVG as a data URL.\n- Import and export `.json`: the `elements` list of the data block\n  (described at `elements`). Settings such as `scale` are attributes and are\n  not part of the file. A file with the list alone is accepted too.\n\n### Print\n\nThe toolbar is hidden and the canvas prints as the picture shown on screen.",
           "name": "WwGeometryCloze",
+          "cssParts": [
+            {
+              "description": "The drawing area.",
+              "name": "canvas"
+            }
+          ],
           "members": [
+            {
+              "kind": "field",
+              "name": "convertFrom",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ '.json': 'importJson' }"
+            },
+            {
+              "kind": "field",
+              "name": "convertTo",
+              "type": {
+                "text": "object"
+              },
+              "static": true,
+              "default": "{ 'image/svg+xml': 'exportSvg', '.json': 'exportJson', img: 'toImage' }"
+            },
             {
               "kind": "field",
               "name": "actions",
@@ -18,7 +42,7 @@
                 "text": "object"
               },
               "static": true,
-              "default": "{ selectTool: { label: 'Select and move objects', shortcut: 'S', can: 'edit', hidden: true }, createTool: { label: 'Create and connect objects', shortcut: 'C', can: 'edit', hidden: true }, dividerTool: { label: 'Create divider lines', shortcut: 'D', can: 'edit', hidden: true }, deleteSelection: { label: 'Delete selected objects', shortcut: ['Delete', 'Backspace'], can: 'edit', hidden: true }, cancel: { label: 'Cancel the current step', shortcut: 'Escape', can: 'edit', hidden: true }, selectAll: { label: 'Select all objects', shortcut: 'Shift+A', can: 'edit', hidden: true } }"
+              "default": "{ selectTool: { label: 'Select and move objects', shortcut: 'S', can: 'edit', hidden: true }, createTool: { label: 'Create and connect objects', shortcut: 'C', can: 'edit', hidden: true }, dividerTool: { label: 'Create divider lines', shortcut: 'D', can: 'edit', hidden: true }, deleteSelection: { label: 'Delete selected objects', shortcut: ['Delete', 'Backspace'], can: 'edit', hidden: true }, cancel: { label: 'Cancel the current step', shortcut: 'Escape', can: 'edit', hidden: true }, selectAll: { label: 'Select all objects', shortcut: 'Shift+A', can: 'edit', hidden: true }, clear: { label: (widget: Texts) => widget.msg('Clear canvas'), confirm: (widget: Texts) => widget.msg('Remove all objects from the canvas?'), intent: 'danger' as const, can: 'edit' } }"
             },
             {
               "kind": "field",
@@ -92,6 +116,21 @@
               "privacy": "private"
             },
             {
+              "kind": "field",
+              "name": "#lifetime",
+              "privacy": "private",
+              "default": "new AbortController()"
+            },
+            {
+              "kind": "field",
+              "name": "status",
+              "type": {
+                "text": "string"
+              },
+              "privacy": "private",
+              "default": "''"
+            },
+            {
               "kind": "method",
               "name": "setupCanvas",
               "privacy": "private"
@@ -126,6 +165,65 @@
               "name": "selectAll"
             },
             {
+              "kind": "method",
+              "name": "clear"
+            },
+            {
+              "kind": "method",
+              "name": "currentElements",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "NonNullable<CanvasData['children']>"
+                }
+              },
+              "description": "The objects as drawn now; the data block lags the canvas by a short delay."
+            },
+            {
+              "kind": "method",
+              "name": "exportSvg",
+              "return": {
+                "type": {
+                  "text": "File | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toImage",
+              "return": {
+                "type": {
+                  "text": "HTMLImageElement | null"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "exportJson",
+              "return": {
+                "type": {
+                  "text": "File"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "importJson",
+              "return": {
+                "type": {
+                  "text": "Promise<() => void>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "file",
+                  "type": {
+                    "text": "File"
+                  }
+                }
+              ]
+            },
+            {
               "kind": "field",
               "name": "onCanvasValueChange",
               "type": {
@@ -135,51 +233,40 @@
             },
             {
               "kind": "field",
+              "name": "onBeforePrint",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "onAfterPrint",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "onSelectionAnnounce",
+              "type": {
+                "text": "EventListener"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "onModeAnnounce",
+              "type": {
+                "text": "EventListener"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
               "name": "onKeyDown",
               "privacy": "private",
-              "description": "Keeps the modifier keys for snapping and multi-select, and keeps a key\nthat is pressed in the widget away from the editor, as before.\nCtrl/Cmd+Z stays with the editor."
+              "description": "Keeps the modifier keys for snapping and multi-select, and keeps a key\nthat is pressed on the canvas away from the editor, as before. Tab and the\nkeys of the toolbar controls keep their own behavior. Ctrl/Cmd+Z stays\nwith the editor."
             },
             {
               "kind": "field",
               "name": "onKeyUp",
               "privacy": "private"
-            },
-            {
-              "kind": "field",
-              "name": "settings",
-              "static": true,
-              "default": "declarations",
-              "inheritedFrom": {
-                "name": "Settings",
-                "module": "dist/widgets/ww-geometry-cloze.js"
-              }
-            },
-            {
-              "kind": "method",
-              "name": "finalize",
-              "static": true,
-              "inheritedFrom": {
-                "name": "Settings",
-                "module": "dist/widgets/ww-geometry-cloze.js"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "settingsCore",
-              "default": "new SettingsCore(this, { ...options, root: () => this.renderRoot, rendered: () => this.updateComplete })",
-              "inheritedFrom": {
-                "name": "Settings",
-                "module": "dist/widgets/ww-geometry-cloze.js"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "options",
-              "readonly": true,
-              "inheritedFrom": {
-                "name": "Settings",
-                "module": "dist/widgets/ww-geometry-cloze.js"
-              }
             }
           ],
           "attributes": [

@@ -699,6 +699,13 @@
       "ckb-Arab": "هەندەسەی خانەبەتاڵ",
       "af-ZA": "Meetkunde-invuloefening",
       "af-NA": "Meetkunde-invuloefening"
-    }
+    },
+    "importFormats": [
+      ".json"
+    ],
+    "exportFormats": [
+      "image/svg+xml",
+      ".json"
+    ]
   }
 }

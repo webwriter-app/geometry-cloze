@@ -10,7 +10,6 @@ import Vector from '../../model/vector';
 import { StylableData } from './base/stylable';
 import Numbers from '../../model/numbers';
 import Manager from '../../model/abstracts';
-import SHOELACE from '../shoelace';
 import { SELECTION_STYLE } from '../selection-rect';
 
 export default class Shape extends Draggable {
@@ -486,7 +485,7 @@ export default class Shape extends Draggable {
 
     if (this.showLabel) {
       const labels = this.getLabel().split('|');
-      ctx.font = `24px ${SHOELACE.font.sans}`;
+      ctx.font = `24px ${this.manager.fontFamily}`;
       ctx.fillStyle = this.labelColor;
       const metrics = labels.map((label) => ctx.measureText(label));
       const fontHeight = metrics.map(

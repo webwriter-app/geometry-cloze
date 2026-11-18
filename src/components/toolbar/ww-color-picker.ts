@@ -86,6 +86,8 @@ export default class WwColorPicker extends LitElementWw {
       return html`<button
         class=${classMap({ current: this.value === color })}
         title="${label}"
+        aria-label="${label}"
+        aria-pressed=${this.value === color ? 'true' : 'false'}
         @click=${() => {
           this.dispatchEvent(
             new CustomEvent('input', {
@@ -124,6 +126,10 @@ export default class WwColorPicker extends LitElementWw {
       width: 1.5em;
       height: 1.5em;
       border-radius: var(--sl-border-radius-circle);
+    }
+
+    button:focus-visible {
+      outline: var(--sl-focus-ring);
     }
 
     .current .color-swatch {

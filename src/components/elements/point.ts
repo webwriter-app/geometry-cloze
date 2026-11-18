@@ -9,7 +9,6 @@ import Draggable, { DraggableData, MoveCoords } from './base/draggable';
 import Numbers from '../../model/numbers';
 import Manager from '../../model/abstracts';
 import { SELECTION_STYLE } from '../selection-rect';
-import SHOELACE from '../shoelace';
 
 export type BasePoint = MathPoint & NamedElement;
 
@@ -77,7 +76,7 @@ export default class Point extends Draggable {
     }
 
     if (this.showLabel) {
-      ctx.font = `18px ${SHOELACE.font.sans}`;
+      ctx.font = `18px ${this.manager.fontFamily}`;
       ctx.fillStyle = this.labelColor;
       ctx.strokeStyle = this.labelColor;
       const label = this.getLabel();

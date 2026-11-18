@@ -27,47 +27,30 @@ export default abstract class EventManager extends ChildrenManager {
 
     const { signal } = this.listeners;
     const target = this.clickTargetEle;
-    target.addEventListener('mousedown', this.onMouseDown.bind(this), { signal });
-    target.addEventListener('touchstart', this.onMouseDown.bind(this), { signal });
-    target.addEventListener('mouseup', this.onMouseUp.bind(this), { signal });
-    target.addEventListener('touchend', this.onMouseUp.bind(this), { signal });
-    target.addEventListener('mousemove', this.onMouseMove.bind(this), {
+    // Pointer events cover mouse, pen and touch; the canvas sets touch-action itself.
+    target.addEventListener('pointerdown', this.onPointerDown, { signal });
+    target.addEventListener('pointerup', this.onMouseUp, { signal });
+    target.addEventListener('pointermove', this.onMouseMove, {
       passive: true,
-      capture: false,
       signal
     });
-    target.addEventListener('touchmove', this.onMouseMove.bind(this), {
-      passive: true,
-      capture: false,
-      signal
-    });
-    target.addEventListener('touchmove', this.preventTouchScroll, {
-      passive: false,
-      capture: false,
-      signal
-    });
+    target.addEventListener('pointercancel', this.onPointerCancel, { signal });
+    target.addEventListener('contextmenu', this.onContextMenu, { signal });
 
     window.addEventListener('resize', this.onWindowResize.bind(this), { signal });
     this._resizeObserver.observe(this.wrapper);
   }
 
   unmount() {
+    this.clearLongPress();
     this.listeners.abort();
     this._resizeObserver.disconnect();
   }
 
-  private preventTouchScroll(event: TouchEvent) {
-    event.preventDefault();
-  }
-
-  private getRelativeCoordinates(event: MouseEvent | TouchEvent) {
+  private getRelativeCoordinates(event: PointerEvent) {
     const rect = this.wrapper.getBoundingClientRect();
-    const absX =
-      ('clientX' in event ? event.clientX : event.touches[0].clientX) -
-      rect.left;
-    const absY =
-      ('clientX' in event ? event.clientY : event.touches[0].clientY) -
-      rect.top;
+    const absX = event.clientX - rect.left;
+    const absY = event.clientY - rect.top;
 
     const { width: canvasWidth, height: canvasHeight } =
       this.getCanvasDimensions();
@@ -82,7 +65,64 @@ export default abstract class EventManager extends ChildrenManager {
   private moved: boolean = false;
   private mouseDownTarget: { element: Draggable; wasSelected: boolean } | null =
     null;
-  private onMouseDown(event: MouseEvent | TouchEvent) {
+  private longPressTimer: ReturnType<typeof setTimeout> | undefined;
+  private longPressed = false;
+  private clearLongPress() {
+    clearTimeout(this.longPressTimer);
+    this.longPressTimer = undefined;
+  }
+
+  /** A long press with touch stands in for the right click. */
+  private onLongPress = () => {
+    this.longPressTimer = undefined;
+    if (this.moved || !this.dragStart) return;
+    this.longPressed = true;
+    const hit = this.getElementAt(this.dragStart);
+    this.handleClick({
+      coords: this.dragStart,
+      hit,
+      alreadySelected: this.mouseDownTarget?.wasSelected ?? false,
+      shiftPressed: false,
+      isRightClick: true
+    });
+  };
+
+  private onContextMenu = (event: Event) => {
+    if (this.longPressed) event.preventDefault();
+  };
+
+  private onPointerCancel = (event: PointerEvent) => {
+    this.clearLongPress();
+    if (this.moved && this.dragStart) {
+      this.handleDragEnd({
+        from: this.dragStart,
+        to: this.getRelativeCoordinates(event),
+        element: this.mouseDownTarget?.element ?? null
+      });
+    }
+    this.moved = false;
+    this.longPressed = false;
+    this.dragStart = null;
+  };
+
+  private onPointerDown = (event: PointerEvent) => {
+    try {
+      this.clickTargetEle.setPointerCapture(event.pointerId);
+    } catch {
+      // Synthetic events have no active pointer to capture.
+    }
+    this.pointerStarted();
+    this.longPressed = false;
+    this.clearLongPress();
+    this.onMouseDown(event);
+    if (event.pointerType === 'touch')
+      this.longPressTimer = setTimeout(this.onLongPress, 500);
+  };
+
+  /** Called when a pointer starts on the canvas; the keyboard cursor goes away. */
+  protected pointerStarted() {}
+
+  private onMouseDown(event: PointerEvent) {
     this.moved = false;
     const coords = this.getRelativeCoordinates(event);
 
@@ -111,8 +151,15 @@ export default abstract class EventManager extends ChildrenManager {
     };
   }
 
-  private onMouseUp(event: MouseEvent | TouchEvent) {
-    const isRightClick = 'button' in event && event.button === 2;
+  private onMouseUp = (event: PointerEvent) => {
+    this.clearLongPress();
+    if (this.longPressed) {
+      this.longPressed = false;
+      this.dragStart = null;
+      return;
+    }
+    const isRightClick = event.button === 2;
+    if (!this.dragStart) return;
 
     if (this.moved) {
       this.handleDragEnd({
@@ -138,7 +185,7 @@ export default abstract class EventManager extends ChildrenManager {
         isRightClick
       });
     }
-  }
+  };
 
   /**
    * Information about the first click/mouse down when dragging an element
@@ -149,12 +196,12 @@ export default abstract class EventManager extends ChildrenManager {
         startPositions: MathPoint[];
       })
     | null = null;
-  private onMouseMove(event: MouseEvent | TouchEvent) {
+  private onMouseMove = (event: PointerEvent) => {
     event.stopPropagation();
     const coords = this.getRelativeCoordinates(event);
 
     // when somehow the mouseup event is not fired, we still want to stop dragging -> can occur when user pressed alt+tab while dragging
-    if ('buttons' in event && event.buttons !== 1) {
+    if (event.buttons !== 1) {
       this.clickTargetEle.style.cursor = this.upadateCursor(coords);
       if (this.moved) {
         this.handleDragEnd({
@@ -175,6 +222,7 @@ export default abstract class EventManager extends ChildrenManager {
       Calc.distance(coords, this.dragStart) > 5
     ) {
       this.moved = true;
+      this.clearLongPress();
 
       this.handleDragStart({
         start: this.dragStart,
@@ -188,7 +236,7 @@ export default abstract class EventManager extends ChildrenManager {
       dragStart: this.dragStart!,
       element: this.mouseDownTarget?.element ?? null
     });
-  }
+  };
 
   protected keys = {
     alt: false,

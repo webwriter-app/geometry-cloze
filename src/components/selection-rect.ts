@@ -11,20 +11,20 @@ export const SELECTION_STYLE = {
 export default class SelectionRect {
   constructor(private coords: { x: number; y: number }) {}
 
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.strokeStyle = SHOELACE.focus.ringColor;
-    ctx.fillStyle = SHOELACE.focus.ringColor.slice(0, -1) + ' / 0.1)';
+  draw(ctx: CanvasRenderingContext2D, color: string = SHOELACE.focus.ringColor) {
+    const { x, y } = this.coords;
+    const width = this.secondCoords.x - x;
+    const height = this.secondCoords.y - y;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
     ctx.setLineDash([]);
     ctx.lineWidth = 2;
-    ctx.rect(
-      this.coords.x,
-      this.coords.y,
-      this.secondCoords.x - this.coords.x,
-      this.secondCoords.y - this.coords.y
-    );
-    ctx.stroke();
-    ctx.fill();
+    ctx.globalAlpha = 0.1;
+    ctx.fillRect(x, y, width, height);
+    ctx.globalAlpha = 1;
+    ctx.strokeRect(x, y, width, height);
+    ctx.restore();
   }
 
   private secondCoords: { x: number; y: number } = { x: 0, y: 0 };

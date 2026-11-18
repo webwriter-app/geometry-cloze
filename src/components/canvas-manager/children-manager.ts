@@ -11,7 +11,7 @@ import type Manager from '../../model/abstracts';
 
 export default abstract class ChildrenManager extends EventTarget {
   private _canvas: HTMLCanvasElement;
-  private _ctx: CanvasRenderingContext2D;
+  protected _ctx: CanvasRenderingContext2D;
 
   private _canvasScale = 1;
 

@@ -6,8 +6,26 @@
     "webwriter-widget",
     "widget-presentational",
     "widget-informational",
-    "iscedf2013-05",
+    "isced2011-1",
     "isced2011-2",
+    "isced2011-3",
+    "iscedf2013-054",
+    "widget-editable",
+    "widget-allows-pointer-input",
+    "widget-allows-keyboard-input",
+    "widget-allows-touch-input",
+    "widget-has-content",
+    "widget-convertible-to-image/svg+xml",
+    "widget-convertible-to-img",
+    "widget-convertible-to-application/json",
+    "widget-convertible-from-application/json",
+    "widget-responsive",
+    "widget-themeable",
+    "widget-printable",
+    "widget-stateful",
+    "widget-configurable",
+    "widget-testable",
+    "widget-supports-shared-dependencies",
     "geometry",
     "shapes",
     "angles",
@@ -161,6 +179,14 @@
     "./tests/shortcuts.*": {
       "source": "./tests/shortcuts.test.ts",
       "default": "./dist/tests/shortcuts.*"
+    },
+    "./tests/input.*": {
+      "source": "./tests/input.test.ts",
+      "default": "./dist/tests/input.*"
+    },
+    "./tests/conversions.*": {
+      "source": "./tests/conversions.test.ts",
+      "default": "./dist/tests/conversions.*"
     },
     "./tests/data-settings.*": {
       "source": "./tests/data-settings.test.ts",

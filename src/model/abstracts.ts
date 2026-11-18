@@ -10,5 +10,6 @@ export default interface Manager {
   import(data: unknown): void;
   mode: InteractionMode;
   scale: number;
+  fontFamily: string;
   abstractRightAngle: boolean;
 }

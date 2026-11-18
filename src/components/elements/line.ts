@@ -9,7 +9,6 @@ import Point from './point';
 import Numbers from '../../model/numbers';
 import Manager from '../../model/abstracts';
 import { SELECTION_STYLE } from '../selection-rect';
-import SHOELACE from '../shoelace';
 
 export type BaseLine = MathLine & NamedElement;
 
@@ -77,7 +76,7 @@ export default class Line extends Draggable {
         y: (this._start.y + this._end.y) / 2
       };
       const label = this.getLabel();
-      ctx.font = `24px ${SHOELACE.font.sans}`;
+      ctx.font = `24px ${this.manager.fontFamily}`;
       ctx.fillStyle = this.labelColor;
       const metrics = ctx.measureText(label);
       const fontHeight =

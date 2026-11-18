@@ -57,6 +57,27 @@ export default class InteractionManager extends EventManager {
     this.requestRedraw();
   }
 
+  /** The font of the labels and the accent of selection and cursor follow the document theme. */
+  private themeValue(name: string) {
+    return getComputedStyle(this.wrapper).getPropertyValue(name).trim();
+  }
+  /** Set by an export, whose detached canvas has no computed style. */
+  public fontFamilyOverride = '';
+  public get fontFamily() {
+    return (
+      this.fontFamilyOverride ||
+      this.themeValue('--ww-font-family') ||
+      SHOELACE.font.sans
+    );
+  }
+  public get accentColor() {
+    return (
+      this.themeValue('--ww-theme-accent-1') ||
+      this.themeValue('--sl-focus-ring-color') ||
+      SHOELACE.focus.ringColor
+    );
+  }
+
   protected redraw(ctx: CanvasRenderingContext2D): void {
     super.redraw(ctx);
     if (this.showGrid) {
@@ -77,7 +98,7 @@ export default class InteractionManager extends EventManager {
       }
       ctx.stroke();
     }
-    this.selectionRect?.draw(ctx);
+    if (!this.printing) this.selectionRect?.draw(ctx, this.accentColor);
     this.ghostLine?.draw(ctx);
     this.ghostDividerLine?.draw(ctx);
 
@@ -86,6 +107,177 @@ export default class InteractionManager extends EventManager {
       if (shape.hidden) continue;
       shape.draw(ctx);
     }
+    if (!this.printing) this.drawKeyboardCursor(ctx);
+  }
+
+  private printing = false;
+  private printedSelection: Draggable[] = [];
+
+  /** Draws the figure once without selection and cursor, synchronously, because paper cannot wait for a frame. */
+  public beginPrint() {
+    if (this.printing) return;
+    this.printing = true;
+    this.printedSelection = [...this.selected];
+    this.printedSelection.forEach((shape) => shape.blur());
+    this.redraw(this._ctx);
+  }
+
+  public endPrint() {
+    if (!this.printing) return;
+    this.printing = false;
+    this.printedSelection.forEach((shape) => {
+      if (this.selected.includes(shape)) shape.select();
+    });
+    this.printedSelection = [];
+    this.requestRedraw();
+  }
+
+  /** Draws the objects only, without grid, selection or cursor. */
+  public drawFigure(ctx: CanvasRenderingContext2D) {
+    for (const shape of this.getChildren().reverse()) {
+      if (!shape.hidden) shape.draw(ctx);
+    }
+  }
+
+  /** Where Enter acts when the canvas is used with the keyboard; null while the pointer is in use. */
+  private cursor: MathPoint | null = null;
+
+  private drawKeyboardCursor(ctx: CanvasRenderingContext2D) {
+    if (!this.cursor) return;
+    const { x, y } = this.cursor;
+    ctx.save();
+    ctx.strokeStyle = this.accentColor;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x - 14, y);
+    ctx.lineTo(x + 14, y);
+    ctx.moveTo(x, y - 14);
+    ctx.lineTo(x, y + 14);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  protected pointerStarted() {
+    this.hideKeyboardCursor();
+  }
+
+  public hideKeyboardCursor() {
+    if (!this.cursor) return;
+    this.cursor = null;
+    this.requestRedraw();
+  }
+
+  /** Selectable objects in a fixed order: each shape, its points, then its lines. */
+  private selectableObjects(): Draggable[] {
+    return this.getChildren()
+      .flatMap((child): Draggable[] =>
+        child instanceof Shape
+          ? [child, ...child.getPoints(), ...child.getLines()]
+          : child instanceof Draggable
+            ? [child]
+            : []
+      )
+      .filter((object) => this.canSelect(object));
+  }
+
+  /** Moves the selection to the next or previous object. */
+  public selectNeighbor(step: 1 | -1) {
+    const objects = this.selectableObjects();
+    if (!objects.length) return;
+    const current = this.selected.length === 1 ? objects.indexOf(this.selected[0]) : -1;
+    const index = current < 0 ? (step > 0 ? 0 : objects.length - 1) : (current + step + objects.length) % objects.length;
+    this.hideKeyboardCursor();
+    this.select(objects[index]);
+  }
+
+  private moveCursor(dx: number, dy: number) {
+    const { width, height } = this.getCanvasDimensions();
+    const from = this.cursor ?? { x: width / 2, y: height / 2 };
+    const next = this.cursor ? { x: from.x + dx, y: from.y + dy } : from;
+    const snapped = this._snapSpacing && !this.keys.alt ? this.snap(next) : next;
+    this.cursor = {
+      x: Math.min(width, Math.max(0, snapped.x)),
+      y: Math.min(height, Math.max(0, snapped.y))
+    };
+    this.ghostLine?.setEnd(this.cursor);
+    this.ghostDividerLine?.setEnd(this.cursor);
+    this.requestRedraw();
+  }
+
+  private nudgeSelection(dx: number, dy: number) {
+    const moveToken = Symbol('nudge');
+    this.selected.forEach((shape) => {
+      if (!this.selected.some((other) => other.hasChild(shape)))
+        shape.move({ x: dx, y: dy, relative: true, moveToken });
+    });
+    this.requestRedraw();
+  }
+
+  /** Does what a click at the keyboard cursor does. */
+  private activateCursor(shiftPressed: boolean) {
+    if (!this.cursor) {
+      this.moveCursor(0, 0);
+      return;
+    }
+    const coords = this.cursor;
+    if (this._mode === 'divider') {
+      if (this.ghostDividerLine) {
+        this.ghostDividerLine.setEnd(coords);
+        this.addChild(this.ghostDividerLine);
+        this.ghostDividerLine = null;
+      } else {
+        this.ghostDividerLine = new DividerLine(this as unknown as CanvasManager, { start: coords, end: coords });
+      }
+      this.requestRedraw();
+      return;
+    }
+    const hit = this.getElementAt(coords);
+    (this as unknown as CanvasManager).handleClick({
+      coords,
+      hit,
+      alreadySelected: hit ? this.selected.includes(hit) : false,
+      shiftPressed,
+      isRightClick: false
+    });
+  }
+
+  /**
+   * Keyboard control of the canvas: arrows move the selection, or the cursor
+   * when nothing is selected; Enter or Space acts at the cursor; Page Up and
+   * Page Down step through the objects. Returns whether the key was used.
+   */
+  public handleKey(event: KeyboardEvent): boolean {
+    if (event.ctrlKey || event.metaKey) return false;
+    const arrows: Record<string, [number, number]> = {
+      ArrowLeft: [-1, 0],
+      ArrowRight: [1, 0],
+      ArrowUp: [0, -1],
+      ArrowDown: [0, 1]
+    };
+    const direction = arrows[event.key];
+    if (direction) {
+      const base = this._snapSpacing ?? 10;
+      const step = event.altKey ? (this._snapSpacing ? 10 : 1) : base;
+      const [dx, dy] = [direction[0] * step, direction[1] * step];
+      if (this.selected.length && this._mode === 'select') this.nudgeSelection(dx, dy);
+      else this.moveCursor(dx, dy);
+      return true;
+    }
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        this.activateCursor(event.shiftKey);
+        return true;
+      case 'PageDown':
+      case 'PageUp':
+        this.selectNeighbor(event.key === 'PageDown' ? 1 : -1);
+        return true;
+    }
+    return false;
   }
 
   /**

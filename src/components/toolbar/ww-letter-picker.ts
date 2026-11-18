@@ -33,6 +33,8 @@ export default class WwLetterPicker extends LitElementWw {
       <button
         class=${classMap({ current: this.value === 'none' })}
         @click=${onClick.bind(this, 'none')}
+        aria-pressed=${this.value === 'none' ? 'true' : 'false'}
+        aria-label=${this.noLetterLabel}
         title=${this.noLetterLabel}>
         <sl-icon src=${banIcon}></sl-icon>
       </button>
@@ -41,6 +43,8 @@ export default class WwLetterPicker extends LitElementWw {
             <button
               class=${classMap({ current: this.value === 'special' })}
               @click=${onClick.bind(this, 'special')}
+              aria-pressed=${this.value === 'special' ? 'true' : 'false'}
+              aria-label=${this.special}
               title=${this.special}>
               <slot></slot>
             </button>
@@ -50,6 +54,7 @@ export default class WwLetterPicker extends LitElementWw {
         return html`
           <button
             class=${classMap({ current: this.value === letter })}
+            aria-pressed=${this.value === letter ? 'true' : 'false'}
             @click=${onClick.bind(this, letter)}>
             ${letter}
           </button>
@@ -89,6 +94,10 @@ export default class WwLetterPicker extends LitElementWw {
 
     button:not(.current):hover {
       color: var(--sl-color-primary-700);
+    }
+
+    button:focus-visible {
+      outline: var(--sl-focus-ring);
     }
 
     .current {
