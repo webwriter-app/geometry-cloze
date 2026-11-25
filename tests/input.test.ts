@@ -88,6 +88,28 @@ describe("<ww-geometry-cloze> input, layout and theme", function () {
     });
   });
 
+  describe("shape editing", function () {
+    it("removes a point next to a reversed edge without retaining the removed point", async function () {
+      const el = await mount(true);
+      const shape = el.manager.getChildren()[0];
+      const [start, removed, end] = shape.getPoints();
+      const previousLine = shape
+        .getLines()
+        .find((line: any) => line.start === start && line.end === removed);
+      assert.isOk(previousLine, "the preceding edge exists");
+
+      previousLine.setStart(removed);
+      previousLine.setEnd(start);
+      shape.removePoint(removed);
+
+      assert.isTrue(
+        shape.getLines().some((line: any) => line.start === start && line.end === end),
+        "the remaining vertices stay connected"
+      );
+      assert.notInclude(shape.getPoints(), removed, "the removed point is no longer part of the shape");
+    });
+  });
+
   describe("keyboard", function () {
     let el: any;
     beforeEach(async function () {
