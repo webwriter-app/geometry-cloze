@@ -1,0 +1,153 @@
+import Shape from '../shape';
+import IDManager from '../../../model/id-manager';
+import Manager from '../../../model/abstracts';
+
+type ElementType = 'element' | 'point' | 'line' | 'divider-line';
+export interface NamedElement {
+  name?: string;
+  id?: number;
+}
+
+export default class Element {
+  public name = '[unset]';
+  private _id = IDManager.getID();
+  public get id() {
+    return this._id;
+  }
+  constructor(
+    protected manager: Manager,
+    data?: NamedElement
+  ) {
+    if (data?.name) this.name = data.name;
+    if (data?.id) this._id = data.id;
+  }
+
+  private _hidden = false;
+  public get hidden() {
+    return this._hidden;
+  }
+  public hide(value: boolean = true) {
+    this._hidden = value;
+    this.requestRedraw();
+  }
+
+  protected parent: Shape | Manager | null = null;
+  private _children: Element[] = [];
+  protected get children(): readonly Element[] {
+    return this._children;
+  }
+
+  registerParent(element: Shape | Manager) {
+    this.parent = element;
+  }
+  unregisterParent() {
+    this.parent = null;
+  }
+
+  private onChildRedraw = () => this.requestRedraw();
+
+  protected addChildAt(this: Shape, child: Element, index: number) {
+    this._children.splice(index, 0, child);
+    child.addEventListener('request-redraw', this.onChildRedraw);
+    child.registerParent(this);
+  }
+
+  protected addChild(...children: Element[]) {
+    this._children.push(...children);
+    children.forEach((child) => {
+      if (this instanceof Shape) child.registerParent(this);
+      child.addEventListener('request-redraw', this.onChildRedraw);
+    });
+  }
+  protected removeChild(child: Element) {
+    const index = this._children.indexOf(child);
+    if (index === -1) return;
+    this._children.splice(index, 1);
+    child.removeEventListener('request-redraw', this.onChildRedraw);
+    child.unregisterParent();
+  }
+  protected resortChildren(sort: (children: Element[]) => Element[]) {
+    this._children = sort(this._children);
+  }
+
+  public hasChild(child: Element) {
+    return this._children.includes(child);
+  }
+
+  protected listeners: Map<string, ((ele: Element, ...args: unknown[]) => void)[]> =
+    new Map();
+
+  delete(this: Shape) {
+    if (!this.parent) return;
+    if (this.parent instanceof Element) this.parent.removeChild(this);
+    else this.parent.removeChild(this);
+    this.fireEvent('delete');
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this._hidden) return;
+    this.drawChildren(ctx);
+  }
+
+  protected drawChildren(ctx: CanvasRenderingContext2D) {
+    this._children.forEach((child) => child.draw(ctx));
+  }
+
+  addEventListener(
+    event: string,
+    callback: (ele: Element, ...args: unknown[]) => void
+  ) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) callbacks.push(callback);
+    else this.listeners.set(event, [callback]);
+  }
+
+  removeEventListener(
+    event: string,
+    callback?: (ele: Element, ...args: unknown[]) => void
+  ) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      if (callback === undefined) this.listeners.delete(event);
+      else {
+        const index = callbacks.indexOf(callback);
+        if (index !== -1) callbacks.splice(index, 1);
+      }
+    }
+  }
+
+  public fireEvent(event: string, ...args: unknown[]) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) callbacks.forEach((callback) => callback(this, ...args));
+  }
+
+  protected requestRedraw() {
+    this.fireEvent('request-redraw');
+  }
+
+  public getChildByID(id: number): Element | null {
+    if (this._id === id) return this;
+    for (const child of this._children) {
+      const found = child.getChildByID(id);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  public export(): {
+    _type: ElementType;
+    id: number;
+    children?: ({ _type: ElementType } & Object)[];
+  } {
+    if (this.children.length)
+      return {
+        _type: 'element',
+        id: this.id,
+        children: this._children.map((child) => child.export())
+      };
+    return {
+      _type: 'element',
+      id: this.id
+    };
+  }
+}

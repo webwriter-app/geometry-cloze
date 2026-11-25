@@ -1,11 +1,10 @@
-import { localized } from '@lit/localize';
 import { LitElementWw } from '@webwriter/lit';
 import { css, html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import NoneIcon from '../icons/none';
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
+import banIcon from '@tabler/icons/outline/ban.svg';
 
-@localized()
 export default class WwLetterPicker extends LitElementWw {
   @property({ type: String, attribute: true })
   accessor value: string | null = null;
@@ -15,6 +14,9 @@ export default class WwLetterPicker extends LitElementWw {
 
   @property({ type: String, attribute: 'special' })
   accessor special: string | null = null;
+
+  @property({ attribute: false })
+  accessor noLetterLabel = '';
 
   public static LETTERS = {
     'latin-lowercase': 'abcdefghijklmnopqrstuvwxyz'.split(''),
@@ -31,14 +33,18 @@ export default class WwLetterPicker extends LitElementWw {
       <button
         class=${classMap({ current: this.value === 'none' })}
         @click=${onClick.bind(this, 'none')}
-        title="No letter">
-        ${NoneIcon}
+        aria-pressed=${this.value === 'none' ? 'true' : 'false'}
+        aria-label=${this.noLetterLabel}
+        title=${this.noLetterLabel}>
+        <sl-icon src=${banIcon}></sl-icon>
       </button>
       ${this.special
         ? html`
             <button
               class=${classMap({ current: this.value === 'special' })}
               @click=${onClick.bind(this, 'special')}
+              aria-pressed=${this.value === 'special' ? 'true' : 'false'}
+              aria-label=${this.special}
               title=${this.special}>
               <slot></slot>
             </button>
@@ -48,12 +54,17 @@ export default class WwLetterPicker extends LitElementWw {
         return html`
           <button
             class=${classMap({ current: this.value === letter })}
+            aria-pressed=${this.value === letter ? 'true' : 'false'}
             @click=${onClick.bind(this, letter)}>
             ${letter}
           </button>
         `;
       })}
     `;
+  }
+
+  static get scopedElements() {
+    return { 'sl-icon': SlIcon };
   }
 
   static styles = css`
@@ -85,12 +96,16 @@ export default class WwLetterPicker extends LitElementWw {
       color: var(--sl-color-primary-700);
     }
 
+    button:focus-visible {
+      outline: var(--sl-focus-ring);
+    }
+
     .current {
       background-color: var(--sl-color-primary-600);
       color: var(--sl-color-neutral-0);
     }
 
-    svg {
+    sl-icon {
       display: block;
       width: 1.5em;
       height: 1.5em;

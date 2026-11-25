@@ -1,17 +1,19 @@
-import { localized, msg } from '@lit/localize';
+import type { MsgFn } from '@lit/localize';
 import { LitElementWw } from '@webwriter/lit';
+import { widgetMsg } from '@webwriter/lit/localize';
 import { html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import SHOELACE, { hslToHex } from '../../data/helper/Shoelace';
+import SHOELACE, { hslToHex } from '../shoelace';
 
 /**
  * A simple color picker component that displays a grid of color options.
  * Emits an `input` event with the selected color when a color is clicked.
  */
-@localized()
 export default class WwColorPicker extends LitElementWw {
-  public static get COLORS() {
+  private readonly msg = widgetMsg(this);
+
+  private colors(msg: MsgFn) {
     return [
       {
         label: msg('Black'),
@@ -56,13 +58,13 @@ export default class WwColorPicker extends LitElementWw {
     ] as const;
   }
 
-  public static get COLORS_WITH_TRANSPARENT() {
+  private colorsWithTransparent(msg: MsgFn) {
     return [
       {
         label: msg('Transparent'),
         color: 'transparent'
       },
-      ...WwColorPicker.COLORS
+      ...this.colors(msg)
     ] as const;
   }
 
@@ -77,13 +79,15 @@ export default class WwColorPicker extends LitElementWw {
 
   render() {
     const colors = this.includeTransparent
-      ? WwColorPicker.COLORS_WITH_TRANSPARENT
-      : WwColorPicker.COLORS;
+      ? this.colorsWithTransparent(this.msg)
+      : this.colors(this.msg);
 
     return html`${colors.map(({ label, color }) => {
       return html`<button
         class=${classMap({ current: this.value === color })}
         title="${label}"
+        aria-label="${label}"
+        aria-pressed=${this.value === color ? 'true' : 'false'}
         @click=${() => {
           this.dispatchEvent(
             new CustomEvent('input', {
@@ -122,6 +126,10 @@ export default class WwColorPicker extends LitElementWw {
       width: 1.5em;
       height: 1.5em;
       border-radius: var(--sl-border-radius-circle);
+    }
+
+    button:focus-visible {
+      outline: var(--sl-focus-ring);
     }
 
     .current .color-swatch {

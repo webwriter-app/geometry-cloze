@@ -1,7 +1,8 @@
 import { LitElementWw } from '@webwriter/lit';
-import { css, html, nothing, PropertyValues, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { localized, msg, str } from '@lit/localize';
+import { widgetMsg } from '@webwriter/lit/localize';
+import { css, html, PropertyValues, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { str } from '@lit/localize';
 
 import '@shoelace-style/shoelace/dist/themes/light.css';
 
@@ -13,27 +14,29 @@ import SlMenu from '@shoelace-style/shoelace/dist/components/menu/menu.component
 import SlMenuLabel from '@shoelace-style/shoelace/dist/components/menu-label/menu-label.component.js';
 import SlDivider from '@shoelace-style/shoelace/dist/components/divider/divider.component.js';
 import SlRange from '@shoelace-style/shoelace/dist/components/range/range.component.js';
+import SlIcon from '@shoelace-style/shoelace/dist/components/icon/icon.component.js';
 import SlCheckbox from '@shoelace-style/shoelace/dist/components/checkbox/checkbox.component.js';
 
-import CursorIcon from '../icons/cursor';
-import PolygonIcon from '../icons/polygon';
-import DividerLineIcon from '../icons/divider-line';
-import TrashIcon from '../icons/trash';
-import CanvasManager from '../../data/CanvasManager/CanvasManager';
-import Draggable from '../../data/elements/base/Draggable';
+import CanvasManager from '../canvas-manager/canvas-manager';
+import Draggable from '../elements/base/draggable';
 import WwColorPicker from './ww-color-picker';
-import Shape from '../../data/elements/Shape';
-import Line from '../../data/elements/Line';
-import Stylable, { DEFAULT_STYLE } from '../../data/elements/base/Stylable';
-import Point, { DEFAULT_POINT_STYLE } from '../../data/elements/Point';
+import Shape from '../elements/shape';
+import Line from '../elements/line';
+import { DEFAULT_STYLE } from '../elements/base/stylable';
+import Point, { DEFAULT_POINT_STYLE } from '../elements/point';
 import WwLetterPicker from './ww-letter-picker';
-import TypeIcon from '../icons/type';
-import RulerIcon from '../icons/ruler';
-import AngleIcon from '../icons/angle';
 import WwKbd from '../ui/ww-kbd';
 
-@localized()
+import pointerIcon from '@tabler/icons/outline/pointer.svg';
+import polygonIcon from '@tabler/icons/outline/polygon.svg';
+import vectorIcon from '@tabler/icons/outline/vector.svg';
+import trashIcon from '@tabler/icons/outline/trash.svg';
+import typographyIcon from '@tabler/icons/outline/typography.svg';
+import rulerIcon from '@tabler/icons/outline/ruler.svg';
+import angleIcon from '@tabler/icons/outline/angle.svg';
+
 export class WwGeomToolbar extends LitElementWw {
+  private readonly msg = widgetMsg(this);
   @property({ type: Object })
   accessor manager: CanvasManager | null = null;
 
@@ -60,18 +63,21 @@ export class WwGeomToolbar extends LitElementWw {
       <sl-button-group>
         ${this.ModeButton(
           'select',
-          CursorIcon,
-          html`${msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
+          pointerIcon,
+          this.msg('Select and move objects'),
+          html`${this.msg('Select and move objects')} <ww-kbd>S</ww-kbd>`
         )}
         ${this.ModeButton(
           'create',
-          PolygonIcon,
-          html`${msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
+          polygonIcon,
+          this.msg('Create and connect objects'),
+          html`${this.msg('Create and connect objects')} <ww-kbd>C</ww-kbd>`
         )}
         ${this.ModeButton(
           'divider',
-          DividerLineIcon,
-          html`${msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
+          vectorIcon,
+          this.msg('Create divider lines'),
+          html`${this.msg('Create divider lines')} <ww-kbd>D</ww-kbd>`
         )}
       </sl-button-group>
     `;
@@ -79,7 +85,8 @@ export class WwGeomToolbar extends LitElementWw {
 
   private ModeButton(
     mode: InteractionMode,
-    icon: TemplateResult,
+    icon: string,
+    label: string,
     tooltip: TemplateResult
   ) {
     return html`
@@ -91,7 +98,8 @@ export class WwGeomToolbar extends LitElementWw {
           @click=${() => {
             if (this.manager) this.manager.mode = mode;
           }}>
-          ${icon}
+          <sl-icon src=${icon}></sl-icon>
+          <span class="visually-hidden">${label}</span>
         </sl-button>
       </sl-tooltip>
     `;
@@ -101,18 +109,19 @@ export class WwGeomToolbar extends LitElementWw {
     const color = this.selection[0]?.labelColor ?? DEFAULT_STYLE.labelColor;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           ?disabled=${this.selection.length === 0 || this.mode !== 'select'}>
-          <div style="color: ${color}; display: contents;">${TypeIcon}</div>
+          <div style="color: ${color}; display: contents;"><sl-icon src=${typographyIcon}></sl-icon></div>
+          <span class="visually-hidden">${this.msg('Labels')}</span>
         </sl-button>
         <sl-menu>
           ${this.CurrentLabelMenu()}
           <sl-divider></sl-divider>
-          <sl-menu-label>${msg('Label color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Label color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             @input=${(e: CustomEvent) => {
@@ -130,7 +139,7 @@ export class WwGeomToolbar extends LitElementWw {
   private CurrentLabelMenu() {
     if (this.selection.length > 1) {
       return html`<sl-menu-label>
-        ${msg(str`${this.selection.length} objects selected`)}
+        ${this.msg(str`${this.selection.length} objects selected`)}
       </sl-menu-label>`;
     }
 
@@ -142,7 +151,7 @@ export class WwGeomToolbar extends LitElementWw {
     } else if (element instanceof Point) {
       return this.PointLabelMenu(element);
     } else {
-      return html`<sl-menu-label>Unimplemented</sl-menu-label>`;
+      return html`<sl-menu-label>${this.msg('Unimplemented')}</sl-menu-label>`;
     }
   }
 
@@ -154,7 +163,7 @@ export class WwGeomToolbar extends LitElementWw {
     };
 
     return html`
-      <sl-menu-label>${msg('Shape label')}</sl-menu-label>
+      <sl-menu-label>${this.msg('Shape label')}</sl-menu-label>
       <div class="menu-padding">
         <sl-checkbox
           size="small"
@@ -163,7 +172,7 @@ export class WwGeomToolbar extends LitElementWw {
             shape.showArea = (e.target as SlCheckbox).checked;
             labelChanged();
           }}>
-          ${msg('Show Area')}
+          ${this.msg('Show Area')}
         </sl-checkbox>
         <br />
         <sl-checkbox
@@ -173,7 +182,7 @@ export class WwGeomToolbar extends LitElementWw {
             shape.showPerimeter = (e.target as SlCheckbox).checked;
             labelChanged();
           }}>
-          ${msg('Show Perimeter')}
+          ${this.msg('Show Perimeter')}
         </sl-checkbox>
       </div>
     `;
@@ -185,11 +194,12 @@ export class WwGeomToolbar extends LitElementWw {
     else if (line.labelStyle == 'value') labelValue = 'special';
 
     return html`
-      <sl-menu-label>${msg('Line label')}</sl-menu-label>
+      <sl-menu-label>${this.msg('Line label')}</sl-menu-label>
       <ww-letter-picker
         .value=${labelValue}
+        .noLetterLabel=${this.msg('No letter')}
         alphabet="latin-lowercase"
-        special=${msg('Length')}
+        special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {
           if (e.detail === 'none') {
             line.shouldShowLabel(false);
@@ -204,7 +214,7 @@ export class WwGeomToolbar extends LitElementWw {
           }
           this.requestUpdate();
         }}>
-        ${RulerIcon}
+        <sl-icon src=${rulerIcon}></sl-icon>
       </ww-letter-picker>
     `;
   }
@@ -225,12 +235,13 @@ export class WwGeomToolbar extends LitElementWw {
           this.manager?.requestRedraw();
           this.requestUpdate();
         }}>
-        Flip angle
+        ${this.msg('Flip angle')}
       </sl-checkbox>
       <ww-letter-picker
         .value=${labelValue}
+        .noLetterLabel=${this.msg('No letter')}
         alphabet="greek-lowercase"
-        special=${msg('Length')}
+        special=${this.msg('Length')}
         @input=${(e: CustomEvent) => {
           if (e.detail === 'none') {
             point.shouldShowLabel(false);
@@ -245,7 +256,7 @@ export class WwGeomToolbar extends LitElementWw {
           }
           this.requestUpdate();
         }}>
-        ${AngleIcon}
+        <sl-icon src=${angleIcon}></sl-icon>
       </ww-letter-picker>
     `;
   }
@@ -264,12 +275,13 @@ export class WwGeomToolbar extends LitElementWw {
     const color = pointElement?.fill ?? DEFAULT_POINT_STYLE.fill;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!pointElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Point color')}</span>
           <div class="icon-container">
             <div
               class="icon-point-fill"
@@ -277,7 +289,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Point color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Point color')}</sl-menu-label>
           <ww-color-picker
             .color=${color}
             @input=${(e: CustomEvent) => {
@@ -302,12 +314,13 @@ export class WwGeomToolbar extends LitElementWw {
     const sliderValue = WwGeomToolbar.LINE_WIDTHS.indexOf(width) ?? 2;
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!lineElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Line color')}</span>
           <div class="icon-container">
             <div
               class="icon-line-stroke"
@@ -315,7 +328,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Line width')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Line width')}</sl-menu-label>
           <sl-range
             class="menu-padding"
             min="0"
@@ -332,7 +345,7 @@ export class WwGeomToolbar extends LitElementWw {
             }}>
           </sl-range>
           <sl-divider></sl-divider>
-          <sl-menu-label>${msg('Line color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Line color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             @input=${(e: CustomEvent) => {
@@ -352,12 +365,13 @@ export class WwGeomToolbar extends LitElementWw {
     if (color.startsWith('#') && color.length === 9) color = color.slice(0, 7); // Remove alpha channel for display
 
     return html`
-      <sl-dropdown>
+      <sl-dropdown hoist>
         <sl-button
           slot="trigger"
           size="small"
           caret
           .disabled=${!shapeElement || this.mode !== 'select'}>
+          <span class="visually-hidden">${this.msg('Fill color')}</span>
           <div class="icon-container">
             ${color === 'transparent'
               ? html`<div
@@ -368,7 +382,7 @@ export class WwGeomToolbar extends LitElementWw {
           </div>
         </sl-button>
         <sl-menu>
-          <sl-menu-label>${msg('Fill color')}</sl-menu-label>
+          <sl-menu-label>${this.msg('Fill color')}</sl-menu-label>
           <ww-color-picker
             .value=${color}
             include-transparent
@@ -389,7 +403,7 @@ export class WwGeomToolbar extends LitElementWw {
     return html`
       <sl-tooltip placement="bottom">
         <span slot="content">
-          ${msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
+          ${this.msg('Delete selected objects')} <ww-kbd>⟵</ww-kbd> /
           <ww-kbd>Del</ww-kbd>
         </span>
         <sl-button
@@ -399,7 +413,8 @@ export class WwGeomToolbar extends LitElementWw {
             this.selection.forEach((element) => element.delete());
             this.selection = [];
           }}>
-          ${TrashIcon}
+          <sl-icon src=${trashIcon}></sl-icon>
+          <span class="visually-hidden">${this.msg('Delete selected objects')}</span>
         </sl-button>
       </sl-tooltip>
     `;
@@ -416,6 +431,8 @@ export class WwGeomToolbar extends LitElementWw {
   }
 
   protected updated(changed: PropertyValues<this>) {
+    this.setAttribute('role', 'toolbar');
+    this.setAttribute('aria-label', this.msg('Drawing tools'));
     if (changed.has('manager')) {
       const old = changed.get('manager');
       if (old) this.managerDetached(old as CanvasManager);
@@ -436,14 +453,19 @@ export class WwGeomToolbar extends LitElementWw {
 
   static styles = css`
     :host {
-      display: block;
       display: flex;
+      flex-wrap: wrap;
       padding: var(--sl-spacing-x-small);
       gap: var(--sl-spacing-x-small);
     }
 
     .spacer {
       flex-grow: 1;
+    }
+
+    sl-button::part(base):focus-visible,
+    sl-dropdown::part(trigger):focus-visible {
+      outline: var(--sl-focus-ring);
     }
 
     sl-button {
@@ -458,7 +480,7 @@ export class WwGeomToolbar extends LitElementWw {
       padding: 0 calc(2 * var(--sl-spacing-x-small));
     }
 
-    svg,
+    sl-icon,
     .icon-container {
       display: inline-block;
       height: 1.5em;
@@ -505,6 +527,15 @@ export class WwGeomToolbar extends LitElementWw {
       background-position: center;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
     sl-checkbox {
       margin-bottom: var(--sl-spacing-2x-small);
     }
@@ -523,7 +554,8 @@ export class WwGeomToolbar extends LitElementWw {
       'sl-menu-label': SlMenuLabel,
       'sl-divider': SlDivider,
       'sl-range': SlRange,
-      'sl-checkbox': SlCheckbox
+      'sl-checkbox': SlCheckbox,
+      'sl-icon': SlIcon
     };
   }
 }

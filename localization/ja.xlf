@@ -1,4 +1,5 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="ja">
     <body>
       <trans-unit id="s5e3cb80d43a34044">
@@ -61,29 +62,13 @@
         <source>Show Perimeter</source>
         <target>外周を表示</target>
       </trans-unit>
-      <trans-unit id="sf6f1d2fce4cc2014">
-        <source>Show grid</source>
-        <target>グリッドを表示</target>
-      </trans-unit>
-      <trans-unit id="s73c0e4814878d26e">
-        <source>Snap to grid</source>
-        <target>グリッドにスナップ</target>
-      </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
         <target>抽象的な直角</target>
       </trans-unit>
-      <trans-unit id="sf9f816447b409e1c">
-        <source>When enabled, right angles will be drawn as a small square</source>
-        <target>有効にすると、直角は小さな正方形で描かれる。</target>
-      </trans-unit>
       <trans-unit id="s2706a162264c46f1">
         <source>Scale</source>
         <target>スケール</target>
-      </trans-unit>
-      <trans-unit id="s2dae9bc7aa02bab7">
-        <source>Scales all labels of lengths and sizes.</source>
-        <target>長さとサイズのすべてのラベルをはかります。</target>
       </trans-unit>
       <trans-unit id="s8a347fce9c8f6045">
         <source>Select and move objects</source>
@@ -102,9 +87,10 @@
         <target>ラベルの色</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <source>
+          <x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
-          <x id="0" equiv-text="${this.selection.length}"/> 選択されたオブジェクト
+          <x id="0" equiv-text="${this.selection.length}" /> 選択されたオブジェクト
         </target>
       </trans-unit>
       <trans-unit id="s5246434aaa760348">
@@ -139,13 +125,86 @@
         <source>Delete selected objects</source>
         <target>選択オブジェクトの削除</target>
       </trans-unit>
+      <trans-unit id="s8818af2947b74b9b">
+        <source>Hide grid</source>
+        <target>グリッドを非表示</target>
+      </trans-unit>
+      <trans-unit id="s7c233329e117db1d">
+        <source>Disable snapping</source>
+        <target>スナップを無効にする</target>
+      </trans-unit>
+      <trans-unit id="s30ef01663a587b8a">
+        <source>Scales labels for lengths and sizes.</source>
+        <target>長さとサイズのラベルを拡大・縮小します。</target>
+      </trans-unit>
+      <trans-unit id="s712cf78df85cba7a">
+        <source>Unimplemented</source>
+        <target>未実装</target>
+      </trans-unit>
+      <trans-unit id="s020ef25c40d67e92">
+        <source>No letter</source>
+        <target>文字なし</target>
+      </trans-unit>
+      <trans-unit id="s166e43ffaa91f881">
+        <source>Flip angle</source>
+        <target>角度を反転</target>
+      </trans-unit>
+      <trans-unit id="s8a9eb438abac7c6a">
+        <source>Labels</source>
+        <target>ラベル</target>
+      </trans-unit>
+      <trans-unit id="s56339226771df73e">
+        <source>Drawing tools</source>
+        <target>描画ツール</target>
+      </trans-unit>
+      <trans-unit id="sda710f92642cf11a">
+        <source>Clear canvas</source>
+        <target>キャンバスをクリア</target>
+      </trans-unit>
+      <trans-unit id="sd00c60d57d312c84">
+        <source>Remove all objects from the canvas?</source>
+        <target>キャンバス上のすべてのオブジェクトを削除しますか？</target>
+      </trans-unit>
+      <trans-unit id="seb2daf50267d87ef">
+        <source>Geometry canvas</source>
+        <target>図形キャンバス</target>
+      </trans-unit>
+      <trans-unit id="sb8c878135ee917b1">
+        <source>The file is not valid JSON.</source>
+        <target>ファイルは有効な JSON ではありません。</target>
+      </trans-unit>
+      <trans-unit id="sc72736ac2c79d822">
+        <source>The file does not describe a geometry figure.</source>
+        <target>ファイルに幾何学図形の記述がありません。</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>グリッドを表示</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>グリッドにスナップ</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>有効にすると、直角は小さな正方形で描かれる。</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>長さとサイズのすべてのラベルをはかります。</target>
+      </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
-                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
         <target>を押して、一時的にスナップを無効にすることもできます。
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> を押しながら要素をドラッグします。
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;" /> を押しながら要素をドラッグします。
         </target>
+      </trans-unit>
+      <trans-unit id="hcf3a5f37275a5412">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+        <target>要素をドラッグしながら <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> キーを押すと、スナップを一時的に無効にできます。</target>
       </trans-unit>
     </body>
   </file>

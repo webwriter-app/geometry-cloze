@@ -2,22 +2,20 @@
     // Do not modify this file by hand!
     // Re-generate this file by running lit-localize
 
-    import {html} from 'lit';
+
     import {str} from '@lit/localize';
 
     /* eslint-disable no-irregular-whitespace */
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     export const templates = {
-      'hcf737b9b198de693': html`Átmenetileg letilthatja a pattintást is, ha megnyomja a
-          <sl-tag size="small">Alt
-          </sl-tag> megnyomásával egy elem húzása közben
-        `,
+      's020ef25c40d67e92': `Nincs betű`,
 's109991b0423f1512': `Violet`,
+'s166e43ffaa91f881': `Szög átfordítása`,
 's202fffd5a2e1c595': `Hosszúság`,
 's24d82e0bdc4ea31f': `Mutasd a kerületet`,
 's2706a162264c46f1': `Skála`,
-'s2dae9bc7aa02bab7': `Minden hosszúság és méret címkéjét skálázza.`,
+'s30ef01663a587b8a': `Átméretezi a hosszúság- és méretfeliratokat.`,
 's3b627b7632baa8d7': `Választóvonalak létrehozása`,
 's3d0296b47fe6323c': `Mész`,
 's447b301ca02b353e': `Kerület: `,
@@ -25,13 +23,17 @@
 's4585ad5504d24a6b': `Kijelölt objektumok törlése`,
 's4fd35ef13079b962': `Absztrakt derékszög`,
 's5246434aaa760348': `Alakcímke`,
+'s56339226771df73e': `Rajzeszközök`,
 's5cda68f59fd34ebf': `Vonalszélesség`,
 's5e3cb80d43a34044': `Fekete`,
 's6751f51ab77310e5': `Megjelenítési terület`,
 's6baf78886c99db89': `Sárga`,
+'s712cf78df85cba7a': `Nincs megvalósítva`,
 's71f4a89a7cd714ee': `Terület: `,
-'s73c0e4814878d26e': `Rácsra kattintás`,
+'s7c233329e117db1d': `Igazítás kikapcsolása`,
+'s8818af2947b74b9b': `Rács elrejtése`,
 's8a347fce9c8f6045': `Objektumok kijelölése és mozgatása`,
+'s8a9eb438abac7c6a': `Címkék`,
 's8f450dd0b7bdb8cb': `Narancs`,
 's997f2252dabae00f': `Kitöltés színe`,
 's9b3c2f9cc32d565a': `Cyan`,
@@ -39,15 +41,17 @@
 'sb6055dddb583f562': str`
           ${0} kiválasztott objektumok
         `,
+'sb8c878135ee917b1': `A fájl nem érvényes JSON.`,
 'sbaf7984effccc73d': `Vonalcímke`,
 'sc641744471095036': `Címke színe`,
+'sc72736ac2c79d822': `A fájl nem ír le geometriai alakzatot.`,
 'sc76449099e8dab8e': `Objektumok létrehozása és összekapcsolása`,
 'scf00d78fd5953f1c': `Zöld`,
+'sd00c60d57d312c84': `Eltávolítja az összes objektumot a vászonról?`,
 'sd0e945b97c0c46d1': `Átlátszó`,
+'sda710f92642cf11a': `Vászon törlése`,
 'se9beed19c6a38fed': `Rózsaszín`,
+'seb2daf50267d87ef': `Geometriai vászon`,
 'secf3d3a7c1693e2d': `Kék`,
-'sf6f1d2fce4cc2014': `Rács megjelenítése`,
 'sf8f55cf0946dcb38': `Vonal színe`,
-'sf9f816447b409e1c': `Ha engedélyezve van, a derékszögek kis négyzetként rajzolódnak ki.`,
     };
-  

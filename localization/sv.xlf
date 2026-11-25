@@ -1,4 +1,5 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="sv">
     <body>
       <trans-unit id="s5e3cb80d43a34044">
@@ -61,29 +62,13 @@
         <source>Show Perimeter</source>
         <target>Visa omkrets</target>
       </trans-unit>
-      <trans-unit id="sf6f1d2fce4cc2014">
-        <source>Show grid</source>
-        <target>Visa rutnät</target>
-      </trans-unit>
-      <trans-unit id="s73c0e4814878d26e">
-        <source>Snap to grid</source>
-        <target>Fäst i rutnätet</target>
-      </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
         <target>Abstrakt rät vinkel</target>
       </trans-unit>
-      <trans-unit id="sf9f816447b409e1c">
-        <source>When enabled, right angles will be drawn as a small square</source>
-        <target>När den är aktiverad ritas räta vinklar som en liten kvadrat</target>
-      </trans-unit>
       <trans-unit id="s2706a162264c46f1">
         <source>Scale</source>
         <target>Skala</target>
-      </trans-unit>
-      <trans-unit id="s2dae9bc7aa02bab7">
-        <source>Scales all labels of lengths and sizes.</source>
-        <target>Skalar alla etiketter i olika längder och storlekar.</target>
       </trans-unit>
       <trans-unit id="s8a347fce9c8f6045">
         <source>Select and move objects</source>
@@ -102,9 +87,10 @@
         <target>Färg på etiketten</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <source>
+          <x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
-          <x id="0" equiv-text="${this.selection.length}"/> valda objekt
+          <x id="0" equiv-text="${this.selection.length}" /> valda objekt
         </target>
       </trans-unit>
       <trans-unit id="s5246434aaa760348">
@@ -139,13 +125,86 @@
         <source>Delete selected objects</source>
         <target>Ta bort markerade objekt</target>
       </trans-unit>
+      <trans-unit id="s8818af2947b74b9b">
+        <source>Hide grid</source>
+        <target>Dölj rutnätet</target>
+      </trans-unit>
+      <trans-unit id="s7c233329e117db1d">
+        <source>Disable snapping</source>
+        <target>Stäng av fästning</target>
+      </trans-unit>
+      <trans-unit id="s30ef01663a587b8a">
+        <source>Scales labels for lengths and sizes.</source>
+        <target>Skalar etiketter för längder och storlekar.</target>
+      </trans-unit>
+      <trans-unit id="s712cf78df85cba7a">
+        <source>Unimplemented</source>
+        <target>Inte implementerat</target>
+      </trans-unit>
+      <trans-unit id="s020ef25c40d67e92">
+        <source>No letter</source>
+        <target>Ingen bokstav</target>
+      </trans-unit>
+      <trans-unit id="s166e43ffaa91f881">
+        <source>Flip angle</source>
+        <target>Vänd vinkeln</target>
+      </trans-unit>
+      <trans-unit id="s8a9eb438abac7c6a">
+        <source>Labels</source>
+        <target>Etiketter</target>
+      </trans-unit>
+      <trans-unit id="s56339226771df73e">
+        <source>Drawing tools</source>
+        <target>Ritverktyg</target>
+      </trans-unit>
+      <trans-unit id="sda710f92642cf11a">
+        <source>Clear canvas</source>
+        <target>Rensa arbetsytan</target>
+      </trans-unit>
+      <trans-unit id="sd00c60d57d312c84">
+        <source>Remove all objects from the canvas?</source>
+        <target>Ta bort alla objekt från arbetsytan?</target>
+      </trans-unit>
+      <trans-unit id="seb2daf50267d87ef">
+        <source>Geometry canvas</source>
+        <target>Geometrisk arbetsyta</target>
+      </trans-unit>
+      <trans-unit id="sb8c878135ee917b1">
+        <source>The file is not valid JSON.</source>
+        <target>Filen är inte giltig JSON.</target>
+      </trans-unit>
+      <trans-unit id="sc72736ac2c79d822">
+        <source>The file does not describe a geometry figure.</source>
+        <target>Filen beskriver ingen geometrisk figur.</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>Visa rutnät</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>Fäst i rutnätet</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>När den är aktiverad ritas räta vinklar som en liten kvadrat</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>Skalar alla etiketter i olika längder och storlekar.</target>
+      </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
-                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
         <target>Du kan också tillfälligt avaktivera snapping genom att trycka på
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> medan du drar ett element
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;" /> medan du drar ett element
         </target>
+      </trans-unit>
+      <trans-unit id="hcf3a5f37275a5412">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+        <target>Håll ned <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> när du drar ett objekt för att tillfälligt stänga av fästningen.</target>
       </trans-unit>
     </body>
   </file>

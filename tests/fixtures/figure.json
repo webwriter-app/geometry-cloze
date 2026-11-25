@@ -1,0 +1,19 @@
+{
+  "elements": [
+    {
+      "_type": "element",
+      "id": 1,
+      "fill": "#2563eb50",
+      "children": [
+        { "_type": "point", "id": 2, "x": 100, "y": 100 },
+        { "_type": "line", "id": 3, "showLabel": true, "start": { "_type": "reference", "id": 2 }, "end": { "_type": "reference", "id": 4 } },
+        { "_type": "point", "id": 4, "x": 400, "y": 100 },
+        { "_type": "line", "id": 5, "start": { "_type": "reference", "id": 4 }, "end": { "_type": "reference", "id": 6 } },
+        { "_type": "point", "id": 6, "x": 400, "y": 350, "showLabel": true },
+        { "_type": "line", "id": 7, "start": { "_type": "reference", "id": 6 }, "end": { "_type": "reference", "id": 2 } }
+      ],
+      "closed": true
+    },
+    { "_type": "divider-line", "id": 8, "start": { "_type": "absolute", "x": 50, "y": 500 }, "end": { "_type": "absolute", "x": 600, "y": 500 } }
+  ]
+}

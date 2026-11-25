@@ -1,4 +1,5 @@
-<xliff xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="uk">
     <body>
       <trans-unit id="s5e3cb80d43a34044">
@@ -61,29 +62,13 @@
         <source>Show Perimeter</source>
         <target>Показати периметр</target>
       </trans-unit>
-      <trans-unit id="sf6f1d2fce4cc2014">
-        <source>Show grid</source>
-        <target>Показати сітку</target>
-      </trans-unit>
-      <trans-unit id="s73c0e4814878d26e">
-        <source>Snap to grid</source>
-        <target>Прив'язати до сітки</target>
-      </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
         <target>Абстрактний прямий кут</target>
       </trans-unit>
-      <trans-unit id="sf9f816447b409e1c">
-        <source>When enabled, right angles will be drawn as a small square</source>
-        <target>Якщо увімкнено, прямі кути будуть намальовані у вигляді маленького квадратика</target>
-      </trans-unit>
       <trans-unit id="s2706a162264c46f1">
         <source>Scale</source>
         <target>Масштаб</target>
-      </trans-unit>
-      <trans-unit id="s2dae9bc7aa02bab7">
-        <source>Scales all labels of lengths and sizes.</source>
-        <target>Масштабує всі етикетки довжин і розмірів.</target>
       </trans-unit>
       <trans-unit id="s8a347fce9c8f6045">
         <source>Select and move objects</source>
@@ -102,9 +87,10 @@
         <target>Колір етикетки</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}"/> objects selected</source>
+        <source>
+          <x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
-          <x id="0" equiv-text="${this.selection.length}"/> вибрано об'єктів
+          <x id="0" equiv-text="${this.selection.length}" /> вибрано об'єктів
         </target>
       </trans-unit>
       <trans-unit id="s5246434aaa760348">
@@ -139,13 +125,86 @@
         <source>Delete selected objects</source>
         <target>Видалення вибраних об'єктів</target>
       </trans-unit>
+      <trans-unit id="s8818af2947b74b9b">
+        <source>Hide grid</source>
+        <target>Приховати сітку</target>
+      </trans-unit>
+      <trans-unit id="s7c233329e117db1d">
+        <source>Disable snapping</source>
+        <target>Вимкнути прив’язку</target>
+      </trans-unit>
+      <trans-unit id="s30ef01663a587b8a">
+        <source>Scales labels for lengths and sizes.</source>
+        <target>Масштабує підписи довжин і розмірів.</target>
+      </trans-unit>
+      <trans-unit id="s712cf78df85cba7a">
+        <source>Unimplemented</source>
+        <target>Не реалізовано</target>
+      </trans-unit>
+      <trans-unit id="s020ef25c40d67e92">
+        <source>No letter</source>
+        <target>Без літери</target>
+      </trans-unit>
+      <trans-unit id="s166e43ffaa91f881">
+        <source>Flip angle</source>
+        <target>Перевернути кут</target>
+      </trans-unit>
+      <trans-unit id="s8a9eb438abac7c6a">
+        <source>Labels</source>
+        <target>Мітки</target>
+      </trans-unit>
+      <trans-unit id="s56339226771df73e">
+        <source>Drawing tools</source>
+        <target>Інструменти малювання</target>
+      </trans-unit>
+      <trans-unit id="sda710f92642cf11a">
+        <source>Clear canvas</source>
+        <target>Очистити полотно</target>
+      </trans-unit>
+      <trans-unit id="sd00c60d57d312c84">
+        <source>Remove all objects from the canvas?</source>
+        <target>Видалити всі об’єкти з полотна?</target>
+      </trans-unit>
+      <trans-unit id="seb2daf50267d87ef">
+        <source>Geometry canvas</source>
+        <target>Геометричне полотно</target>
+      </trans-unit>
+      <trans-unit id="sb8c878135ee917b1">
+        <source>The file is not valid JSON.</source>
+        <target>Файл не є коректним JSON.</target>
+      </trans-unit>
+      <trans-unit id="sc72736ac2c79d822">
+        <source>The file does not describe a geometry figure.</source>
+        <target>Файл не описує геометричну фігуру.</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>Показати сітку</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>Прив'язати до сітки</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>Якщо увімкнено, прямі кути будуть намальовані у вигляді маленького квадратика</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>Масштабує всі етикетки довжин і розмірів.</target>
+      </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
-                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt<x id="1" equiv-text="&lt;/sl-tag&gt;"/> while dragging an element</source>
+                  <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
         <target>Ви також можете тимчасово вимкнути прив'язку, натиснувши
-          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;"/>Alt
-          <x id="1" equiv-text="&lt;/sl-tag&gt;"/> під час перетягування елемента
+          <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt
+          <x id="1" equiv-text="&lt;/sl-tag&gt;" /> під час перетягування елемента
         </target>
+      </trans-unit>
+      <trans-unit id="hcf3a5f37275a5412">
+        <source>You can also temporarily disable snapping by pressing
+                  <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
+        <target>Утримуйте <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> під час перетягування елемента, щоб тимчасово вимкнути прив’язку.</target>
       </trans-unit>
     </body>
   </file>

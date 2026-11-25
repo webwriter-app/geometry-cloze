@@ -1,0 +1,216 @@
+import Calc, { MathPoint } from '../../model/calc';
+import Vector from '../../model/vector';
+import Arrays from '../../model/arrays';
+
+import { NamedElement } from './base/element';
+import { DEFAULT_STYLE, StylableData } from './base/stylable';
+import Draggable, { DraggableData, MoveCoords } from './base/draggable';
+
+import Numbers from '../../model/numbers';
+import Manager from '../../model/abstracts';
+import { SELECTION_STYLE } from '../selection-rect';
+
+export type BasePoint = MathPoint & NamedElement;
+
+export const DEFAULT_POINT_STYLE = Object.assign({}, DEFAULT_STYLE, {
+  fill: DEFAULT_STYLE.stroke,
+  size: 7,
+  lineWidth: 0
+});
+
+export default class Point extends Draggable {
+  protected clickTargetSize = 2;
+
+  protected get defaultStyle() {
+    return DEFAULT_POINT_STYLE;
+  }
+
+  protected _x: number;
+  protected _y: number;
+
+  constructor(
+    manager: Manager,
+    data: BasePoint &
+      Partial<StylableData & DraggableData> & { showOutsideAngle?: boolean }
+  ) {
+    super(manager, data);
+    if (data.showOutsideAngle) this.showOutsideAngle = data.showOutsideAngle;
+    this._x = data.x;
+    this._y = data.y;
+  }
+
+  private _lastMoveToken: symbol | undefined;
+
+  public move(coords: MoveCoords): void {
+    if (coords.moveToken) {
+      // Prevent processing the same move multiple times
+      if (this._lastMoveToken === coords.moveToken) return;
+      this._lastMoveToken = coords.moveToken;
+    } else {
+      this._lastMoveToken = undefined;
+    }
+    super.move(coords);
+  }
+
+  public showOutsideAngle = false;
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this.hidden) return;
+    super.draw(ctx);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fill();
+
+    if (this.selected) {
+      ctx.globalAlpha = SELECTION_STYLE.alpha;
+      if (this.fill === 'transparent') ctx.fillStyle = this.stroke;
+      ctx.beginPath();
+      ctx.arc(
+        this.x,
+        this.y,
+        this.size + this.lineWidth + SELECTION_STYLE.strokeOffset,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    if (this.showLabel) {
+      ctx.font = `18px ${this.manager.fontFamily}`;
+      ctx.fillStyle = this.labelColor;
+      ctx.strokeStyle = this.labelColor;
+      const label = this.getLabel();
+      let angle = this.getAngle();
+      const neighbors = this.getNeighborPoints();
+      // To prevent flickering when a point is moved and the angle changes rapidly,
+      // we measure the maximum space the angle label could take and always reserve that.
+      const measureText =
+        this.labelStyle === 'name'
+          ? 'ω'
+          : (angle < 100 ? '00.0' : '000.0') + '°';
+      const metrics = ctx.measureText(measureText);
+      const fontHeight =
+        metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+      if (angle !== -1 && neighbors) {
+        const textPadding = 2.5;
+        let vec1 = Vector.normalize(Vector.subtract(neighbors[0], this));
+        let vec2 = Vector.normalize(Vector.subtract(neighbors[1], this));
+
+        if (this.showOutsideAngle) angle = 360 - angle;
+
+        if (angle === 90 && this.manager.abstractRightAngle) {
+          vec1 = Vector.scale(vec1, this.size * 2 + textPadding);
+          vec2 = Vector.scale(vec2, this.size * 2 + textPadding);
+          ctx.beginPath();
+          ctx.moveTo(this.x + vec1.x, this.y + vec2.x);
+          ctx.lineTo(this.x + vec1.x + vec2.x, this.y + vec1.y + vec2.y);
+          ctx.lineTo(this.x + vec2.x, this.y + vec2.y);
+          ctx.stroke();
+        } else {
+          // Get vector that points to the middle of the angle mark
+          let middle = Vector.normalize(Vector.add(vec1, vec2));
+          if (Vector.len(middle) === 0) middle = Vector.orthogonal(vec1);
+          if (angle >= 180) middle = Vector.scale(middle, -1);
+
+          middle = Vector.normalize(middle, this.size + textPadding);
+          const textDiagonal = Math.sqrt(metrics.width ** 2 + fontHeight ** 2);
+
+          let radius: number, textX: number, textY: number;
+          // outer label
+          if (angle < 45) {
+            textX = (middle.x + (middle.x > 0 ? 0 : -1) * metrics.width) * -1;
+            textY = (middle.y + (middle.y > 0 ? 1 : 0) * fontHeight) * -1;
+            radius = 20;
+          } else {
+            // inner label
+            textX = middle.x + (middle.x > 0 ? 0 : -1) * metrics.width;
+            textY = middle.y + (middle.y > 0 ? 1 : 0) * fontHeight;
+            radius = textPadding + textDiagonal + 5;
+          }
+
+          ctx.fillText(label, this.x + textX, this.y + textY);
+
+          ctx.beginPath();
+          ctx.arc(
+            this.x,
+            this.y,
+            this.size + radius,
+            Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec1 : vec2),
+            Vector.angle({ x: 1, y: 0 }, this.showOutsideAngle ? vec2 : vec1)
+          );
+          ctx.stroke();
+        }
+      } else {
+        // fallback to simple label
+        ctx.fillText(label, this.x + 10, this.y - 10);
+      }
+    }
+  }
+
+  getHit(point: MathPoint, point2?: MathPoint): Draggable[] {
+    if (this.hidden) return [];
+    if (!point2)
+      return Calc.distance(this, point) - this.clickTargetSize <
+        this.size + this.lineWidth / 2
+        ? [this]
+        : super.getHit(point, point2);
+    else {
+      const isInSelection = Calc.isPointInRect(
+        {
+          x1: point.x,
+          y1: point.y,
+          x2: point2.x,
+          y2: point2.y
+        },
+        this
+      );
+      if (isInSelection) return [this];
+      return super.getHit(point, point2);
+    }
+  }
+
+  private getNeighborPoints(): [MathPoint, MathPoint] | null {
+    if (!this.parent || !('getLines' in this.parent)) return null;
+    const lines = this.parent.getLines();
+    const neighbors = lines.filter((l) => l.isEndpoint(this));
+    if (neighbors.length !== 2) return null;
+    // lines are ordered wrong for first point
+    if (lines[0] === neighbors[0] && Arrays.at(lines, -1) === neighbors[1])
+      neighbors.reverse();
+    const points = neighbors.map((l) => (l.start === this ? l.end : l.start));
+    return points as [MathPoint, MathPoint];
+  }
+
+  private getAngle(): number {
+    const neighbors = this.getNeighborPoints();
+    if (!neighbors) return -1;
+    const vector1 = Vector.subtract(this, neighbors[0]);
+    const vector2 = Vector.subtract(this, neighbors[1]);
+    const angle = Vector.angle(vector1, vector2);
+    const degAngle = (angle * 180) / Math.PI;
+    const rightWay = ((degAngle - 360) * -1) % 360;
+    const rounded = Math.round(rightWay * 100) / 100;
+    return rounded;
+  }
+
+  protected getValueLabel(): string {
+    let angle = this.getAngle();
+    if (angle === -1) return '';
+    if (this.showOutsideAngle) angle = 360 - angle;
+    return `${Numbers.round(angle)}°`;
+  }
+
+  public export() {
+    return {
+      ...super.export(),
+      _type: 'point' as const,
+      x: this.x,
+      y: this.y,
+      ...(this.showOutsideAngle && { showOutsideAngle: this.showOutsideAngle })
+    };
+  }
+
+  public static import(data: BasePoint, manager: Manager) {
+    return new Point(manager, data);
+  }
+}
