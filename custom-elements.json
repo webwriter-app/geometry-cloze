@@ -291,9 +291,7 @@
             "package": "@webwriter/lit"
           },
           "tagName": "ww-geometry-cloze",
-          "customElement": true,
-          "modulePath": "src/widgets/ww-geometry-cloze.ts",
-          "definitionPath": "src/widgets/ww-geometry-cloze.ts"
+          "customElement": true
         }
       ],
       "exports": [
