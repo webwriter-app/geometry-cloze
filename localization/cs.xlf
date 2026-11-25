@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd" version="1.2">
   <file original="lit-localize-inputs" datatype="plaintext" source-language="en" target-language="cs">
     <body>
@@ -62,29 +62,13 @@
         <source>Show Perimeter</source>
         <target>Zobrazit obvod</target>
       </trans-unit>
-      <trans-unit id="sf6f1d2fce4cc2014">
-        <source>Show grid</source>
-        <target>Zobrazit mřížku</target>
-      </trans-unit>
-      <trans-unit id="s73c0e4814878d26e">
-        <source>Snap to grid</source>
-        <target>Přichycení k mřížce</target>
-      </trans-unit>
       <trans-unit id="s4fd35ef13079b962">
         <source>Abstract right angle</source>
         <target>Abstraktní pravý úhel</target>
       </trans-unit>
-      <trans-unit id="sf9f816447b409e1c">
-        <source>When enabled, right angles will be drawn as a small square</source>
-        <target>Pokud je tato funkce povolena, pravé úhly se vykreslí jako malý čtverec.</target>
-      </trans-unit>
       <trans-unit id="s2706a162264c46f1">
         <source>Scale</source>
         <target>Měřítko</target>
-      </trans-unit>
-      <trans-unit id="s2dae9bc7aa02bab7">
-        <source>Scales all labels of lengths and sizes.</source>
-        <target>Váhy všech označení délek a velikostí.</target>
       </trans-unit>
       <trans-unit id="s8a347fce9c8f6045">
         <source>Select and move objects</source>
@@ -103,7 +87,8 @@
         <target>Barva štítku</target>
       </trans-unit>
       <trans-unit id="sb6055dddb583f562">
-        <source><x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
+        <source>
+          <x id="0" equiv-text="${this.selection.length}" /> objects selected</source>
         <target>
           <x id="0" equiv-text="${this.selection.length}" /> vybrané objekty
         </target>
@@ -140,6 +125,74 @@
         <source>Delete selected objects</source>
         <target>Odstranění vybraných objektů</target>
       </trans-unit>
+      <trans-unit id="s8818af2947b74b9b">
+        <source>Hide grid</source>
+        <target>Skrýt mřížku</target>
+      </trans-unit>
+      <trans-unit id="s7c233329e117db1d">
+        <source>Disable snapping</source>
+        <target>Vypnout přichytávání</target>
+      </trans-unit>
+      <trans-unit id="s30ef01663a587b8a">
+        <source>Scales labels for lengths and sizes.</source>
+        <target>Mění měřítko popisků délek a velikostí.</target>
+      </trans-unit>
+      <trans-unit id="s712cf78df85cba7a">
+        <source>Unimplemented</source>
+        <target>Neimplementováno</target>
+      </trans-unit>
+      <trans-unit id="s020ef25c40d67e92">
+        <source>No letter</source>
+        <target>Bez písmene</target>
+      </trans-unit>
+      <trans-unit id="s166e43ffaa91f881">
+        <source>Flip angle</source>
+        <target>Převrátit úhel</target>
+      </trans-unit>
+      <trans-unit id="s8a9eb438abac7c6a">
+        <source>Labels</source>
+        <target>Popisky</target>
+      </trans-unit>
+      <trans-unit id="s56339226771df73e">
+        <source>Drawing tools</source>
+        <target>Kreslicí nástroje</target>
+      </trans-unit>
+      <trans-unit id="sda710f92642cf11a">
+        <source>Clear canvas</source>
+        <target>Vymazat plátno</target>
+      </trans-unit>
+      <trans-unit id="sd00c60d57d312c84">
+        <source>Remove all objects from the canvas?</source>
+        <target>Odebrat všechny objekty z plátna?</target>
+      </trans-unit>
+      <trans-unit id="seb2daf50267d87ef">
+        <source>Geometry canvas</source>
+        <target>Geometrické plátno</target>
+      </trans-unit>
+      <trans-unit id="sb8c878135ee917b1">
+        <source>The file is not valid JSON.</source>
+        <target>Soubor není platný JSON.</target>
+      </trans-unit>
+      <trans-unit id="sc72736ac2c79d822">
+        <source>The file does not describe a geometry figure.</source>
+        <target>Soubor nepopisuje geometrický útvar.</target>
+      </trans-unit>
+      <trans-unit id="sf6f1d2fce4cc2014">
+        <source>Show grid</source>
+        <target>Zobrazit mřížku</target>
+      </trans-unit>
+      <trans-unit id="s73c0e4814878d26e">
+        <source>Snap to grid</source>
+        <target>Přichycení k mřížce</target>
+      </trans-unit>
+      <trans-unit id="sf9f816447b409e1c">
+        <source>When enabled, right angles will be drawn as a small square</source>
+        <target>Pokud je tato funkce povolena, pravé úhly se vykreslí jako malý čtverec.</target>
+      </trans-unit>
+      <trans-unit id="s2dae9bc7aa02bab7">
+        <source>Scales all labels of lengths and sizes.</source>
+        <target>Váhy všech označení délek a velikostí.</target>
+      </trans-unit>
       <trans-unit id="hcf737b9b198de693">
         <source>You can also temporarily disable snapping by pressing
                   <x id="0" equiv-text="&lt;sl-tag size=&quot;small&quot;&gt;" />Alt<x id="1" equiv-text="&lt;/sl-tag&gt;" /> while dragging an element</source>
@@ -148,28 +201,11 @@
           <x id="1" equiv-text="&lt;/sl-tag&gt;" /> při přetahování prvku
         </target>
       </trans-unit>
-    <trans-unit id="hcf3a5f37275a5412">
-  <source>You can also temporarily disable snapping by pressing
+      <trans-unit id="hcf3a5f37275a5412">
+        <source>You can also temporarily disable snapping by pressing
                   <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" /> while dragging an element</source>
-<target>Při přetahování prvku podržte <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" />, abyste přichytávání dočasně vypnuli.</target></trans-unit>
-<trans-unit id="s8818af2947b74b9b">
-  <source>Hide grid</source>
-<target>Skrýt mřížku</target></trans-unit>
-<trans-unit id="s7c233329e117db1d">
-  <source>Disable snapping</source>
-<target>Vypnout přichytávání</target></trans-unit>
-<trans-unit id="s30ef01663a587b8a">
-  <source>Scales labels for lengths and sizes.</source>
-<target>Mění měřítko popisků délek a velikostí.</target></trans-unit>
-<trans-unit id="s712cf78df85cba7a">
-  <source>Unimplemented</source>
-<target>Neimplementováno</target></trans-unit>
-<trans-unit id="s020ef25c40d67e92">
-  <source>No letter</source>
-<target>Bez písmene</target></trans-unit>
-<trans-unit id="s166e43ffaa91f881">
-  <source>Flip angle</source>
-<target>Převrátit úhel</target></trans-unit>
-</body>
+        <target>Při přetahování prvku podržte <x id="0" equiv-text="&lt;ww-kbd&gt;" />Alt<x id="1" equiv-text="&lt;/ww-kbd&gt;" />, abyste přichytávání dočasně vypnuli.</target>
+      </trans-unit>
+    </body>
   </file>
 </xliff>
