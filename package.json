@@ -1,6 +1,6 @@
 {
   "name": "@webwriter/geometry-cloze",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Create and view geometry exercises with coloring, styling and labeling options.",
   "keywords": [
     "webwriter-widget",
@@ -161,6 +161,7 @@
     "./package.json": "./package.json",
     "./icon": "./icon.svg",
     "./preview": "./assets/preview.mp4",
+    "./preview/de": "./assets/preview-de.mp4",
     "./tests/shortcuts.*": {
       "source": "./tests/shortcuts.test.ts",
       "default": "./dist/tests/shortcuts.*"
